@@ -2,10 +2,12 @@
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Graphics.Imaging;
+using Windows.Storage.Streams;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace GroupGMosaicMaker.Model
 {
+    // TODO Better class name
     /// <summary>
     ///     Base class that allows for reading image data.
     /// </summary>
@@ -14,30 +16,32 @@ namespace GroupGMosaicMaker.Model
         #region Data members
 
         /// <summary>
-        ///     The decoder for accessing image data.
-        /// </summary>
-        protected readonly BitmapDecoder Decoder;
-
-        /// <summary>
         ///     The source pixels of the image.
         /// </summary>
         protected byte[] SourcePixels;
 
         #endregion
 
+        #region Properties
+
+        public BitmapDecoder Decoder { get; private set; }
+
+        #endregion
+
         #region Constructors
 
-        protected ImageOperator(BitmapDecoder decoder)
+        protected ImageOperator()
         {
-            this.Decoder = decoder;
         }
 
         #endregion
 
         #region Methods
 
-        private async Task initializeAsync()
+        private async Task initializeAsync(IRandomAccessStream imageSource)
         {
+            this.Decoder = await BitmapDecoder.CreateAsync(imageSource);
+
             var pixelData = await this.generatePixelDataAsync();
             this.SourcePixels = pixelData.DetachPixelData();
         }
@@ -85,12 +89,12 @@ namespace GroupGMosaicMaker.Model
         /// <summary>
         ///     Creates a new instance of the <see cref="ImageOperator" /> class asynchronously.
         /// </summary>
-        /// <param name="decoder">The decoder which contains the image data to be used.</param>
+        /// <param name="imageSource">The image source stream.</param>
         /// <returns>A new <see cref="ImageOperator" /> instance.</returns>
-        public static async Task<ImageOperator> CreateAsync(BitmapDecoder decoder)
+        public static async Task<ImageOperator> CreateAsync(IRandomAccessStream imageSource)
         {
-            var imageOperator = new ImageOperator(decoder);
-            await imageOperator.initializeAsync();
+            var imageOperator = new ImageOperator();
+            await imageOperator.initializeAsync(imageSource);
 
             return imageOperator;
         }

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
@@ -11,7 +9,6 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
-using GroupGMosaicMaker.Model;
 using GroupGMosaicMaker.ViewModel;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -35,10 +32,6 @@ namespace GroupGMosaicMaker.View
         /// </summary>
         public const int ApplicationWidth = 900;
 
-        private double dpiX;
-        private double dpiY;
-        private WriteableBitmap modifiedImage;
-
         #endregion
 
         #region Constructors
@@ -49,9 +42,6 @@ namespace GroupGMosaicMaker.View
             ApplicationView.PreferredLaunchViewSize = new Size {Width = ApplicationWidth, Height = ApplicationHeight};
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
             ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(ApplicationWidth, ApplicationHeight));
-            this.modifiedImage = null;
-            this.dpiX = 0;
-            this.dpiY = 0;
         }
 
         #endregion
@@ -64,10 +54,10 @@ namespace GroupGMosaicMaker.View
 
             if (sourceImageFile != null)
             {
+                // TODO Consider moving this to DataTier to improve separation of concerns. It is small though, so not sure if it's even worth it.
                 using (var fileStream = await sourceImageFile.OpenAsync(FileAccessMode.Read))
                 {
-                    var decoder = await BitmapDecoder.CreateAsync(fileStream);
-                    await ((MainPageViewModel)this.DataContext).DisplayOriginalImageAsync(decoder);
+                    await ((MainPageViewModel) DataContext).DisplayOriginalImageAsync(fileStream);
                 }
             }
         }
@@ -87,6 +77,20 @@ namespace GroupGMosaicMaker.View
             return file;
         }
 
+        private async Task<StorageFile> selectSaveImageFile()
+        {
+            var fileSavePicker = new FileSavePicker {
+                SuggestedStartLocation = PickerLocationId.PicturesLibrary,
+                SuggestedFileName = "image"
+            };
+
+            fileSavePicker.FileTypeChoices.Add("PNG files", new List<string> {".png"});
+
+            var file = await fileSavePicker.PickSaveFileAsync();
+
+            return file;
+        }
+
         private async Task<BitmapImage> MakeACopyOfTheFileToWorkOn(StorageFile imageFile)
         {
             IRandomAccessStream inputStream = await imageFile.OpenReadAsync();
@@ -97,28 +101,12 @@ namespace GroupGMosaicMaker.View
 
         private async void saveFile_Click(object sender, RoutedEventArgs e)
         {
-            var fileSavePicker = new FileSavePicker {
-                SuggestedStartLocation = PickerLocationId.PicturesLibrary,
-                SuggestedFileName = "image"
-            };
-            fileSavePicker.FileTypeChoices.Add("PNG files", new List<string> {".png"});
-            var saveFile = await fileSavePicker.PickSaveFileAsync();
+            var saveFile = await this.selectSaveImageFile();
 
             if (saveFile != null)
             {
-                var stream = await saveFile.OpenAsync(FileAccessMode.ReadWrite);
-                var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, stream);
-
-                var pixelStream = this.modifiedImage.PixelBuffer.AsStream();
-                var pixels = new byte[pixelStream.Length];
-                await pixelStream.ReadAsync(pixels, 0, pixels.Length);
-
-                encoder.SetPixelData(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Ignore,
-                    (uint) this.modifiedImage.PixelWidth,
-                    (uint) this.modifiedImage.PixelHeight, this.dpiX, this.dpiY, pixels);
-                await encoder.FlushAsync();
-
-                stream.Dispose();
+                // TODO If no image is open in the program, attempting to save the file causes a crash. Possible solution is flag in ViewModel.
+                await ((MainPageViewModel) DataContext).WriteDataAsync(saveFile);
             }
         }
 

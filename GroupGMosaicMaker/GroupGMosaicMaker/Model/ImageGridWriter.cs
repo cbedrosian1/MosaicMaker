@@ -1,7 +1,6 @@
-﻿using Windows.Graphics.Imaging;
-
-namespace GroupGMosaicMaker.Model
+﻿namespace GroupGMosaicMaker.Model
 {
+    // TODO Better class name. Needs to be distinguished between this and DataTier::ImageWriter
     /// <summary>
     ///     Responsible for drawing square grids of varying sizes onto the given bitmap image
     /// </summary>
@@ -16,7 +15,7 @@ namespace GroupGMosaicMaker.Model
 
         #region Constructors
 
-        protected ImageGridWriter(BitmapDecoder decoder, int length) : base(decoder)
+        protected ImageGridWriter(int length)
         {
             this.length = length;
         }

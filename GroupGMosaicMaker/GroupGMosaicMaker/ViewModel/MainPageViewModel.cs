@@ -1,7 +1,11 @@
 ﻿using System.Threading.Tasks;
 using Windows.Graphics.Imaging;
+using Windows.Storage;
+using Windows.Storage.Streams;
 using Windows.UI.Xaml.Media.Imaging;
+using GroupGMosaicMaker.DataTier;
 using GroupGMosaicMaker.Model;
+using GroupGMosaicMaker.Utilities;
 
 namespace GroupGMosaicMaker.ViewModel
 {
@@ -14,6 +18,7 @@ namespace GroupGMosaicMaker.ViewModel
         #region Data members
 
         private WriteableBitmap originalImage;
+        private ImageOperator originalImageOperator;
 
         #endregion
 
@@ -37,19 +42,33 @@ namespace GroupGMosaicMaker.ViewModel
 
         #endregion
 
+        public MainPageViewModel()
+        {
+            this.loadCommands();
+        }
+
         #region Methods
+
+        private void loadCommands()
+        {
+            // Add with commands as necessary
+        }
 
         /// <summary>
         ///     Displays the original image asynchronous.
         /// </summary>
-        /// <param name="decoder">The decoder.</param>
+        /// <param name="fileStream">The file stream to write the data to.</param>
         /// <returns>The completed asynchronous operation.</returns>
-        public async Task DisplayOriginalImageAsync(BitmapDecoder decoder)
+        public async Task DisplayOriginalImageAsync(IRandomAccessStream fileStream)
         {
-            var imageOperator = await ImageOperator.CreateAsync(decoder);
-            var image = await imageOperator.GenerateModifiedImageAsync();
-
+            this.originalImageOperator= await ImageOperator.CreateAsync(fileStream);
+            var image = await this.originalImageOperator.GenerateModifiedImageAsync();
             this.OriginalImage = image;
+        }
+
+        public async Task WriteDataAsync(StorageFile file)
+        {
+            await ImageWriter.WriteImageAsync(this.originalImageOperator, file);
         }
 
         #endregion

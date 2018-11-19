@@ -1,4 +1,4 @@
-﻿using Windows.Graphics.Imaging;
+﻿using Windows.Storage.Streams;
 
 namespace GroupGMosaicMaker.Model
 {
@@ -10,7 +10,7 @@ namespace GroupGMosaicMaker.Model
     {
         #region Constructors
 
-        protected BlockMosaicMaker(BitmapDecoder decoder) : base(decoder)
+        protected BlockMosaicMaker(IRandomAccessStream imageSource)
         {
         }
 
