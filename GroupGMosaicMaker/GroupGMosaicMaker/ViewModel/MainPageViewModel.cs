@@ -97,7 +97,6 @@ namespace GroupGMosaicMaker.ViewModel
             }
         }
 
-
         #endregion
 
         public MainPageViewModel()
@@ -112,7 +111,6 @@ namespace GroupGMosaicMaker.ViewModel
 
         private void loadCommands()
         {
-            // Add with commands as necessary
         }
 
         /// <summary>

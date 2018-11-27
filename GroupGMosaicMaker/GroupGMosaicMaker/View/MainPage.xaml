@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:vm="using:GroupGMosaicMaker.ViewModel"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:extensions="using:Microsoft.Toolkit.Uwp.UI.Extensions"
     xmlns:converter="using:GroupGMosaicMaker.Converter"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -30,6 +31,6 @@
         <Image x:Name="gridImage" Source="{Binding GridImage}" HorizontalAlignment="Left" Height="200"
                Margin="500,150,0,0"
                VerticalAlignment="Top" Width="200" />
-        <TextBox x:Name="gridSize" Text="{Binding Path=GridSize, Converter={StaticResource StringToIntConverter}, Mode=TwoWay}"  HorizontalAlignment="Left" Margin="50,175,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="gridSize" extensions:TextBoxRegex.Regex="" extensions:TextBoxRegex.ValidationMode="Dynamic"  Text="{Binding Path=GridSize, Converter={StaticResource StringToIntConverter}, Mode=TwoWay}"  HorizontalAlignment="Left" Margin="50,175,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Page>
