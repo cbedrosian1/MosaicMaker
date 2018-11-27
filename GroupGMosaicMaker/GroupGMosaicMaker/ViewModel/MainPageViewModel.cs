@@ -201,6 +201,7 @@ namespace GroupGMosaicMaker.ViewModel
             await this.displayOriginalImageAsync(imageSource);
             await this.displayGridImageAsync(imageSource);
             this.DisplayImage = OriginalImage;
+           
 
         }
 
