@@ -6,6 +6,7 @@ using Windows.UI.Xaml.Media.Imaging;
 using GroupGMosaicMaker.DataTier;
 using GroupGMosaicMaker.Model;
 using GroupGMosaicMaker.Utilities;
+using System;
 
 namespace GroupGMosaicMaker.ViewModel
 {
@@ -97,6 +98,10 @@ namespace GroupGMosaicMaker.ViewModel
             }
         }
 
+        public RelayCommand GenerateMosaicCommand { get; set; }
+
+        public RelayCommand GenerateGridImage { get; set; }
+
         #endregion
 
         public MainPageViewModel()
@@ -111,6 +116,28 @@ namespace GroupGMosaicMaker.ViewModel
 
         private void loadCommands()
         {
+            this.GenerateMosaicCommand = new RelayCommand(this.generateMosaic, this.canGenerateMosaic);
+            this.GenerateGridImage = new RelayCommand(this.generateGrid, this.canGenerateGrid);
+        }
+
+        private bool canGenerateGrid(object obj)
+        {
+            return this.OriginalImage != null;
+        }
+
+        private void generateGrid(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool canGenerateMosaic(object obj)
+        {
+            return this.OriginalImage != null;
+        }
+
+        private void generateMosaic(object obj)
+        {
+            throw new NotImplementedException(); //TODO
         }
 
         /// <summary>
@@ -136,7 +163,7 @@ namespace GroupGMosaicMaker.ViewModel
         {
             this.gridImageOperator = await ImageGridMaker.CreateAsync(imageSource);
             this.gridImageOperator.DrawGrid(this.GridSize);
-            this.GridImage = await this.gridImageOperator.GenerateModifiedImageAsync();
+            this.OriginalImage = await this.gridImageOperator.GenerateModifiedImageAsync();
         }
 
         public async Task WriteDataAsync(StorageFile file)
