@@ -104,8 +104,7 @@ namespace GroupGMosaicMaker.View
             var saveFile = await this.selectSaveImageFile();
 
             if (saveFile != null)
-            {
-                // TODO If no image is open in the program, attempting to save the file causes a crash. Possible solution is flag in ViewModel.
+            { 
                 await ((MainPageViewModel) DataContext).WriteDataAsync(saveFile);
             }
         }
