@@ -25,6 +25,8 @@ namespace GroupGMosaicMaker.ViewModel
 
         private WriteableBitmap gridImage;
         private ImageGridMaker gridImageOperator;
+        private WriteableBitmap mosaicImage;
+        private WriteableBitmap displayImage;
 
         private int gridSize;
 
@@ -45,6 +47,8 @@ namespace GroupGMosaicMaker.ViewModel
             {
                 this.originalImage = value;
                 OnPropertyChanged();
+                this.GenerateMosaicCommand.OnCanExecuteChanged();
+                this.GenerateGridImage.OnCanExecuteChanged();
             }
         }
 
@@ -60,6 +64,29 @@ namespace GroupGMosaicMaker.ViewModel
             set
             {
                 this.gridImage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public WriteableBitmap DisplayImage
+        {
+            get => this.displayImage;
+
+            set
+            {
+                this.displayImage = value;
+                this.OnPropertyChanged();
+            }
+
+        }
+
+
+        public WriteableBitmap MosaicImage
+        {
+            get => this.mosaicImage;
+            set
+            {
+                this.mosaicImage = value;
                 OnPropertyChanged();
             }
         }
@@ -98,12 +125,35 @@ namespace GroupGMosaicMaker.ViewModel
             }
         }
 
+        /// <summary>
+        /// Gets or sets the generate mosaic command.
+        /// </summary>
+        /// <value>
+        /// The generate mosaic command.
+        /// </value>
         public RelayCommand GenerateMosaicCommand { get; set; }
 
+        /// <summary>
+        /// Gets or sets the generate grid image.
+        /// </summary>
+        /// <value>
+        /// The generate grid image.
+        /// </value>
         public RelayCommand GenerateGridImage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the image source.
+        /// </summary>
+        /// <value>
+        /// The image source.
+        /// </value>
+        public WriteableBitmap ImageSource { get; set; }
 
         #endregion
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MainPageViewModel"/> class.
+        /// </summary>
         public MainPageViewModel()
         {
             this.gridSize = 10;
@@ -125,9 +175,9 @@ namespace GroupGMosaicMaker.ViewModel
             return this.OriginalImage != null;
         }
 
-        private void generateGrid(object obj)
+        private async void generateGrid(object obj)
         {
-            throw new NotImplementedException();
+            this.DisplayImage = this.gridImage;
         }
 
         private bool canGenerateMosaic(object obj)
@@ -147,8 +197,11 @@ namespace GroupGMosaicMaker.ViewModel
         /// <returns>The completed asynchronous operation.</returns>
         public async Task DisplayImages(IRandomAccessStream imageSource)
         {
+            
             await this.displayOriginalImageAsync(imageSource);
             await this.displayGridImageAsync(imageSource);
+            this.DisplayImage = OriginalImage;
+
         }
 
         private async Task displayOriginalImageAsync(IRandomAccessStream imageSource)
@@ -163,9 +216,14 @@ namespace GroupGMosaicMaker.ViewModel
         {
             this.gridImageOperator = await ImageGridMaker.CreateAsync(imageSource);
             this.gridImageOperator.DrawGrid(this.GridSize);
-            this.OriginalImage = await this.gridImageOperator.GenerateModifiedImageAsync();
+            this.GridImage = await this.gridImageOperator.GenerateModifiedImageAsync();
         }
 
+        /// <summary>
+        /// Writes the data asynchronous.
+        /// </summary>
+        /// <param name="file">The file.</param>
+        /// <returns></returns>
         public async Task WriteDataAsync(StorageFile file)
         {
             await ImageWriter.WriteImageAsync(this.gridImageOperator, file);

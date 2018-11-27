@@ -58,6 +58,8 @@ namespace GroupGMosaicMaker.View
                 using (var fileStream = await sourceImageFile.OpenAsync(FileAccessMode.Read))
                 {
                     await ((MainPageViewModel) DataContext).DisplayImages(fileStream);
+
+
                 }
             }
         }

@@ -25,10 +25,10 @@
             <AppBarButton Icon="OpenFile" Label="Load File" Click="loadFile_Click" />
             <AppBarButton Icon="Save" IsEnabled="{Binding CanSaveImage}" Label="Save File" Click="saveFile_Click" />
         </CommandBar>
-        <Image x:Name="sourceImage" Source="{Binding OriginalImage}" HorizontalAlignment="Left" Height="200"
+        <Image x:Name="sourceImage" Source="{Binding DisplayImage}" HorizontalAlignment="Left" Height="200"
                Margin="250,150,0,0"
                VerticalAlignment="Top" Width="200" />
-        <Image x:Name="gridImage" Source="{Binding GridImage}" HorizontalAlignment="Left" Height="200"
+        <Image x:Name="mosaicImage" Source="{Binding MosaicImage}" HorizontalAlignment="Left" Height="200"
                Margin="600,150,0,0"
                VerticalAlignment="Top" Width="200" />
         <TextBox x:Name="gridSize" extensions:TextBoxRegex.Regex="^([5-9]|[1-4][0-9]|50)$" extensions:TextBoxRegex.ValidationMode="Forced"  Text="{Binding Path=GridSize, Converter={StaticResource StringToIntConverter}, Mode=TwoWay}"  HorizontalAlignment="Left" Margin="10,175,0,0" VerticalAlignment="Top"/>
