@@ -2,7 +2,9 @@
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Graphics.Imaging;
+using Windows.Storage;
 using Windows.Storage.Streams;
+using Windows.UI;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace GroupGMosaicMaker.Model
@@ -38,7 +40,7 @@ namespace GroupGMosaicMaker.Model
 
         #region Methods
 
-        private async Task initializeAsync(IRandomAccessStream imageSource)
+        protected async Task initializeAsync(IRandomAccessStream imageSource)
         {
             this.Decoder = await BitmapDecoder.CreateAsync(imageSource);
 
@@ -68,6 +70,23 @@ namespace GroupGMosaicMaker.Model
             };
 
             return transform;
+        }
+
+        protected Color GetPixelBgra8( int x, int y)
+        {
+            var offset = (x * (int) this.Decoder.PixelWidth + y) * 4;
+            var r = this.SourcePixels[offset + 2];
+            var g = this.SourcePixels[offset + 1];
+            var b = this.SourcePixels[offset + 0];
+            return Color.FromArgb(0, r, g, b);
+        }
+
+        protected void SetPixelBgra8(int x, int y, Color color)
+        {
+            var offset = (x * (int) this.Decoder.PixelWidth + y) * 4;
+            this.SourcePixels[offset + 2] = color.R;
+            this.SourcePixels[offset + 1] = color.G;
+            this.SourcePixels[offset + 0] = color.B;
         }
 
         // TODO Consider making this method protected as development continues, or abstracting this method out somewhere else.

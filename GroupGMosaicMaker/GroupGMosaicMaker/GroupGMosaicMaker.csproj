@@ -100,7 +100,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\BlockMosaicMaker.cs" />
-    <Compile Include="Model\ImageGridWriter.cs" />
+    <Compile Include="Model\ImageGridMaker.cs" />
     <Compile Include="Model\ImageOperator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\RelayCommand.cs" />

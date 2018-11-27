@@ -19,11 +19,13 @@
                 <Grid />
             </CommandBar.Content>
             <AppBarButton Icon="OpenFile" Label="Load File" Click="loadFile_Click" />
-            <AppBarButton Icon="Save" Label="Save File" Click="saveFile_Click" />
+            <AppBarButton Icon="Save" IsEnabled="{Binding CanSaveImage}" Label="Save File" Click="saveFile_Click" />
         </CommandBar>
-        <Image x:Name="sourceImage" Source="{Binding OriginalImage}" HorizontalAlignment="Left" Height="200" Margin="150,0,0,0"
+        <Image x:Name="sourceImage" Source="{Binding OriginalImage}" HorizontalAlignment="Left" Height="200"
+               Margin="150,0,0,0"
                VerticalAlignment="Center" Width="200" />
-        <Image x:Name="mosaicImage" HorizontalAlignment="Left" Height="200" Margin="500,0,0,0"
+        <Image x:Name="gridImage" Source="{Binding GridImage}" HorizontalAlignment="Left" Height="200"
+               Margin="500,0,0,0"
                VerticalAlignment="Center" Width="200" />
     </Grid>
 </Page>

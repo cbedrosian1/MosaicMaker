@@ -57,7 +57,7 @@ namespace GroupGMosaicMaker.View
                 // TODO Consider moving this to DataTier to improve separation of concerns. It is small though, so not sure if it's even worth it.
                 using (var fileStream = await sourceImageFile.OpenAsync(FileAccessMode.Read))
                 {
-                    await ((MainPageViewModel) DataContext).DisplayOriginalImageAsync(fileStream);
+                    await ((MainPageViewModel) DataContext).DisplayImages(fileStream);
                 }
             }
         }
