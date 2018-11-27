@@ -6,13 +6,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:vm="using:GroupGMosaicMaker.ViewModel"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:converter="using:GroupGMosaicMaker.Converter"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.DataContext>
         <vm:MainPageViewModel />
     </Page.DataContext>
-
+    <Page.Resources>
+        <converter:StringToIntConverter x:Key="StringToIntConverter"/>
+    </Page.Resources>
     <Grid>
         <CommandBar>
             <CommandBar.Content>
@@ -22,10 +25,11 @@
             <AppBarButton Icon="Save" IsEnabled="{Binding CanSaveImage}" Label="Save File" Click="saveFile_Click" />
         </CommandBar>
         <Image x:Name="sourceImage" Source="{Binding OriginalImage}" HorizontalAlignment="Left" Height="200"
-               Margin="150,0,0,0"
-               VerticalAlignment="Center" Width="200" />
+               Margin="170,150,0,0"
+               VerticalAlignment="Top" Width="200" />
         <Image x:Name="gridImage" Source="{Binding GridImage}" HorizontalAlignment="Left" Height="200"
-               Margin="500,0,0,0"
-               VerticalAlignment="Center" Width="200" />
+               Margin="500,150,0,0"
+               VerticalAlignment="Top" Width="200" />
+        <TextBox x:Name="gridSize" Text="{Binding Path=GridSize, Converter={StaticResource StringToIntConverter}, Mode=TwoWay}"  HorizontalAlignment="Left" Margin="50,175,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Page>

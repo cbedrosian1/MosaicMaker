@@ -25,6 +25,8 @@ namespace GroupGMosaicMaker.ViewModel
         private WriteableBitmap gridImage;
         private ImageGridMaker gridImageOperator;
 
+        private int gridSize;
+
         #endregion
 
         #region Properties
@@ -77,10 +79,30 @@ namespace GroupGMosaicMaker.ViewModel
             }
         }
 
+
+
+        /// <summary>
+        /// Gets or sets the size of the grid for the mosaic.
+        /// </summary>
+        /// <value>
+        /// The size of the grid for the mosaic.
+        /// </value>
+        public int GridSize
+        {
+            get => this.gridSize;
+            set
+            {
+                this.gridSize = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+
         #endregion
 
         public MainPageViewModel()
         {
+            this.gridSize = 10;
             this.canSaveImage = false;
 
             this.loadCommands();
@@ -115,7 +137,7 @@ namespace GroupGMosaicMaker.ViewModel
         private async Task displayGridImageAsync(IRandomAccessStream imageSource)
         {
             this.gridImageOperator = await ImageGridMaker.CreateAsync(imageSource);
-            this.gridImageOperator.DrawGrid(10);
+            this.gridImageOperator.DrawGrid(this.GridSize);
             this.GridImage = await this.gridImageOperator.GenerateModifiedImageAsync();
         }
 
