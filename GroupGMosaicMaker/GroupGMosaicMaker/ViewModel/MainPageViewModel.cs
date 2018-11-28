@@ -162,8 +162,14 @@ namespace GroupGMosaicMaker.ViewModel
         /// </value>
         public WriteableBitmap ImageSource { get; set; }
 
-        
 
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the grid is toggled.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if the grid is toggled; otherwise, <c>false</c>.
+        /// </value>
         public bool IsGridToggled
         {
             get => this.isGridToggled;
@@ -228,6 +234,12 @@ namespace GroupGMosaicMaker.ViewModel
             await this.createOriginalImageAsync(imageSource);
             this.createGridImageAsync(imageSource);
 
+            displayImageOnCreation();
+            
+        }
+
+        private void displayImageOnCreation()
+        {
             if (this.IsGridToggled)
             {
                 this.DisplayedImage = this.gridImage;
@@ -236,7 +248,6 @@ namespace GroupGMosaicMaker.ViewModel
             {
                 this.DisplayedImage = this.originalImage;
             }
-            
         }
 
         private async Task createOriginalImageAsync(IRandomAccessStream imageSource)
