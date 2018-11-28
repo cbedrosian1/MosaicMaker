@@ -23,15 +23,15 @@ namespace GroupGMosaicMaker.ViewModel
         private IRandomAccessStream imageSource;
 
         private WriteableBitmap originalImage;
-        private ImageOperator originalImageOperator;
+        private readonly ImageOperator originalImageOperator;
 
         private WriteableBitmap gridImage;
-        private ImageGridMaker gridImageOperator;
+        private readonly ImageGridMaker gridImageOperator;
 
         private WriteableBitmap mosaicImage;
-        private BlockMosaicMaker blockMosaicMaker;
+        private readonly BlockMosaicMaker blockMosaicMaker;
 
-        private WriteableBitmap displayImage;
+        private WriteableBitmap displayedImage;
 
         private int gridSize;
         private bool isGridToggled;
@@ -70,6 +70,11 @@ namespace GroupGMosaicMaker.ViewModel
             {
                 this.gridImage = value;
                 OnPropertyChanged();
+                if (this.isGridToggled)
+                {
+                    this.DisplayedImage = this.GridImage;
+                }
+                
             }
         }
 
@@ -81,11 +86,11 @@ namespace GroupGMosaicMaker.ViewModel
         /// </value>
         public WriteableBitmap DisplayedImage
         {
-            get => this.displayImage;
+            get => this.displayedImage;
 
             set
             {
-                this.displayImage = value;
+                this.displayedImage = value;
                 this.OnPropertyChanged();
             }
 
@@ -136,6 +141,7 @@ namespace GroupGMosaicMaker.ViewModel
             set
             {
                 this.gridSize = value;
+                this.createGridImageAsync(this.imageSource);    
                 this.OnPropertyChanged();
             }
         }
@@ -205,7 +211,7 @@ namespace GroupGMosaicMaker.ViewModel
         {
             this.blockMosaicMaker.GenerateBlockMosaic(this.GridSize);
 
-            this.DisplayedImage = await this.blockMosaicMaker.GenerateImageAsync();
+            this.MosaicImage = await this.blockMosaicMaker.GenerateImageAsync();
         }
 
         /// <summary>
@@ -215,11 +221,11 @@ namespace GroupGMosaicMaker.ViewModel
         /// <returns>The completed asynchronous operation.</returns>
         public async Task CreateImages(IRandomAccessStream imageSource)
         {
-            this.imageSource = imageSource;
+            this.imageSource = imageSource.CloneStream();
 
             await this.blockMosaicMaker.SetSourceAsync(imageSource);
             await this.createOriginalImageAsync(imageSource);
-            await this.createGridImageAsync(imageSource);
+            this.createGridImageAsync(imageSource);
 
             if (this.IsGridToggled)
             {
@@ -239,7 +245,7 @@ namespace GroupGMosaicMaker.ViewModel
             this.CanSaveImage = true;
         }
 
-        private async Task createGridImageAsync(IRandomAccessStream imageSource)
+        private async void createGridImageAsync(IRandomAccessStream imageSource)
         {
             await this.gridImageOperator.SetSourceAsync(imageSource);
             this.gridImageOperator.DrawGrid(this.GridSize);
@@ -253,7 +259,7 @@ namespace GroupGMosaicMaker.ViewModel
         /// <returns></returns>
         public async Task WriteDataAsync(StorageFile file)
         {
-            await ImageWriter.WriteImageAsync(this.gridImageOperator, file);
+            await ImageWriter.WriteImageAsync(this.gri12dImageOperator, file);
         }
 
 
