@@ -29,6 +29,7 @@ namespace GroupGMosaicMaker.ViewModel
         private WriteableBitmap displayImage;
 
         private int gridSize;
+        private bool isGridToggled;
 
         #endregion
 
@@ -48,7 +49,6 @@ namespace GroupGMosaicMaker.ViewModel
                 this.originalImage = value;
                 OnPropertyChanged();
                 this.GenerateMosaicCommand.OnCanExecuteChanged();
-                this.GenerateGridImage.OnCanExecuteChanged();
             }
         }
 
@@ -68,7 +68,13 @@ namespace GroupGMosaicMaker.ViewModel
             }
         }
 
-        public WriteableBitmap DisplayImage
+        /// <summary>
+        /// Gets or sets the display image.
+        /// </summary>
+        /// <value>
+        /// The display image.
+        /// </value>
+        public WriteableBitmap DisplayedImage
         {
             get => this.displayImage;
 
@@ -81,6 +87,12 @@ namespace GroupGMosaicMaker.ViewModel
         }
 
 
+        /// <summary>
+        /// Gets or sets the mosaic image.
+        /// </summary>
+        /// <value>
+        /// The mosaic image.
+        /// </value>
         public WriteableBitmap MosaicImage
         {
             get => this.mosaicImage;
@@ -107,8 +119,6 @@ namespace GroupGMosaicMaker.ViewModel
             }
         }
 
-
-
         /// <summary>
         /// Gets or sets the size of the grid for the mosaic.
         /// </summary>
@@ -134,20 +144,28 @@ namespace GroupGMosaicMaker.ViewModel
         public RelayCommand GenerateMosaicCommand { get; set; }
 
         /// <summary>
-        /// Gets or sets the generate grid image.
-        /// </summary>
-        /// <value>
-        /// The generate grid image.
-        /// </value>
-        public RelayCommand GenerateGridImage { get; set; }
-
-        /// <summary>
         /// Gets or sets the image source.
         /// </summary>
         /// <value>
         /// The image source.
         /// </value>
         public WriteableBitmap ImageSource { get; set; }
+
+        
+
+        public bool IsGridToggled
+        {
+            get => this.isGridToggled;
+            set
+            {
+                if (value != this.isGridToggled)
+                {
+                    this.isGridToggled = value;
+                }
+                
+            }
+        }
+
 
         #endregion
 
@@ -167,17 +185,6 @@ namespace GroupGMosaicMaker.ViewModel
         private void loadCommands()
         {
             this.GenerateMosaicCommand = new RelayCommand(this.generateMosaic, this.canGenerateMosaic);
-            this.GenerateGridImage = new RelayCommand(this.generateGrid, this.canGenerateGrid);
-        }
-
-        private bool canGenerateGrid(object obj)
-        {
-            return this.OriginalImage != null;
-        }
-
-        private async void generateGrid(object obj)
-        {
-            this.DisplayImage = this.gridImage;
         }
 
         private bool canGenerateMosaic(object obj)
@@ -195,25 +202,30 @@ namespace GroupGMosaicMaker.ViewModel
         /// </summary>
         /// <param name="imageSource">The source of the image data.</param>
         /// <returns>The completed asynchronous operation.</returns>
-        public async Task DisplayImages(IRandomAccessStream imageSource)
+        public async Task CreateImages(IRandomAccessStream imageSource)
         {
             
-            await this.displayOriginalImageAsync(imageSource);
-            await this.displayGridImageAsync(imageSource);
-            this.DisplayImage = OriginalImage;
-           
-
+            await this.createOriginalImageAsync(imageSource);
+            await this.createGridImageAsync(imageSource);
+            if (this.IsGridToggled)
+            {
+                this.DisplayedImage = this.gridImage;
+            }
+            else
+            {
+                this.DisplayedImage = this.originalImage;
+            }
+            
         }
 
-        private async Task displayOriginalImageAsync(IRandomAccessStream imageSource)
+        private async Task createOriginalImageAsync(IRandomAccessStream imageSource)
         {
             this.originalImageOperator = await ImageOperator.CreateAsync(imageSource);
             this.OriginalImage = await this.originalImageOperator.GenerateModifiedImageAsync();
-
             this.CanSaveImage = true;
         }
 
-        private async Task displayGridImageAsync(IRandomAccessStream imageSource)
+        private async Task createGridImageAsync(IRandomAccessStream imageSource)
         {
             this.gridImageOperator = await ImageGridMaker.CreateAsync(imageSource);
             this.gridImageOperator.DrawGrid(this.GridSize);
@@ -229,6 +241,7 @@ namespace GroupGMosaicMaker.ViewModel
         {
             await ImageWriter.WriteImageAsync(this.gridImageOperator, file);
         }
+
 
         #endregion
     }

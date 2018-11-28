@@ -25,12 +25,12 @@ namespace GroupGMosaicMaker.View
         /// <summary>
         ///     The application height
         /// </summary>
-        public const int ApplicationHeight = 450;
+        public const int ApplicationHeight = 700;
 
         /// <summary>
         ///     The application width
         /// </summary>
-        public const int ApplicationWidth = 900;
+        public const int ApplicationWidth = 1200;
 
         #endregion
 
@@ -57,7 +57,10 @@ namespace GroupGMosaicMaker.View
                 // TODO Consider moving this to DataTier to improve separation of concerns. It is small though, so not sure if it's even worth it.
                 using (var fileStream = await sourceImageFile.OpenAsync(FileAccessMode.Read))
                 {
-                    await ((MainPageViewModel) DataContext).DisplayImages(fileStream);
+                    
+                        await ((MainPageViewModel)DataContext).CreateImages(fileStream);
+                    
+                    
 
 
                 }
@@ -111,6 +114,25 @@ namespace GroupGMosaicMaker.View
             }
         }
 
+
         #endregion
+
+        private void gridSwitchToggled(object sender, RoutedEventArgs e)
+        {
+            var gridToggle = sender as ToggleSwitch;
+            if (gridToggle != null)
+            {
+                if (gridToggle.IsOn == true)
+                {
+                    ((MainPageViewModel) DataContext).DisplayedImage = ((MainPageViewModel) DataContext).GridImage;
+                    ((MainPageViewModel) DataContext).IsGridToggled = true;
+                }
+                else
+                {
+                    ((MainPageViewModel) DataContext).DisplayedImage = ((MainPageViewModel) DataContext).OriginalImage;
+                    ((MainPageViewModel) DataContext).IsGridToggled = false;
+                }
+            } 
+         } 
     }
 }
