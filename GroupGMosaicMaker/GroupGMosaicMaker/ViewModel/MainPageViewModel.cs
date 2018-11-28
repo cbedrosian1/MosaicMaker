@@ -136,6 +136,8 @@ namespace GroupGMosaicMaker.ViewModel
             set
             {
                 this.gridSize = value;
+                this.gridImageOperator.DrawGrid(this.gridSize);
+
                 this.OnPropertyChanged();
             }
         }

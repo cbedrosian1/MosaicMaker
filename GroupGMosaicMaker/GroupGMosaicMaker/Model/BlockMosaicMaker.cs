@@ -1,41 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices.ComTypes;
-using System.Threading.Tasks;
-using Windows.Storage.Streams;
+﻿using System.Collections.Generic;
 using Windows.UI;
 
 namespace GroupGMosaicMaker.Model
 {
     public class BlockMosaicMaker : ImageMaker
     {
-        // TODO FIXME This does not work with significantly large images. Something to do with the index of the SourcePixels.
-        // TODO This is likely caused by the way the offset is calculated.
+        #region Methods
 
+        // TODO Refactor this to decrease amount of iterations performed
+        
         public void GenerateBlockMosaic(int blockLength)
         {
             var blocks = this.findImageBlocks(blockLength);
 
             var counter = 0;
-            for (int i = 0; i < Decoder.PixelHeight; i += blockLength)
+            for (var i = 0; i < Decoder.PixelHeight; i += blockLength)
             {
-                for (int j = 0; j < Decoder.PixelWidth; j += blockLength)
+                for (var j = 0; j < Decoder.PixelWidth; j += blockLength)
                 {
-                    this.assignAverageColorToBlock(i, j, blockLength, blocks[counter].CalculateAverageColor());
+                    var currentBlock = blocks[counter];
+                    var color = currentBlock.CalculateAverageColor();
+
+                    this.assignAverageColorToBlock(i, j, blockLength, color);
                     counter++;
                 }
             }
         }
-
+        
         private IList<ImageBlock> findImageBlocks(int blockLength)
         {
             var blocks = new List<ImageBlock>();
 
-            for (int i = 0; i < Decoder.PixelHeight; i += blockLength)
+            for (var x = 0; x < Decoder.PixelHeight; x += blockLength)
             {
-                for (int j = 0; j < Decoder.PixelWidth; j += blockLength)
+                for (var y = 0; y < Decoder.PixelWidth; y += blockLength)
                 {
-                    blocks.Add(this.findSingleBlock(i, j, blockLength));
+                    blocks.Add(this.findSingleBlock(x, y, blockLength));
                 }
             }
 
@@ -46,11 +46,14 @@ namespace GroupGMosaicMaker.Model
         {
             var pixelColors = new List<Color>();
 
-            for (int x = startX; x < startX + blockLength; x++)
+            for (var y = startY; y < startY + blockLength; y++)
             {
-                for (int y = startY; y < startY + blockLength; y++)
+                for (var x = startX; x < startX + blockLength; x++)
                 {
-                    pixelColors.Add(GetPixelBgra8(x, y));
+                    if (this.CoordinatesAreValid(x, y))
+                    {
+                        pixelColors.Add(GetPixelBgra8(x, y));
+                    }
                 }
             }
 
@@ -59,13 +62,15 @@ namespace GroupGMosaicMaker.Model
 
         private void assignAverageColorToBlock(int startX, int startY, int blockLength, Color color)
         {
-            for (int x = startX; x < startX + blockLength; x++)
+            for (var y = startY; y < startY + blockLength && y < Decoder.PixelWidth; y++)
             {
-                for (int y = startY; y < startY + blockLength; y++)
+                for (var x = startX; x < startX + blockLength && x < Decoder.PixelHeight; x++)
                 {
-                    this.SetPixelBgra8(x, y, color);
+                    SetPixelBgra8(x, y, color);
                 }
             }
         }
+
+        #endregion
     }
 }

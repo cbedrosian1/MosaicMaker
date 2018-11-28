@@ -7,9 +7,9 @@ namespace GroupGMosaicMaker.Model
 {
     public class ImageBlock
     {
-        private readonly IList<Color> pixelColors;
+        private readonly IEnumerable<Color> pixelColors;
 
-        public ImageBlock(IList<Color> pixelColors)
+        public ImageBlock(IEnumerable<Color> pixelColors)
         {
             this.pixelColors = pixelColors;
         }

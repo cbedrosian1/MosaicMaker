@@ -53,24 +53,43 @@ namespace GroupGMosaicMaker.Model
 
         protected Color GetPixelBgra8(int x, int y)
         {
-            var offset = this.calculatePixelOffset(x, y);
-            var r = SourcePixels[offset + 2];
-            var g = SourcePixels[offset + 1];
-            var b = SourcePixels[offset + 0];
-            return Color.FromArgb(0, r, g, b);
+            var offset = this.CalculatePixelOffset(x, y);
+            if (this.offsetIsValid(offset))
+            {
+                var r = SourcePixels[offset + 2];
+                var g = SourcePixels[offset + 1];
+                var b = SourcePixels[offset + 0];
+                return Color.FromArgb(0, r, g, b);
+            }
+
+            return new Color();
         }
 
         protected void SetPixelBgra8(int x, int y, Color color)
         {
-            var offset = this.calculatePixelOffset(x, y);
-            SourcePixels[offset + 2] = color.R;
-            SourcePixels[offset + 1] = color.G;
-            SourcePixels[offset + 0] = color.B;
+            var offset = this.CalculatePixelOffset(x, y);
+            if (this.offsetIsValid(offset))
+            {
+                SourcePixels[offset + 2] = color.R;
+                SourcePixels[offset + 1] = color.G;
+                SourcePixels[offset + 0] = color.B;
+            }
         }
 
-        private int calculatePixelOffset(int x, int y)
+        protected int CalculatePixelOffset(int x, int y)
         {
             return (x * (int) Decoder.PixelWidth + y) * 4;
+        }
+
+        private bool offsetIsValid(int offset)
+        {
+            return offset + 2 < SourcePixels.Length;
+        }
+
+        protected bool CoordinatesAreValid(int x, int y)
+        {
+            var offset = this.CalculatePixelOffset(x, y);
+            return this.offsetIsValid(offset);
         }
 
         #endregion
