@@ -259,7 +259,7 @@ namespace GroupGMosaicMaker.ViewModel
         /// <returns></returns>
         public async Task WriteDataAsync(StorageFile file)
         {
-            await ImageWriter.WriteImageAsync(this.gri12dImageOperator, file);
+            await ImageWriter.WriteImageAsync(this.blockMosaicMaker, file);
         }
 
 
