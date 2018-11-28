@@ -209,6 +209,7 @@ namespace GroupGMosaicMaker.ViewModel
 
         private async void generateMosaic(object obj)
         {
+            await this.blockMosaicMaker.SetSourceAsync(this.imageSource);
             this.blockMosaicMaker.GenerateBlockMosaic(this.GridSize);
 
             this.MosaicImage = await this.blockMosaicMaker.GenerateImageAsync();
