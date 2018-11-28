@@ -6,6 +6,7 @@ using Windows.UI.Xaml.Media.Imaging;
 using GroupGMosaicMaker.DataTier;
 using GroupGMosaicMaker.Model;
 using GroupGMosaicMaker.Utilities;
+using System;
 
 namespace GroupGMosaicMaker.ViewModel
 {
@@ -24,8 +25,11 @@ namespace GroupGMosaicMaker.ViewModel
 
         private WriteableBitmap gridImage;
         private ImageGridMaker gridImageOperator;
+        private WriteableBitmap mosaicImage;
+        private WriteableBitmap displayImage;
 
         private int gridSize;
+        private bool isGridToggled;
 
         #endregion
 
@@ -44,6 +48,7 @@ namespace GroupGMosaicMaker.ViewModel
             {
                 this.originalImage = value;
                 OnPropertyChanged();
+                this.GenerateMosaicCommand.OnCanExecuteChanged();
             }
         }
 
@@ -64,6 +69,41 @@ namespace GroupGMosaicMaker.ViewModel
         }
 
         /// <summary>
+        /// Gets or sets the display image.
+        /// </summary>
+        /// <value>
+        /// The display image.
+        /// </value>
+        public WriteableBitmap DisplayedImage
+        {
+            get => this.displayImage;
+
+            set
+            {
+                this.displayImage = value;
+                this.OnPropertyChanged();
+            }
+
+        }
+
+
+        /// <summary>
+        /// Gets or sets the mosaic image.
+        /// </summary>
+        /// <value>
+        /// The mosaic image.
+        /// </value>
+        public WriteableBitmap MosaicImage
+        {
+            get => this.mosaicImage;
+            set
+            {
+                this.mosaicImage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating whether this instance can save image.
         /// </summary>
         /// <value>
@@ -78,8 +118,6 @@ namespace GroupGMosaicMaker.ViewModel
                 OnPropertyChanged();
             }
         }
-
-
 
         /// <summary>
         /// Gets or sets the size of the grid for the mosaic.
@@ -97,23 +135,66 @@ namespace GroupGMosaicMaker.ViewModel
             }
         }
 
+        /// <summary>
+        /// Gets or sets the generate mosaic command.
+        /// </summary>
+        /// <value>
+        /// The generate mosaic command.
+        /// </value>
+        public RelayCommand GenerateMosaicCommand { get; set; }
+
+        /// <summary>
+        /// Gets or sets the image source.
+        /// </summary>
+        /// <value>
+        /// The image source.
+        /// </value>
+        public WriteableBitmap ImageSource { get; set; }
+
+        
+
+        public bool IsGridToggled
+        {
+            get => this.isGridToggled;
+            set
+            {
+                if (value != this.isGridToggled)
+                {
+                    this.isGridToggled = value;
+                }
+                
+            }
+        }
+
+
         #endregion
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MainPageViewModel"/> class.
+        /// </summary>
         public MainPageViewModel()
         {
-            this.originalImageOperator = new ImageMaker();
-            this.gridImageOperator = new ImageGridMaker();
-
             this.gridSize = 10;
             this.canSaveImage = false;
+
             this.loadCommands();
-            
         }
 
         #region Methods
 
         private void loadCommands()
         {
+            this.GenerateMosaicCommand = new RelayCommand(this.generateMosaic, this.canGenerateMosaic);
+        }
+
+        private bool canGenerateMosaic(object obj)
+        {
+            return this.OriginalImage != null;
+        }
+
+        private void generateMosaic(object obj)
+        {
+            throw new NotImplementedException(); //TODO
         }
 
         /// <summary>
@@ -121,32 +202,46 @@ namespace GroupGMosaicMaker.ViewModel
         /// </summary>
         /// <param name="imageSource">The source of the image data.</param>
         /// <returns>The completed asynchronous operation.</returns>
-        public async Task DisplayImages(IRandomAccessStream imageSource)
+        public async Task CreateImages(IRandomAccessStream imageSource)
         {
-            await this.displayOriginalImageAsync(imageSource);
-            await this.displayGridImageAsync(imageSource);
+            
+            await this.createOriginalImageAsync(imageSource);
+            await this.createGridImageAsync(imageSource);
+            if (this.IsGridToggled)
+            {
+                this.DisplayedImage = this.gridImage;
+            }
+            else
+            {
+                this.DisplayedImage = this.originalImage;
+            }
+            
         }
 
-        private async Task displayOriginalImageAsync(IRandomAccessStream imageSource)
+        private async Task createOriginalImageAsync(IRandomAccessStream imageSource)
         {
-            await this.originalImageOperator.SetSourceAsync(imageSource);
-            this.OriginalImage = await this.originalImageOperator.GenerateImageAsync();
-
+            this.originalImageOperator = await ImageOperator.CreateAsync(imageSource);
+            this.OriginalImage = await this.originalImageOperator.GenerateModifiedImageAsync();
             this.CanSaveImage = true;
         }
 
-        private async Task displayGridImageAsync(IRandomAccessStream imageSource)
+        private async Task createGridImageAsync(IRandomAccessStream imageSource)
         {
-            await this.gridImageOperator.SetSourceAsync(imageSource);
-
+            this.gridImageOperator = await ImageGridMaker.CreateAsync(imageSource);
             this.gridImageOperator.DrawGrid(this.GridSize);
-            this.GridImage = await this.gridImageOperator.GenerateImageAsync();
+            this.GridImage = await this.gridImageOperator.GenerateModifiedImageAsync();
         }
 
+        /// <summary>
+        /// Writes the data asynchronous.
+        /// </summary>
+        /// <param name="file">The file.</param>
+        /// <returns></returns>
         public async Task WriteDataAsync(StorageFile file)
         {
             await ImageWriter.WriteImageAsync(this.gridImageOperator, file);
         }
+
 
         #endregion
     }

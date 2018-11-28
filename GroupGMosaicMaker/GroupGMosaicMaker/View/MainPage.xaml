@@ -25,12 +25,16 @@
             <AppBarButton Icon="OpenFile" Label="Load File" Click="loadFile_Click" />
             <AppBarButton Icon="Save" IsEnabled="{Binding CanSaveImage}" Label="Save File" Click="saveFile_Click" />
         </CommandBar>
-        <Image x:Name="sourceImage" Source="{Binding OriginalImage}" HorizontalAlignment="Left" Height="200"
-               Margin="170,150,0,0"
-               VerticalAlignment="Top" Width="200" />
-        <Image x:Name="gridImage" Source="{Binding GridImage}" HorizontalAlignment="Left" Height="200"
-               Margin="500,150,0,0"
-               VerticalAlignment="Top" Width="200" />
-        <TextBox x:Name="gridSize" extensions:TextBoxRegex.Regex="" extensions:TextBoxRegex.ValidationMode="Dynamic"  Text="{Binding Path=GridSize, Converter={StaticResource StringToIntConverter}, Mode=TwoWay}"  HorizontalAlignment="Left" Margin="50,175,0,0" VerticalAlignment="Top"/>
+        <Image x:Name="sourceImage" Source="{Binding DisplayedImage}" Stretch="Fill" HorizontalAlignment="Left" Height="450"
+               Margin="240,80,0,0"
+               VerticalAlignment="Top" Width="450" />
+        <Image x:Name="mosaicImage" Source="{Binding MosaicImage}" HorizontalAlignment="Left" Height="450"
+               Margin="840,80,0,0"
+               VerticalAlignment="Top" Width="450" />
+        <TextBox x:Name="gridSize" extensions:TextBoxRegex.Regex="^([5-9]|[1-4][0-9]|50)$" extensions:TextBoxRegex.ValidationMode="Forced"  Text="{Binding Path=GridSize, Converter={StaticResource StringToIntConverter}, Mode=TwoWay}"  HorizontalAlignment="Left" Margin="80,291,0,0" VerticalAlignment="Top"/>
+        <Button Content="Generate Mosaic" Command="{Binding GenerateMosaicCommand}" HorizontalAlignment="Left" Margin="400,550,0,0" VerticalAlignment="Top"/>
+        <ToggleSwitch x:Name="toggleSwitch" Toggled="gridSwitchToggled"  Header="Image Grid" OffContent="Hide" OnContent="Show" HorizontalAlignment="Left" Margin="80,345,0,0" VerticalAlignment="Top"/>
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="10,297,0,0" Text="Grid Size:" TextWrapping="Wrap" VerticalAlignment="Top"/>
+
     </Grid>
 </Page>
