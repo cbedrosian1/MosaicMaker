@@ -9,6 +9,9 @@ namespace GroupGMosaicMaker.Model
 {
     public class BlockMosaicMaker : ImageMaker
     {
+        // TODO FIXME This does not work with significantly large images. Something to do with the index of the SourcePixels.
+        // TODO This is likely caused by the way the offset is calculated.
+
         public void GenerateBlockMosaic(int blockLength)
         {
             var blocks = this.findImageBlocks(blockLength);

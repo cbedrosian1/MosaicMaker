@@ -31,13 +31,5 @@ namespace GroupGMosaicMaker.Model
                 }
             }
         }
-
-        public new static async Task<ImageGridMaker> CreateAsync(IRandomAccessStream imageSource)
-        {
-            var imageMaker = new ImageGridMaker();
-            await imageMaker.SetSourceAsync(imageSource);
-
-            return imageMaker;
-        }
     }
 }

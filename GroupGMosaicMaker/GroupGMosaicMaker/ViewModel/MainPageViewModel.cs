@@ -20,12 +20,17 @@ namespace GroupGMosaicMaker.ViewModel
 
         private bool canSaveImage;
 
+        private IRandomAccessStream imageSource;
+
         private WriteableBitmap originalImage;
         private ImageOperator originalImageOperator;
 
         private WriteableBitmap gridImage;
         private ImageGridMaker gridImageOperator;
+
         private WriteableBitmap mosaicImage;
+        private BlockMosaicMaker blockMosaicMaker;
+
         private WriteableBitmap displayImage;
 
         private int gridSize;
@@ -174,6 +179,10 @@ namespace GroupGMosaicMaker.ViewModel
         /// </summary>
         public MainPageViewModel()
         {
+            this.originalImageOperator = new ImageMaker();
+            this.gridImageOperator = new ImageGridMaker();
+            this.blockMosaicMaker = new BlockMosaicMaker();
+
             this.gridSize = 10;
             this.canSaveImage = false;
 
@@ -192,9 +201,11 @@ namespace GroupGMosaicMaker.ViewModel
             return this.OriginalImage != null;
         }
 
-        private void generateMosaic(object obj)
+        private async void generateMosaic(object obj)
         {
-            throw new NotImplementedException(); //TODO
+            this.blockMosaicMaker.GenerateBlockMosaic(this.GridSize);
+
+            this.DisplayedImage = await this.blockMosaicMaker.GenerateImageAsync();
         }
 
         /// <summary>
@@ -204,9 +215,12 @@ namespace GroupGMosaicMaker.ViewModel
         /// <returns>The completed asynchronous operation.</returns>
         public async Task CreateImages(IRandomAccessStream imageSource)
         {
-            
+            this.imageSource = imageSource;
+
+            await this.blockMosaicMaker.SetSourceAsync(imageSource);
             await this.createOriginalImageAsync(imageSource);
             await this.createGridImageAsync(imageSource);
+
             if (this.IsGridToggled)
             {
                 this.DisplayedImage = this.gridImage;
@@ -220,16 +234,16 @@ namespace GroupGMosaicMaker.ViewModel
 
         private async Task createOriginalImageAsync(IRandomAccessStream imageSource)
         {
-            this.originalImageOperator = await ImageOperator.CreateAsync(imageSource);
-            this.OriginalImage = await this.originalImageOperator.GenerateModifiedImageAsync();
+            await this.originalImageOperator.SetSourceAsync(imageSource);
+            this.OriginalImage = await this.originalImageOperator.GenerateImageAsync();
             this.CanSaveImage = true;
         }
 
         private async Task createGridImageAsync(IRandomAccessStream imageSource)
         {
-            this.gridImageOperator = await ImageGridMaker.CreateAsync(imageSource);
+            await this.gridImageOperator.SetSourceAsync(imageSource);
             this.gridImageOperator.DrawGrid(this.GridSize);
-            this.GridImage = await this.gridImageOperator.GenerateModifiedImageAsync();
+            this.GridImage = await this.gridImageOperator.GenerateImageAsync();
         }
 
         /// <summary>
