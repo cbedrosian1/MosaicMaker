@@ -25,7 +25,7 @@ namespace GroupGMosaicMaker.DataTier
             var stream = await imageFile.OpenAsync(FileAccessMode.ReadWrite);
             var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, stream);
 
-            var image = await imageOperator.GenerateModifiedImageAsync();
+            var image = await imageOperator.GenerateImageAsync();
 
             var pixelStream = image.PixelBuffer.AsStream();
             var pixels = new byte[pixelStream.Length];

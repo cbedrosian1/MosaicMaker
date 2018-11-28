@@ -101,10 +101,13 @@ namespace GroupGMosaicMaker.ViewModel
 
         public MainPageViewModel()
         {
+            this.originalImageOperator = new ImageMaker();
+            this.gridImageOperator = new ImageGridMaker();
+
             this.gridSize = 10;
             this.canSaveImage = false;
-
             this.loadCommands();
+            
         }
 
         #region Methods
@@ -126,17 +129,18 @@ namespace GroupGMosaicMaker.ViewModel
 
         private async Task displayOriginalImageAsync(IRandomAccessStream imageSource)
         {
-            this.originalImageOperator = await ImageOperator.CreateAsync(imageSource);
-            this.OriginalImage = await this.originalImageOperator.GenerateModifiedImageAsync();
+            await this.originalImageOperator.SetSourceAsync(imageSource);
+            this.OriginalImage = await this.originalImageOperator.GenerateImageAsync();
 
             this.CanSaveImage = true;
         }
 
         private async Task displayGridImageAsync(IRandomAccessStream imageSource)
         {
-            this.gridImageOperator = await ImageGridMaker.CreateAsync(imageSource);
+            await this.gridImageOperator.SetSourceAsync(imageSource);
+
             this.gridImageOperator.DrawGrid(this.GridSize);
-            this.GridImage = await this.gridImageOperator.GenerateModifiedImageAsync();
+            this.GridImage = await this.gridImageOperator.GenerateImageAsync();
         }
 
         public async Task WriteDataAsync(StorageFile file)

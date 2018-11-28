@@ -97,10 +97,12 @@
     </Compile>
     <Compile Include="Converter\StringToIntConverter.cs" />
     <Compile Include="DataTier\ImageWriter.cs" />
+    <Compile Include="Model\ImageBlock.cs" />
+    <Compile Include="Model\BlockMosaicMaker.cs" />
+    <Compile Include="Model\ImageMaker.cs" />
     <Compile Include="View\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Model\BlockMosaicMaker.cs" />
     <Compile Include="Model\ImageGridMaker.cs" />
     <Compile Include="Model\ImageOperator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

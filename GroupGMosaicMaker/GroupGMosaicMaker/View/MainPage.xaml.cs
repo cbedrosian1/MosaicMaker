@@ -20,6 +20,18 @@ namespace GroupGMosaicMaker.View
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        #region Constructors
+
+        public MainPage()
+        {
+            InitializeComponent();
+            ApplicationView.PreferredLaunchViewSize = new Size {Width = ApplicationWidth, Height = ApplicationHeight};
+            ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
+            ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(ApplicationWidth, ApplicationHeight));
+        }
+
+        #endregion
+
         #region Data members
 
         /// <summary>
@@ -34,37 +46,23 @@ namespace GroupGMosaicMaker.View
 
         #endregion
 
-        #region Constructors
-
-        public MainPage()
-        {
-            this.InitializeComponent();
-            ApplicationView.PreferredLaunchViewSize = new Size {Width = ApplicationWidth, Height = ApplicationHeight};
-            ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
-            ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(ApplicationWidth, ApplicationHeight));
-        }
-
-        #endregion
-
         #region Methods
 
         private async void loadFile_Click(object sender, RoutedEventArgs e)
         {
-            var sourceImageFile = await this.selectSourceImageFile();
+            var sourceImageFile = await selectSourceImageFile();
 
             if (sourceImageFile != null)
-            {
-                // TODO Consider moving this to DataTier to improve separation of concerns. It is small though, so not sure if it's even worth it.
                 using (var fileStream = await sourceImageFile.OpenAsync(FileAccessMode.Read))
                 {
                     await ((MainPageViewModel) DataContext).DisplayImages(fileStream);
                 }
-            }
         }
 
         private async Task<StorageFile> selectSourceImageFile()
         {
-            var openPicker = new FileOpenPicker {
+            var openPicker = new FileOpenPicker
+            {
                 ViewMode = PickerViewMode.Thumbnail,
                 SuggestedStartLocation = PickerLocationId.PicturesLibrary
             };
@@ -79,12 +77,15 @@ namespace GroupGMosaicMaker.View
 
         private async Task<StorageFile> selectSaveImageFile()
         {
-            var fileSavePicker = new FileSavePicker {
+            var fileSavePicker = new FileSavePicker
+            {
                 SuggestedStartLocation = PickerLocationId.PicturesLibrary,
                 SuggestedFileName = "image"
             };
 
             fileSavePicker.FileTypeChoices.Add("PNG files", new List<string> {".png"});
+            fileSavePicker.FileTypeChoices.Add("BMP files", new List<string> {".bmp"});
+            fileSavePicker.FileTypeChoices.Add("JPG files", new List<string> {".jpg"});
 
             var file = await fileSavePicker.PickSaveFileAsync();
 
@@ -101,12 +102,9 @@ namespace GroupGMosaicMaker.View
 
         private async void saveFile_Click(object sender, RoutedEventArgs e)
         {
-            var saveFile = await this.selectSaveImageFile();
+            var saveFile = await selectSaveImageFile();
 
-            if (saveFile != null)
-            { 
-                await ((MainPageViewModel) DataContext).WriteDataAsync(saveFile);
-            }
+            if (saveFile != null) await ((MainPageViewModel) DataContext).WriteDataAsync(saveFile);
         }
 
         #endregion

@@ -1,21 +1,68 @@
-﻿using Windows.Storage.Streams;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
+using System.Threading.Tasks;
+using Windows.Storage.Streams;
+using Windows.UI;
 
 namespace GroupGMosaicMaker.Model
 {
-    /// <summary>
-    ///     Responsible for calculating and creating block mosaics for the given bitmap image.
-    /// </summary>
-    /// <seealso cref="GroupGMosaicMaker.Model.ImageOperator" />
-    public class BlockMosaicMaker : ImageOperator
+    public class BlockMosaicMaker : ImageMaker
     {
-        #region Constructors
-
-        protected BlockMosaicMaker(IRandomAccessStream imageSource)
+        public void GenerateBlockMosaic(int blockLength)
         {
+            var blocks = this.findImageBlocks(blockLength);
+
+            var counter = 0;
+            for (int i = 0; i < Decoder.PixelHeight; i += blockLength)
+            {
+                for (int j = 0; j < Decoder.PixelWidth; j += blockLength)
+                {
+                    this.assignAverageColorToBlock(i, j, blockLength, blocks[counter].CalculateAverageColor());
+                    counter++;
+                }
+            }
         }
 
-        #endregion
+        private IList<ImageBlock> findImageBlocks(int blockLength)
+        {
+            var blocks = new List<ImageBlock>();
 
-        // TODO Add functionality to generate a block mosaic. We can already load an image and return the modified version from the base class.
+            for (int i = 0; i < Decoder.PixelHeight; i += blockLength)
+            {
+                for (int j = 0; j < Decoder.PixelWidth; j += blockLength)
+                {
+                    blocks.Add(this.findSingleBlock(i, j, blockLength));
+                }
+            }
+
+            return blocks;
+        }
+
+        private ImageBlock findSingleBlock(int startX, int startY, int blockLength)
+        {
+            var pixelColors = new List<Color>();
+
+            for (int x = startX; x < startX + blockLength; x++)
+            {
+                for (int y = startY; y < startY + blockLength; y++)
+                {
+                    pixelColors.Add(GetPixelBgra8(x, y));
+                }
+            }
+
+            return new ImageBlock(pixelColors);
+        }
+
+        private void assignAverageColorToBlock(int startX, int startY, int blockLength, Color color)
+        {
+            for (int x = startX; x < startX + blockLength; x++)
+            {
+                for (int y = startY; y < startY + blockLength; y++)
+                {
+                    this.SetPixelBgra8(x, y, color);
+                }
+            }
+        }
     }
 }
