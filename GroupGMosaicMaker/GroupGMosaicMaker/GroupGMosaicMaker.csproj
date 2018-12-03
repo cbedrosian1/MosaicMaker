@@ -103,6 +103,8 @@
     <Compile Include="Model\PaletteImageGenerator.cs" />
     <Compile Include="Model\PictureMosaicMaker.cs" />
     <Compile Include="Model\PixelBlock.cs" />
+    <Compile Include="Model\BlockMosaicMaker.cs" />
+    <Compile Include="Model\TriangleGridGenerator.cs" />
     <Compile Include="View\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>

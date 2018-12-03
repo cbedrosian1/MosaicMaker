@@ -12,7 +12,7 @@ namespace GroupGMosaicMaker.Model
     /// <seealso cref="ImageGenerator" />
     public class ImageGridGenerator : ImageGenerator
     {
-        public void DrawGrid(int length)
+        public virtual void DrawGrid(int length)
         {
             for (var i = 0; i < this.Decoder.PixelHeight; i += length)
             {
