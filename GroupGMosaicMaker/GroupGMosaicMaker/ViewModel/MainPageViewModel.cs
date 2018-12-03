@@ -23,7 +23,7 @@ namespace GroupGMosaicMaker.ViewModel
         private IRandomAccessStream imageSource;
 
         private WriteableBitmap originalImage;
-        private readonly ImageOperator originalImageOperator;
+        private readonly ImageGenerator originalImageGenerator;
 
         private WriteableBitmap gridImage;
         private readonly ImageGridMaker gridImageOperator;
@@ -185,7 +185,7 @@ namespace GroupGMosaicMaker.ViewModel
         /// </summary>
         public MainPageViewModel()
         {
-            this.originalImageOperator = new ImageMaker();
+            this.originalImageGenerator = new ImageMaker();
             this.gridImageOperator = new ImageGridMaker();
             this.blockMosaicMaker = new BlockMosaicMaker();
 
@@ -241,8 +241,8 @@ namespace GroupGMosaicMaker.ViewModel
 
         private async Task createOriginalImageAsync(IRandomAccessStream imageSource)
         {
-            await this.originalImageOperator.SetSourceAsync(imageSource);
-            this.OriginalImage = await this.originalImageOperator.GenerateImageAsync();
+            await this.originalImageGenerator.SetSourceAsync(imageSource);
+            this.OriginalImage = await this.originalImageGenerator.GenerateImageAsync();
             this.CanSaveImage = true;
         }
 

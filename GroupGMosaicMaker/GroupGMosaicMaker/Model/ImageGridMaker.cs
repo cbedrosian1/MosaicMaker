@@ -9,7 +9,7 @@ namespace GroupGMosaicMaker.Model
     /// <summary>
     ///     Responsible for drawing square grids of varying sizes onto the given bitmap image.
     /// </summary>
-    /// <seealso cref="GroupGMosaicMaker.Model.ImageOperator" />
+    /// <seealso cref="ImageGenerator" />
     public class ImageGridMaker : ImageMaker
     {
         // TODO Can we draw the entire grid in one go instead of doing two nested for loops?

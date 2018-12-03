@@ -7,10 +7,10 @@ using Windows.UI;
 namespace GroupGMosaicMaker.Model
 {
     /// <summary>
-    ///     Concrete <see cref="ImageOperator" /> that allows for creating new objects of it's type.
+    ///     Concrete <see cref="ImageGenerator" /> that allows for creating new objects of it's type.
     /// </summary>
-    /// <seealso cref="GroupGMosaicMaker.Model.ImageOperator" />
-    public class ImageMaker : ImageOperator
+    /// <seealso cref="ImageGenerator" />
+    public class ImageMaker : ImageGenerator
     {
         #region Methods
 

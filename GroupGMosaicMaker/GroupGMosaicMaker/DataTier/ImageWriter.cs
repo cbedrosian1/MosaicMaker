@@ -17,15 +17,15 @@ namespace GroupGMosaicMaker.DataTier
         /// <summary>
         ///     Writes the image from the given operator to the given file, asynchronously.
         /// </summary>
-        /// <param name="imageOperator">The image operator (where the image comes from).</param>
+        /// <param name="imageGenerator">The image operator (where the image comes from).</param>
         /// <param name="imageFile">The image file (where the image will be saved).</param>
         /// <returns>The completed asynchronous operation.</returns>
-        public static async Task WriteImageAsync(ImageOperator imageOperator, StorageFile imageFile)
+        public static async Task WriteImageAsync(ImageGenerator imageGenerator, StorageFile imageFile)
         {
             var stream = await imageFile.OpenAsync(FileAccessMode.ReadWrite);
             var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, stream);
 
-            var image = await imageOperator.GenerateImageAsync();
+            var image = await imageGenerator.GenerateImageAsync();
 
             var pixelStream = image.PixelBuffer.AsStream();
             var pixels = new byte[pixelStream.Length];
@@ -33,7 +33,7 @@ namespace GroupGMosaicMaker.DataTier
 
             encoder.SetPixelData(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Ignore,
                 (uint) image.PixelWidth,
-                (uint) image.PixelHeight, imageOperator.Decoder.DpiX, imageOperator.Decoder.DpiY, pixels);
+                (uint) image.PixelHeight, imageGenerator.Decoder.DpiX, imageGenerator.Decoder.DpiY, pixels);
             await encoder.FlushAsync();
 
             stream.Dispose();

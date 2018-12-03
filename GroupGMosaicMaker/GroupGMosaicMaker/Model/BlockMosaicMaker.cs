@@ -27,9 +27,9 @@ namespace GroupGMosaicMaker.Model
             }
         }
         
-        private IList<ImageBlock> findImageBlocks(int blockLength)
+        private IList<PixelBlock> findImageBlocks(int blockLength)
         {
-            var blocks = new List<ImageBlock>();
+            var blocks = new List<PixelBlock>();
 
             for (var x = 0; x < Decoder.PixelHeight; x += blockLength)
             {
@@ -42,7 +42,7 @@ namespace GroupGMosaicMaker.Model
             return blocks;
         }
 
-        private ImageBlock findSingleBlock(int startX, int startY, int blockLength)
+        private PixelBlock findSingleBlock(int startX, int startY, int blockLength)
         {
             var pixelColors = new List<Color>();
 
@@ -57,7 +57,7 @@ namespace GroupGMosaicMaker.Model
                 }
             }
 
-            return new ImageBlock(pixelColors);
+            return new PixelBlock(pixelColors);
         }
 
         private void assignAverageColorToBlock(int startX, int startY, int blockLength, Color color)

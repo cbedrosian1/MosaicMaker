@@ -5,11 +5,11 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace GroupGMosaicMaker.Model
 {
-    public class ImageBlock
+    public class PixelBlock
     {
         private readonly IEnumerable<Color> pixelColors;
 
-        public ImageBlock(IEnumerable<Color> pixelColors)
+        public PixelBlock(IEnumerable<Color> pixelColors)
         {
             this.pixelColors = pixelColors;
         }

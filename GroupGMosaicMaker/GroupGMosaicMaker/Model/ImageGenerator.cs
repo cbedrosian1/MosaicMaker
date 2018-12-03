@@ -9,7 +9,7 @@ namespace GroupGMosaicMaker.Model
     /// <summary>
     ///     Base class that allows for generating image data.
     /// </summary>
-    public abstract class ImageOperator
+    public abstract class ImageGenerator
     {
         #region Data members
 
