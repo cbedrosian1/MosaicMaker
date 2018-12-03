@@ -141,9 +141,10 @@ namespace GroupGMosaicMaker.ViewModel
             set
             {
                 this.gridSize = value;
-                
-                this.createGridImageAsync(this.imageSource);    
-
+                if (this.imageSource != null)
+                {
+                    this.createGridImageAsync(this.imageSource);
+                }
                 this.OnPropertyChanged();
             }
         }
@@ -236,7 +237,7 @@ namespace GroupGMosaicMaker.ViewModel
             await this.createOriginalImageAsync(imageSource);
             this.createGridImageAsync(imageSource);
 
-            displayImageOnCreation();
+            this.displayImageOnCreation();
             
         }
 

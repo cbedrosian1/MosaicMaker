@@ -31,10 +31,11 @@
         <Image x:Name="mosaicImage" Source="{Binding MosaicImage}"  Stretch="Fill" HorizontalAlignment="Left" Height="450"
                Margin="700,80,0,0"
                VerticalAlignment="Top" Width="450" />
-        <TextBox x:Name="gridSize" extensions:TextBoxRegex.Regex="^([5-9]|[1-4][0-9]|50)$" extensions:TextBoxRegex.ValidationMode="Forced"  Text="{Binding Path=GridSize, Converter={StaticResource StringToIntConverter}, Mode=TwoWay}"  HorizontalAlignment="Left" Margin="80,291,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="gridSize" extensions:TextBoxRegex.Regex="^([5-9]|[1-4][0-9]|50)$" extensions:TextBoxRegex.ValidationMode="Forced"  Text="{Binding Path=GridSize, Converter={StaticResource StringToIntConverter}, Mode=TwoWay}"  HorizontalAlignment="Left" Margin="90,291,0,0" VerticalAlignment="Top"/>
         <Button Content="Generate Mosaic" Command="{Binding GenerateMosaicCommand}" HorizontalAlignment="Left" Margin="359,550,0,0" VerticalAlignment="Top"/>
-        <ToggleSwitch x:Name="toggleSwitch" Toggled="gridSwitchToggled"  Header="Image Grid" OffContent="Hide" OnContent="Show" HorizontalAlignment="Left" Margin="80,345,0,0" VerticalAlignment="Top"/>
-        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="10,297,0,0" Text="Grid Size:" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <ToggleSwitch x:Name="toggleSwitch" Toggled="gridSwitchToggled"  OffContent="Hidden" OnContent="Visible" HorizontalAlignment="Left" Margin="90,345,0,0" VerticalAlignment="Top"/>
+        <TextBlock x:Name="gridSizeText" HorizontalAlignment="Left" Margin="25,295,0,0" Text="Grid Size:" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <TextBlock x:Name="showGridText" HorizontalAlignment="Left" Margin="5,355,0,0" Text="Display Grid: " TextWrapping="Wrap" VerticalAlignment="Top"/>
 
     </Grid>
 </Page>
