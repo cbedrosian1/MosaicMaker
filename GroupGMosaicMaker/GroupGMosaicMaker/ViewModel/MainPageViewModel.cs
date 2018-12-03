@@ -53,7 +53,8 @@ namespace GroupGMosaicMaker.ViewModel
             {
                 this.originalImage = value;
                 OnPropertyChanged();
-                this.GenerateMosaicCommand.OnCanExecuteChanged();
+                this.GenerateBlockMosaicCommand.OnCanExecuteChanged();
+                this.GeneratePictureMosaicCommand.OnCanExecuteChanged(); //TODO will probably need to add this to the collection property
             }
         }
 
@@ -150,12 +151,20 @@ namespace GroupGMosaicMaker.ViewModel
         }
 
         /// <summary>
-        /// Gets or sets the generate mosaic command.
+        /// Gets or sets the generate block mosaic command.
         /// </summary>
         /// <value>
-        /// The generate mosaic command.
+        /// The generate block mosaic command.
         /// </value>
-        public RelayCommand GenerateMosaicCommand { get; set; }
+        public RelayCommand GenerateBlockMosaicCommand { get; set; }
+
+        /// <summary>
+        /// Gets or sets the generate picture mosaic command.
+        /// </summary>
+        /// <value>
+        /// The generate picture mosaic command.
+        /// </value>
+        public RelayCommand GeneratePictureMosaicCommand { get; set; }
 
         /// <summary>
         /// Gets or sets the image source.
@@ -176,14 +185,7 @@ namespace GroupGMosaicMaker.ViewModel
         public bool IsGridToggled
         {
             get => this.isGridToggled;
-            set
-            {
-                if (value != this.isGridToggled)
-                {
-                    this.isGridToggled = value;
-                }
-                
-            }
+            set => this.isGridToggled = value;
         }
 
 
@@ -208,16 +210,24 @@ namespace GroupGMosaicMaker.ViewModel
 
         private void loadCommands()
         {
-            this.GenerateMosaicCommand = new RelayCommand(this.generateMosaic, this.canGenerateMosaic);
+            this.GenerateBlockMosaicCommand = new RelayCommand(this.generateMosaic, this.canGenerateBlockMosaic);
+            this.GeneratePictureMosaicCommand = new RelayCommand(this.generateMosaic, this.canGeneratePictureMosaic);
         }
 
-        private bool canGenerateMosaic(object obj)
+        private bool canGenerateBlockMosaic(object obj)
         {
             return this.OriginalImage != null;
         }
 
+        private bool canGeneratePictureMosaic(object obj)
+        {
+            return this.OriginalImage != null;
+            //TODO When pallete != null
+        }
+
         private async void generateMosaic(object obj)
         {
+            //TODO might have to create separate command for picture mosaic
             await this.blockMosaicMaker.SetSourceAsync(this.imageSource);
             this.blockMosaicMaker.BlockLength = this.GridSize;
             this.blockMosaicMaker.GenerateMosaic();
