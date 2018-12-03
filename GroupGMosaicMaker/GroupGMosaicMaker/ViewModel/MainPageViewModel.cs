@@ -141,7 +141,9 @@ namespace GroupGMosaicMaker.ViewModel
             set
             {
                 this.gridSize = value;
+                
                 this.createGridImageAsync(this.imageSource);    
+
                 this.OnPropertyChanged();
             }
         }
@@ -216,7 +218,8 @@ namespace GroupGMosaicMaker.ViewModel
         private async void generateMosaic(object obj)
         {
             await this.blockMosaicMaker.SetSourceAsync(this.imageSource);
-            this.blockMosaicMaker.GenerateBlockMosaic(this.GridSize);
+            this.blockMosaicMaker.BlockLength = this.GridSize;
+            this.blockMosaicMaker.GenerateMosaic();
 
             this.MosaicImage = await this.blockMosaicMaker.GenerateImageAsync();
         }
@@ -229,8 +232,7 @@ namespace GroupGMosaicMaker.ViewModel
         public async Task CreateImages(IRandomAccessStream imageSource)
         {
             this.imageSource = imageSource.CloneStream();
-
-            await this.blockMosaicMaker.SetSourceAsync(imageSource);
+            
             await this.createOriginalImageAsync(imageSource);
             this.createGridImageAsync(imageSource);
 

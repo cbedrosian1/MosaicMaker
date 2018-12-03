@@ -97,6 +97,7 @@
     </Compile>
     <Compile Include="Converter\StringToIntConverter.cs" />
     <Compile Include="DataTier\ImageWriter.cs" />
+    <Compile Include="Model\MosaicMaker.cs" />
     <Compile Include="Model\PixelBlock.cs" />
     <Compile Include="Model\BlockMosaicMaker.cs" />
     <Compile Include="View\MainPage.xaml.cs">
