@@ -26,7 +26,7 @@ namespace GroupGMosaicMaker.ViewModel
         private readonly ImageGenerator originalImageGenerator;
 
         private WriteableBitmap gridImage;
-        private readonly ImageGridMaker gridImageOperator;
+        private readonly ImageGridGenerator gridImageOperator;
 
         private WriteableBitmap mosaicImage;
         private readonly BlockMosaicMaker blockMosaicMaker;
@@ -191,8 +191,8 @@ namespace GroupGMosaicMaker.ViewModel
         /// </summary>
         public MainPageViewModel()
         {
-            this.originalImageGenerator = new ImageMaker();
-            this.gridImageOperator = new ImageGridMaker();
+            this.originalImageGenerator = new ImageGenerator();
+            this.gridImageOperator = new ImageGridGenerator();
             this.blockMosaicMaker = new BlockMosaicMaker();
 
             this.gridSize = 10;

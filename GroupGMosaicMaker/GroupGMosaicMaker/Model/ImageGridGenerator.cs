@@ -10,16 +10,15 @@ namespace GroupGMosaicMaker.Model
     ///     Responsible for drawing square grids of varying sizes onto the given bitmap image.
     /// </summary>
     /// <seealso cref="ImageGenerator" />
-    public class ImageGridMaker : ImageMaker
+    public class ImageGridGenerator : ImageGenerator
     {
-        // TODO Can we draw the entire grid in one go instead of doing two nested for loops?
         public void DrawGrid(int length)
         {
             for (var i = 0; i < this.Decoder.PixelHeight; i += length)
             {
                 for (var j = 0; j < this.Decoder.PixelWidth; j++)
                 {
-                    this.SetPixelBgra8(i, j, Colors.White);
+                    this.SetPixelColor(i, j, Colors.White);
                 }
             }
 
@@ -27,7 +26,7 @@ namespace GroupGMosaicMaker.Model
             {
                 for (var j = 0; j < this.Decoder.PixelWidth; j += length)
                 {
-                    this.SetPixelBgra8(i, j, Colors.White);
+                    this.SetPixelColor(i, j, Colors.White);
                 }
             }
         }

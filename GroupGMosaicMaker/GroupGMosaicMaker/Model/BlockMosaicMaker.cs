@@ -3,11 +3,9 @@ using Windows.UI;
 
 namespace GroupGMosaicMaker.Model
 {
-    public class BlockMosaicMaker : ImageMaker
+    public class BlockMosaicMaker : ImageGenerator
     {
         #region Methods
-
-        // TODO Refactor this to decrease amount of iterations performed
         
         public void GenerateBlockMosaic(int blockLength)
         {
@@ -52,7 +50,7 @@ namespace GroupGMosaicMaker.Model
                 {
                     if (this.CoordinatesAreValid(x, y))
                     {
-                        pixelColors.Add(GetPixelBgra8(x, y));
+                        pixelColors.Add(FindPixelColor(x, y));
                     }
                 }
             }
@@ -66,7 +64,7 @@ namespace GroupGMosaicMaker.Model
             {
                 for (var x = startX; x < startX + blockLength && x < Decoder.PixelHeight; x++)
                 {
-                    SetPixelBgra8(x, y, color);
+                    SetPixelColor(x, y, color);
                 }
             }
         }

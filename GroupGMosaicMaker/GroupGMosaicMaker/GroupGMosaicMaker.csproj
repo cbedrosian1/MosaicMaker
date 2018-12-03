@@ -99,11 +99,10 @@
     <Compile Include="DataTier\ImageWriter.cs" />
     <Compile Include="Model\PixelBlock.cs" />
     <Compile Include="Model\BlockMosaicMaker.cs" />
-    <Compile Include="Model\ImageMaker.cs" />
     <Compile Include="View\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Model\ImageGridMaker.cs" />
+    <Compile Include="Model\ImageGridGenerator.cs" />
     <Compile Include="Model\ImageGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\RelayCommand.cs" />
