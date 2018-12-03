@@ -242,7 +242,7 @@ namespace GroupGMosaicMaker.ViewModel
         /// <returns>The completed asynchronous operation.</returns>
         public async Task CreateImages(IRandomAccessStream imageSource)
         {
-            this.imageSource = imageSource.CloneStream();
+            this.imageSource = imageSource;
             
             await this.createOriginalImageAsync(imageSource);
             this.createGridImageAsync(imageSource);

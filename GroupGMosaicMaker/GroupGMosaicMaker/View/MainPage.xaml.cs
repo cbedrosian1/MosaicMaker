@@ -9,6 +9,7 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
+using GroupGMosaicMaker.DataTier;
 using GroupGMosaicMaker.ViewModel;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -28,6 +29,9 @@ namespace GroupGMosaicMaker.View
             ApplicationView.PreferredLaunchViewSize = new Size {Width = ApplicationWidth, Height = ApplicationHeight};
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
             ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(ApplicationWidth, ApplicationHeight));
+
+            this.fileLoader = new StreamFileLoader();
+            this.folderLoader = new StreamFolderLoader();
         }
 
         #endregion
@@ -44,6 +48,9 @@ namespace GroupGMosaicMaker.View
         /// </summary>
         public const int ApplicationWidth = 1200;
 
+        private StreamFileLoader fileLoader;
+        private StreamFolderLoader folderLoader;
+
         #endregion
 
         #region Methods
@@ -53,15 +60,10 @@ namespace GroupGMosaicMaker.View
             var sourceImageFile = await selectSourceImageFile();
 
             if (sourceImageFile != null)
-                using (var fileStream = await sourceImageFile.OpenAsync(FileAccessMode.Read))
-                {
-                    
-                        await ((MainPageViewModel)DataContext).CreateImages(fileStream);
-                    
-                    
-
-
-                }
+            {
+                var stream = await this.fileLoader.LoadFile(sourceImageFile);
+                await ((MainPageViewModel) this.DataContext).CreateImages(stream);
+            }
         }
 
         private async Task<StorageFile> selectSourceImageFile()
