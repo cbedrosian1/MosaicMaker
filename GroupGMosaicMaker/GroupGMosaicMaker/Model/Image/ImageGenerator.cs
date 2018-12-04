@@ -18,7 +18,7 @@ namespace GroupGMosaicMaker.Model.Image
         /// <summary>
         ///     The source pixels of the image.
         /// </summary>
-        protected byte[] sourcePixels;
+        protected byte[] SourcePixels;
 
         #endregion
 
@@ -45,7 +45,7 @@ namespace GroupGMosaicMaker.Model.Image
             var modifiedImage = new WriteableBitmap((int) this.Decoder.PixelWidth, (int) this.Decoder.PixelHeight);
             using (var writeStream = modifiedImage.PixelBuffer.AsStream())
             {
-                await writeStream.WriteAsync(this.sourcePixels, 0, this.sourcePixels.Length);
+                await writeStream.WriteAsync(this.SourcePixels, 0, this.SourcePixels.Length);
             }
 
             return modifiedImage;
@@ -60,16 +60,16 @@ namespace GroupGMosaicMaker.Model.Image
         {
             this.Decoder = await BitmapDecoder.CreateAsync(imageSource);
 
-            await this.assignSourcePixelsAsync(this.Decoder.PixelWidth, this.Decoder.PixelHeight);
+            await this.AssignSourcePixelsAsync(this.Decoder.PixelWidth, this.Decoder.PixelHeight);
         }
 
-        protected async Task assignSourcePixelsAsync(uint width, uint height)
+        protected async Task AssignSourcePixelsAsync(uint width, uint height)
         {
-            var pixelData = await this.generatePixelDataAsync(width, height);
-            this.sourcePixels = pixelData.DetachPixelData();
+            var pixelData = await this.GeneratePixelDataAsync(width, height);
+            this.SourcePixels = pixelData.DetachPixelData();
         }
 
-        protected async Task<PixelDataProvider> generatePixelDataAsync(uint width, uint height)
+        protected async Task<PixelDataProvider> GeneratePixelDataAsync(uint width, uint height)
         {
             var transform = this.generateBitmapTransform(width, height);
             var pixelData = await this.Decoder.GetPixelDataAsync(
@@ -98,9 +98,9 @@ namespace GroupGMosaicMaker.Model.Image
             var offset = this.CalculatePixelOffset(x, y);
             if (this.offsetIsValid(offset))
             {
-                var r = this.sourcePixels[offset + 2];
-                var g = this.sourcePixels[offset + 1];
-                var b = this.sourcePixels[offset + 0];
+                var r = this.SourcePixels[offset + 2];
+                var g = this.SourcePixels[offset + 1];
+                var b = this.SourcePixels[offset + 0];
                 return Color.FromArgb(0, r, g, b);
             }
 
@@ -112,9 +112,9 @@ namespace GroupGMosaicMaker.Model.Image
             var offset = this.CalculatePixelOffset(x, y);
             if (this.offsetIsValid(offset))
             {
-                this.sourcePixels[offset + 2] = color.R;
-                this.sourcePixels[offset + 1] = color.G;
-                this.sourcePixels[offset + 0] = color.B;
+                this.SourcePixels[offset + 2] = color.R;
+                this.SourcePixels[offset + 1] = color.G;
+                this.SourcePixels[offset + 0] = color.B;
             }
         }
 
@@ -125,7 +125,7 @@ namespace GroupGMosaicMaker.Model.Image
 
         private bool offsetIsValid(int offset)
         {
-            return offset + 2 < this.sourcePixels.Length;
+            return offset + 2 < this.SourcePixels.Length;
         }
 
         protected bool CoordinatesAreValid(int x, int y)

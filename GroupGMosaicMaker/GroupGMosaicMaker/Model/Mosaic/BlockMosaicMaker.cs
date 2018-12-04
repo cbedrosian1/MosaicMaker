@@ -33,9 +33,9 @@ namespace GroupGMosaicMaker.Model.Mosaic
             }
         }
 
-        protected IList<PixelBlock> FindImageBlocks()
+        protected IList<IList<Color>> FindImageBlocks()
         {
-            var blocks = new List<PixelBlock>();
+            var blocks = new List<IList<Color>>();
 
             for (var x = 0; x < Decoder.PixelHeight; x += this.BlockLength)
             {
@@ -48,7 +48,7 @@ namespace GroupGMosaicMaker.Model.Mosaic
             return blocks;
         }
 
-        protected virtual PixelBlock FindSingleBlock(int startX, int startY)
+        protected virtual IList<Color> FindSingleBlock(int startX, int startY)
         {
             var pixelColors = new List<Color>();
 

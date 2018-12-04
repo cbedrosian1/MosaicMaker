@@ -10,7 +10,7 @@ namespace GroupGMosaicMaker.Model.Mosaic
     {
         #region Data members
 
-        private IList<PixelBlock> sourceBlocks;
+        private IList<IList<Color>> sourceBlocks;
         private IList<PaletteImageGenerator> palette;
 
         #endregion

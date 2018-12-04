@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Storage.Streams;
 using Windows.UI;
@@ -6,6 +7,11 @@ using GroupGMosaicMaker.Model.Mosaic;
 
 namespace GroupGMosaicMaker.Model.Image
 {
+    /// <summary>
+    ///     ImageGenerator that models a palette image, capable of storage an average color and being scaled up or down in a
+    ///     square.
+    /// </summary>
+    /// <seealso cref="GroupGMosaicMaker.Model.Image.ImageGenerator" />
     public class PaletteImageGenerator : ImageGenerator
     {
         #region Data members
@@ -17,7 +23,8 @@ namespace GroupGMosaicMaker.Model.Image
 
         #region Properties
 
-        public PixelBlock Pixels { get; set; }
+        // TODO AverageColor is dependent on the pixels, but can currently be set to any value regardless of the pixels.
+        public IList<Color> Pixels { get; set; }
 
         public Color AverageColor { get; set; }
 
@@ -52,7 +59,7 @@ namespace GroupGMosaicMaker.Model.Image
             this.scaledWidth = convertedWidth;
             this.scaledHeight = convertedHeight;
 
-            await assignSourcePixelsAsync(convertedWidth, convertedHeight);
+            await AssignSourcePixelsAsync(convertedWidth, convertedHeight);
         }
 
         protected override int CalculatePixelOffset(int x, int y)
