@@ -133,6 +133,32 @@ namespace GroupGMosaicMaker.View
                     ((MainPageViewModel) DataContext).IsGridToggled = false;
                 }
             } 
-         } 
+         }
+
+        private async void loadPalleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            var folder = await this.selectPaletteFolderAsync();
+
+
+            if (folder != null)
+            {
+                var files = await this.folderLoader.LoadFolder(folder);
+
+                Windows.Storage.AccessCache.StorageApplicationPermissions.
+                    FutureAccessList.AddOrReplace("PickedFolderToken", folder);
+
+                await ((MainPageViewModel) DataContext).GeneratePalette(files);
+            }
+        }
+
+        private async Task<StorageFolder> selectPaletteFolderAsync()
+        {
+            var folderPicker = new FolderPicker();
+            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
+            folderPicker.FileTypeFilter.Add("*");
+
+            var folder = await folderPicker.PickSingleFolderAsync();
+            return folder;
+        }
     }
 }

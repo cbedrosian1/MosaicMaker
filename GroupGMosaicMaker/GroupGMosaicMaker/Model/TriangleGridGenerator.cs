@@ -14,7 +14,7 @@ namespace GroupGMosaicMaker.Model
         {
             base.DrawGrid(length);
             var height = 0;
-            for (var width = this.Decoder.PixelWidth - length; width < this.Decoder.PixelWidth; width += length)
+            for (var width = (int) this.Decoder.PixelWidth - length; width < this.Decoder.PixelWidth; width += length)
             {
                 height++;
                 this.SetPixelColor(width, height, Colors.White);

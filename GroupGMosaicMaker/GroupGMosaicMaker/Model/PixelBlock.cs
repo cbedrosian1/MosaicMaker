@@ -16,6 +16,11 @@ namespace GroupGMosaicMaker.Model
 
         public Color this[int index] { get => pixelColors[index]; set => pixelColors[index] = value; }
 
+        public PixelBlock()
+        {
+            this.pixelColors = new List<Color>();
+        }
+
         public PixelBlock(IList<Color> pixelColors)
         {
             this.pixelColors = pixelColors;

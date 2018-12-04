@@ -7,6 +7,7 @@ using GroupGMosaicMaker.DataTier;
 using GroupGMosaicMaker.Model;
 using GroupGMosaicMaker.Utilities;
 using System;
+using System.Collections.Generic;
 
 namespace GroupGMosaicMaker.ViewModel
 {
@@ -22,6 +23,8 @@ namespace GroupGMosaicMaker.ViewModel
 
         private IRandomAccessStream imageSource;
 
+        private IList<PaletteImageGenerator> palette;
+
         private WriteableBitmap originalImage;
         private readonly ImageGenerator originalImageGenerator;
 
@@ -30,6 +33,8 @@ namespace GroupGMosaicMaker.ViewModel
 
         private WriteableBitmap mosaicImage;
         private readonly BlockMosaicMaker blockMosaicMaker;
+        private readonly PictureMosaicMaker pictureMosaicMaker;
+        
 
         private WriteableBitmap displayedImage;
 
@@ -39,6 +44,17 @@ namespace GroupGMosaicMaker.ViewModel
         #endregion
 
         #region Properties
+
+        public IList<PaletteImageGenerator> Palette
+        {
+            get => this.palette;
+            set
+            {
+                this.palette = value;
+                this.GeneratePictureMosaicCommand.OnCanExecuteChanged();
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         ///     Gets or sets the original image.
@@ -196,9 +212,11 @@ namespace GroupGMosaicMaker.ViewModel
         /// </summary>
         public MainPageViewModel()
         {
+
             this.originalImageGenerator = new ImageGenerator();
             this.gridImageOperator = new ImageGridGenerator();
             this.blockMosaicMaker = new BlockMosaicMaker();
+            this.pictureMosaicMaker = new PictureMosaicMaker();
 
             this.gridSize = 10;
             this.canSaveImage = false;
@@ -210,8 +228,8 @@ namespace GroupGMosaicMaker.ViewModel
 
         private void loadCommands()
         {
-            this.GenerateBlockMosaicCommand = new RelayCommand(this.generateMosaic, this.canGenerateBlockMosaic);
-            this.GeneratePictureMosaicCommand = new RelayCommand(this.generateMosaic, this.canGeneratePictureMosaic);
+            this.GenerateBlockMosaicCommand = CreateCommand(this.generateBlockMosaic, this.canGenerateBlockMosaic);
+            this.GeneratePictureMosaicCommand = CreateCommand(this.generatePictureMosaic, this.canGeneratePictureMosaic);
         }
 
         private bool canGenerateBlockMosaic(object obj)
@@ -221,11 +239,10 @@ namespace GroupGMosaicMaker.ViewModel
 
         private bool canGeneratePictureMosaic(object obj)
         {
-            return this.OriginalImage != null;
-            //TODO When pallete != null
+            return this.palette != null;
         }
 
-        private async void generateMosaic(object obj)
+        private async void generateBlockMosaic(object obj)
         {
             //TODO might have to create separate command for picture mosaic
             await this.blockMosaicMaker.SetSourceAsync(this.imageSource);
@@ -233,6 +250,17 @@ namespace GroupGMosaicMaker.ViewModel
             this.blockMosaicMaker.GenerateMosaic();
 
             this.MosaicImage = await this.blockMosaicMaker.GenerateImageAsync();
+        }
+
+        private async void generatePictureMosaic(object obj)
+        {
+            await this.pictureMosaicMaker.SetSourceAsync(this.imageSource);
+
+            this.pictureMosaicMaker.BlockLength = this.GridSize;
+            this.pictureMosaicMaker.Palette = this.palette;
+            this.pictureMosaicMaker.GenerateMosaic();
+
+            this.MosaicImage = await this.pictureMosaicMaker.GenerateImageAsync();
         }
 
         /// <summary>
@@ -277,6 +305,18 @@ namespace GroupGMosaicMaker.ViewModel
             this.GridImage = await this.gridImageOperator.GenerateImageAsync();
         }
 
+        public async Task GeneratePalette(IReadOnlyList<IRandomAccessStream> paletteSource)
+        {
+            this.palette = new List<PaletteImageGenerator>();
+            foreach (var source in paletteSource)
+            {
+                var paletteImage = new PaletteImageGenerator();
+                await paletteImage.SetSourceAsync(source);
+                await paletteImage.ScaleImage(this.gridSize, this.gridSize);
+                this.palette.Add(paletteImage);
+            }
+        }
+
         /// <summary>
         /// Writes the data asynchronous.
         /// </summary>
@@ -284,7 +324,8 @@ namespace GroupGMosaicMaker.ViewModel
         /// <returns></returns>
         public async Task WriteDataAsync(StorageFile file)
         {
-            await ImageWriter.WriteImageAsync(this.blockMosaicMaker, file);
+            
+            await ImageWriter.WriteImageAsync(this.pictureMosaicMaker, file);
         }
 
 

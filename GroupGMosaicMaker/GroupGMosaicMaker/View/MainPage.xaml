@@ -34,7 +34,7 @@
         <TextBox x:Name="gridSize" extensions:TextBoxRegex.Regex="^([5-9]|[1-4][0-9]|50)$" extensions:TextBoxRegex.ValidationMode="Forced"  Text="{Binding Path=GridSize, Converter={StaticResource StringToIntConverter}, Mode=TwoWay}"  HorizontalAlignment="Left" Margin="90,291,0,0" VerticalAlignment="Top"/>
         <Button Content="Generate Block Mosaic" Command="{Binding GenerateBlockMosaicCommand}" HorizontalAlignment="Left" Margin="200,550,0,0" VerticalAlignment="Top"/>
         <Button Content="Generate Picture Mosaic" Command="{Binding GeneratePictureMosaicCommand}" HorizontalAlignment="Left" Margin="470,550,0,0" VerticalAlignment="Top"/>
-        <Button Content="Load Image Pallete" HorizontalAlignment="Left" Margin="700,550,0,0" VerticalAlignment="Top"></Button>
+        <Button Content="Load Image Pallete" Click="loadPalleteButton_Click" HorizontalAlignment="Left" Margin="700,550,0,0" VerticalAlignment="Top"/>
         <ToggleSwitch x:Name="toggleSwitch" Toggled="gridSwitchToggled"  OffContent="Hidden" OnContent="Visible" HorizontalAlignment="Left" Margin="90,345,0,0" VerticalAlignment="Top"/>
         <TextBlock x:Name="gridSizeText" HorizontalAlignment="Left" Margin="25,295,0,0" Text="Grid Size:" TextWrapping="Wrap" VerticalAlignment="Top"/>
         <TextBlock x:Name="showGridText" HorizontalAlignment="Left" Margin="5,355,0,0" Text="Display Grid: " TextWrapping="Wrap" VerticalAlignment="Top"/>

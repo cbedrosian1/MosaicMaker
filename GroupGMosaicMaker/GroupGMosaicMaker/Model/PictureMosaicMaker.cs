@@ -16,8 +16,6 @@ namespace GroupGMosaicMaker.Model
 
         public override void GenerateMosaic()
         {
-            this.assignAverageColorsToPallete();
-
             var blocks = this.FindImageBlocks();
 
             var counter = 0;

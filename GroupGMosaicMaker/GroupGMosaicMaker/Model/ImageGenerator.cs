@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Appointments;
 using Windows.Graphics.Imaging;
 using Windows.Storage.Streams;
 using Windows.UI;
@@ -40,7 +41,7 @@ namespace GroupGMosaicMaker.Model
         ///     Generates the image.
         /// </summary>
         /// <returns>The image</returns>
-        public async Task<WriteableBitmap> GenerateImageAsync()
+        public virtual async Task<WriteableBitmap> GenerateImageAsync()
         {
             var modifiedImage = new WriteableBitmap((int) this.Decoder.PixelWidth, (int) this.Decoder.PixelHeight);
             using (var writeStream = modifiedImage.PixelBuffer.AsStream())
@@ -56,17 +57,22 @@ namespace GroupGMosaicMaker.Model
         /// </summary>
         /// <param name="imageSource">The image source.</param>
         /// <returns>The completed asynchronous operation.</returns>
-        public async Task SetSourceAsync(IRandomAccessStream imageSource)
+        public virtual async Task SetSourceAsync(IRandomAccessStream imageSource)
         {
             this.Decoder = await BitmapDecoder.CreateAsync(imageSource);
 
-            var pixelData = await this.generatePixelDataAsync();
+            await this.assignSourcePixelsAsync(this.Decoder.PixelWidth, this.Decoder.PixelHeight);
+        }
+        
+        protected async Task assignSourcePixelsAsync(uint width, uint height)
+        {
+            var pixelData = await this.generatePixelDataAsync(width, height);
             this.sourcePixels = pixelData.DetachPixelData();
         }
 
-        private async Task<PixelDataProvider> generatePixelDataAsync()
+        protected async Task<PixelDataProvider> generatePixelDataAsync(uint width, uint height)
         {
-            var transform = this.generateBitmapTransform();
+            var transform = this.generateBitmapTransform(width, height);
             var pixelData = await this.Decoder.GetPixelDataAsync(
                 BitmapPixelFormat.Bgra8,
                 BitmapAlphaMode.Straight,
@@ -78,11 +84,11 @@ namespace GroupGMosaicMaker.Model
             return pixelData;
         }
 
-        private BitmapTransform generateBitmapTransform()
+        private BitmapTransform generateBitmapTransform(uint width, uint height)
         {
             var transform = new BitmapTransform {
-                ScaledWidth = Convert.ToUInt32(this.Decoder.PixelWidth),
-                ScaledHeight = Convert.ToUInt32(this.Decoder.PixelHeight)
+                ScaledWidth = width,
+                ScaledHeight = height
             };
 
             return transform;
