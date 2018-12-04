@@ -61,17 +61,6 @@ namespace GroupGMosaicMaker.View
 
         private async void loadFile_Click(object sender, RoutedEventArgs e)
         {
-            var sourceImageFile = await selectSourceImageFile();
-
-            if (sourceImageFile != null)
-            {
-                var stream = await this.fileLoader.LoadFile(sourceImageFile);
-                await ((MainPageViewModel) this.DataContext).CreateImages(stream);
-            }
-        }
-
-        private async Task<StorageFile> selectSourceImageFile()
-        {
             var openPicker = new FileOpenPicker
             {
                 ViewMode = PickerViewMode.Thumbnail,
@@ -82,8 +71,12 @@ namespace GroupGMosaicMaker.View
             openPicker.FileTypeFilter.Add(".bmp");
 
             var file = await openPicker.PickSingleFileAsync();
-            this.chosenFileType = file.FileType;
-            return file;
+
+            if (file != null)
+            {
+                var stream = await this.fileLoader.LoadFile(file);
+                await ((MainPageViewModel) this.DataContext).CreateImages(stream);
+            }
         }
 
         private async Task<StorageFile> selectSaveImageFile()
@@ -135,7 +128,7 @@ namespace GroupGMosaicMaker.View
             } 
          }
 
-        private async void loadPalleteButton_Click(object sender, RoutedEventArgs e)
+        private async void loadPaletteButton_Click(object sender, RoutedEventArgs e)
         {
             var folder = await this.selectPaletteFolderAsync();
 

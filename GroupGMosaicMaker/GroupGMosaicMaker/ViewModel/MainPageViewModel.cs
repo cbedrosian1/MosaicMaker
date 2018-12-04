@@ -53,10 +53,10 @@ namespace GroupGMosaicMaker.ViewModel
         {
             get => this.palette;
             set
-            {
+            {   //TODO Where are you setting this?
                 this.palette = value;
-                this.GeneratePictureMosaicCommand.OnCanExecuteChanged();
                 OnPropertyChanged();
+                this.GeneratePictureMosaicCommand.OnCanExecuteChanged();
             }
         }
 
@@ -75,7 +75,7 @@ namespace GroupGMosaicMaker.ViewModel
                 OnPropertyChanged();
                 this.GenerateBlockMosaicCommand.OnCanExecuteChanged();
                 this.GeneratePictureMosaicCommand
-                    .OnCanExecuteChanged(); //TODO will probably need to add this to the collection property
+                    .OnCanExecuteChanged(); 
             }
         }
 
@@ -282,17 +282,17 @@ namespace GroupGMosaicMaker.ViewModel
 
         private bool canGenerateBlockMosaic(object obj)
         {
-            return this.OriginalImage != null;
+            return this.originalImage != null;
         }
 
         private bool canGeneratePictureMosaic(object obj)
         {
-            return this.palette != null;
+
+            return  this.palette != null && this.palette.Count > 0 && this.originalImage != null;
         }
 
         private async void generateBlockMosaic(object obj)
         {
-            //TODO might have to create separate command for picture mosaic
             await this.blockMosaicMaker.SetSourceAsync(this.imageSource);
             this.blockMosaicMaker.BlockLength = this.GridSize;
             this.blockMosaicMaker.GenerateMosaic();
