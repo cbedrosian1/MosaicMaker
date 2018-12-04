@@ -26,30 +26,28 @@
             <AppBarButton Icon="Save" IsEnabled="{Binding CanSaveImage}" Label="Save File" Click="saveFile_Click" />
         </CommandBar>
 
-        <ScrollViewer  IsEnabled="True" ZoomMode="Enabled" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Margin="38,70,0,0" Height="450" Width="450" VerticalScrollMode="Enabled" HorizontalScrollMode="Enabled" VerticalAlignment="Top" HorizontalAlignment="Left" >
+        <ScrollViewer x:Name="sourceScrollView" IsEnabled="{Binding IsZoomSelected}" ZoomMode="Enabled" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Margin="38,70,0,0" Height="450" Width="450" VerticalScrollMode="Enabled" HorizontalScrollMode="Enabled" VerticalAlignment="Top" HorizontalAlignment="Left" >
             <Image x:Name="sourceImage" Source="{Binding DisplayedImage}"  HorizontalAlignment="Left" Height="450"
                    VerticalAlignment="Top" Width="450" Stretch="Fill"/>
         </ScrollViewer>
 
-
-
-
-
-        <ScrollViewer  IsEnabled="True" ZoomMode="Enabled" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Margin="538,66,0,0" Height="450" Width="450" VerticalScrollMode="Enabled" HorizontalScrollMode="Enabled" VerticalAlignment="Top" HorizontalAlignment="Left" >
+        <ScrollViewer x:Name="mosaicScrollView"  IsEnabled="{Binding IsZoomSelected}" ZoomMode="Enabled" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Margin="538,66,0,0" Height="450" Width="450" VerticalScrollMode="Enabled" HorizontalScrollMode="Enabled" VerticalAlignment="Top" HorizontalAlignment="Left" >
             <Image x:Name="mosaicImage" Source="{Binding MosaicImage}"  Stretch="Fill" HorizontalAlignment="Left" Height="450" VerticalAlignment="Top" Width="450" />
         </ScrollViewer>
 
-        <TextBox x:Name="gridSize" extensions:TextBoxRegex.Regex="^([5-9]|[1-4][0-9]|50)$" extensions:TextBoxRegex.ValidationMode="Forced"  Text="{Binding Path=GridSize, Converter={StaticResource StringToIntConverter}, Mode=TwoWay}"  HorizontalAlignment="Left" Margin="267,586,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="gridSize" extensions:TextBoxRegex.Regex="^([5-9]|[1-4][0-9]|50)$" extensions:TextBoxRegex.ValidationMode="Forced"  Text="{Binding Path=GridSize, Converter={StaticResource StringToIntConverter}, Mode=TwoWay}"  HorizontalAlignment="Left" Margin="233,627,0,0" VerticalAlignment="Top" Width="43"/>
         <Button Content="Generate Block Mosaic" Command="{Binding GenerateBlockMosaicCommand}" HorizontalAlignment="Left" Margin="40,540,0,0" VerticalAlignment="Top"/>
         <Button Content="Generate Picture Mosaic" Command="{Binding GeneratePictureMosaicCommand}" HorizontalAlignment="Left" Margin="300,540,0,0" VerticalAlignment="Top"/>
         <Button Content="Load Image Palette" Click="loadPaletteButton_Click" HorizontalAlignment="Left" Margin="540,540,0,0" VerticalAlignment="Top"/>
-        <ToggleSwitch x:Name="toggleSwitch" Toggled="gridSwitchToggled"  OffContent="Hidden" OnContent="Visible" HorizontalAlignment="Left" Margin="276,625,0,0" VerticalAlignment="Top"/>
-        <TextBlock x:Name="gridSizeText" HorizontalAlignment="Left" Margin="200,590,0,0" Text="Grid Size:" TextWrapping="Wrap" VerticalAlignment="Top"/>
-        <TextBlock x:Name="showGridText" HorizontalAlignment="Left" Margin="190,635,0,0" Text="Display Grid: " TextWrapping="Wrap" VerticalAlignment="Top"/>
-        <RadioButton Content="Square Grid"  GroupName="GridType" IsChecked= "{Binding IsSquareGridSelected, Mode=TwoWay}"  HorizontalAlignment="Left" Margin="40,585,0,0" VerticalAlignment="Top"/>
-        <RadioButton Content="Triangle Grid" GroupName="GridType" HorizontalAlignment="Left" Margin="40,630,0,0" VerticalAlignment="Top"/>
-        <RadioButton Content="RadioButton" HorizontalAlignment="Left" Margin="540,585,0,0" VerticalAlignment="Top"/>
-        <RadioButton Content="RadioButton" HorizontalAlignment="Left" Margin="540,630,0,0" VerticalAlignment="Top"/>
+        <ToggleSwitch x:Name="toggleSwitch" Toggled="gridSwitchToggled"  OffContent="Hidden" OnContent="Visible" HorizontalAlignment="Left" Margin="233,668,0,0" VerticalAlignment="Top"/>
+        <TextBlock x:Name="gridSizeText" HorizontalAlignment="Left" Margin="187,633,0,0" Text="Size:" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <TextBlock x:Name="showGridText" HorizontalAlignment="Left" Margin="169,678,0,0" Text="Display " TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <RadioButton Content="Square Grid"  GroupName="GridType" IsChecked= "{Binding IsSquareGridSelected, Mode=TwoWay}"  HorizontalAlignment="Left" Margin="38,627,0,0" VerticalAlignment="Top"/>
+        <RadioButton Content="Triangle Grid" GroupName="GridType" HorizontalAlignment="Left" Margin="38,672,0,0" VerticalAlignment="Top"/>
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="126,594,0,0" Text="Grid Options" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" Width="93"/>
+        <RadioButton x:Name="stretchButton" Content="Stretch" GroupName="ViewType" IsChecked="True" HorizontalAlignment="Left" Margin="405,627,0,0" VerticalAlignment="Top" Checked="stretchButtonIsSelected"/>
+        <RadioButton x:Name="zoomButton" Content="Zoom" GroupName="ViewType" IsChecked="{Binding IsZoomSelected, Mode=TwoWay}" HorizontalAlignment="Left" Margin="405,666,0,0" VerticalAlignment="Top"/>
+
 
 
     </Grid>

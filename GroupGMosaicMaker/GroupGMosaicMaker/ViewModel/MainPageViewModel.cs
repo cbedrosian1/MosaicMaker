@@ -46,6 +46,7 @@ namespace GroupGMosaicMaker.ViewModel
         private int gridSize;
         private bool isSquareGridSelected;
 
+
         #endregion
 
         #region Properties
@@ -133,7 +134,7 @@ namespace GroupGMosaicMaker.ViewModel
             set
             {
                 this.displayedImage = value;
-                OnPropertyChanged();
+                this.OnPropertyChanged();
             }
         }
 
@@ -150,7 +151,7 @@ namespace GroupGMosaicMaker.ViewModel
             {
                 this.mosaicImage = value;
                 this.CanSaveImage = true;
-                OnPropertyChanged();
+                this.OnPropertyChanged();
             }
         }
 
@@ -166,7 +167,7 @@ namespace GroupGMosaicMaker.ViewModel
             set
             {
                 this.canSaveImage = value;
-                OnPropertyChanged();
+                this.OnPropertyChanged();
             }
         }
 
@@ -188,7 +189,7 @@ namespace GroupGMosaicMaker.ViewModel
                     this.createTriangleGridImageAsync(this.imageSource);
                 }
 
-                OnPropertyChanged();
+                this.OnPropertyChanged();
             }
         }
 
@@ -237,16 +238,39 @@ namespace GroupGMosaicMaker.ViewModel
             set
             {
                 this.isSquareGridSelected = value;
-                OnPropertyChanged();
-                if (this.imageSource != null)
+                this.OnPropertyChanged();
+                if (this.imageSource != null && this.IsGridToggled)
                 {
                     this.createGridImageAsync(this.imageSource);
                     this.createTriangleGridImageAsync(this.imageSource);
+                    if (this.isSquareGridSelected)
+                    {
+                        this.DisplayedImage = this.GridImage;
+                    }
+                    else
+                    {
+                        this.DisplayedImage = this.TriangleGridImage;
+                    }
                 }
+
+                
 
                 this.GeneratePictureMosaicCommand.OnCanExecuteChanged();
             }
         }
+
+        private bool isZoomSelected;
+
+        public bool IsZoomSelected
+        {
+            get => this.isZoomSelected;
+            set
+            {
+                this.isZoomSelected = value;
+                this.OnPropertyChanged();
+            }
+        }
+
 
         #endregion
 
@@ -289,7 +313,7 @@ namespace GroupGMosaicMaker.ViewModel
         private bool canGeneratePictureMosaic(object obj)
         {
 
-            return  this.palette != null && this.palette.Count > 0 && this.originalImage != null;
+            return  this.isSquareGridSelected && this.palette.Count > 0 && this.originalImage != null;
         }
 
         private async void generateBlockMosaic(object obj)
