@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Streams;
@@ -25,7 +26,7 @@ namespace GroupGMosaicMaker.ViewModel
 
         private IRandomAccessStream imageSource;
 
-        private IList<PaletteImageGenerator> palette;
+        private ObservableCollection<PaletteImageGenerator> palette;
 
         private WriteableBitmap originalImage;
         private readonly ImageGenerator originalImageGenerator;
@@ -49,11 +50,11 @@ namespace GroupGMosaicMaker.ViewModel
 
         #region Properties
 
-        public IList<PaletteImageGenerator> Palette
+        public ObservableCollection<PaletteImageGenerator> Palette
         {
             get => this.palette;
             set
-            {   //TODO Where are you setting this?
+            {   
                 this.palette = value;
                 OnPropertyChanged();
                 this.GeneratePictureMosaicCommand.OnCanExecuteChanged();
@@ -261,7 +262,7 @@ namespace GroupGMosaicMaker.ViewModel
             this.blockMosaicMaker = new BlockMosaicMaker();
             this.triangleGridImageOperator = new TriangleGridGenerator();
             this.pictureMosaicMaker = new PictureMosaicMaker();
-
+            this.palette = new ObservableCollection<PaletteImageGenerator>();
             this.gridSize = DefaultGridSize;
             this.canSaveImage = false;
             this.isSquareGridSelected = true;
@@ -365,14 +366,16 @@ namespace GroupGMosaicMaker.ViewModel
 
         public async Task GeneratePalette(IReadOnlyList<IRandomAccessStream> paletteSource)
         {
-            this.palette = new List<PaletteImageGenerator>();
+            var palette = new ObservableCollection<PaletteImageGenerator>();
             foreach (var source in paletteSource)
             {
                 var paletteImage = new PaletteImageGenerator();
                 await paletteImage.SetSourceAsync(source);
                 await paletteImage.ScaleImage(this.gridSize, this.gridSize);
-                this.palette.Add(paletteImage);
+                palette.Add(paletteImage);
             }
+
+            this.Palette = palette;
         }
 
         private async void createTriangleGridImageAsync(IRandomAccessStream imageSource)

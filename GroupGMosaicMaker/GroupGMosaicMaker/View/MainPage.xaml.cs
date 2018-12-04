@@ -38,6 +38,7 @@ namespace GroupGMosaicMaker.View
         private StreamFolderLoader folderLoader;
 
         private string chosenFileType;
+        private List<string> validFileTypes;
 
         #endregion
         #region Constructors
@@ -51,6 +52,13 @@ namespace GroupGMosaicMaker.View
             this.chosenFileType = string.Empty;
             this.fileLoader = new StreamFileLoader();
             this.folderLoader = new StreamFolderLoader();
+            this.validFileTypes = new List<string>()
+            {
+                ".jpg",
+                ".png",
+                ".bmp"
+            };
+
         }
 
         #endregion
@@ -71,9 +79,11 @@ namespace GroupGMosaicMaker.View
             openPicker.FileTypeFilter.Add(".bmp");
 
             var file = await openPicker.PickSingleFileAsync();
+            
 
             if (file != null)
             {
+                this.chosenFileType = file.FileType;
                 var stream = await this.fileLoader.LoadFile(file);
                 await ((MainPageViewModel) this.DataContext).CreateImages(stream);
             }
@@ -85,14 +95,32 @@ namespace GroupGMosaicMaker.View
             {
                 SuggestedStartLocation = PickerLocationId.PicturesLibrary,
                 SuggestedFileName = "image",    
-                DefaultFileExtension = this.chosenFileType
+                
             };
-            fileSavePicker.FileTypeChoices.Add("PNG files", new List<string> { ".png" });
-            fileSavePicker.FileTypeChoices.Add("JPG files", new List<string> { ".jpg" });
-            fileSavePicker.FileTypeChoices.Add("BMP files", new List<string> { ".bmp" });
-
+            this.validFileTypes = generateFileTypeChoices();
+            foreach (var current in this.validFileTypes)
+            {
+                fileSavePicker.FileTypeChoices.Add(current.Substring(1).ToUpperInvariant() + " files", new List<string>{current});
+            }
             var file = await fileSavePicker.PickSaveFileAsync();
             return file;
+        }
+
+        private List<string> generateFileTypeChoices()
+        {
+            var fileTypesForSaving = new List<string>()
+            {
+                this.chosenFileType
+            };
+            foreach (var current in this.validFileTypes)
+            {
+                if (!fileTypesForSaving.Contains(current))
+                {
+                    fileTypesForSaving.Add(current);
+                }
+            }
+
+            return fileTypesForSaving;
         }
 
         private async Task<BitmapImage> MakeACopyOfTheFileToWorkOn(StorageFile imageFile)
