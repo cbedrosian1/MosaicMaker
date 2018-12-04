@@ -32,7 +32,7 @@ namespace GroupGMosaicMaker.View
         /// <summary>
         ///     The application width
         /// </summary>
-        public const int ApplicationWidth = 1200;
+        public const int ApplicationWidth = 1030;
 
         private StreamFileLoader fileLoader;
         private StreamFolderLoader folderLoader;
