@@ -141,11 +141,21 @@ namespace GroupGMosaicMaker.View
 
         private void gridSwitchToggled(object sender, RoutedEventArgs e)
         {
+
+            //TODO this thing is a monster. refactor
             if (sender is ToggleSwitch gridToggle)
             {
                 if (gridToggle.IsOn == true)
                 {
-                    ((MainPageViewModel)DataContext).DisplayedImage = ((MainPageViewModel)DataContext).GridImage;
+                    if (((MainPageViewModel) DataContext).IsSquareGridSelected)
+                    {
+                        ((MainPageViewModel)DataContext).DisplayedImage = ((MainPageViewModel)DataContext).GridImage;
+                    }
+                    else
+                    {
+                        ((MainPageViewModel)DataContext).DisplayedImage = ((MainPageViewModel)DataContext).TriangleGridImage;
+                    }
+                    
                     ((MainPageViewModel)DataContext).IsGridToggled = true;
                 }
                 else
@@ -190,9 +200,8 @@ namespace GroupGMosaicMaker.View
             this.mosaicScrollView.ChangeView(0, this.mosaicScrollView.VerticalOffset, 1.0f);
         }
 
+
+
         #endregion
-
-
-
     }
 }
