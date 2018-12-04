@@ -88,7 +88,7 @@ namespace GroupGMosaicMaker.Model
             return transform;
         }
 
-        protected Color FindPixelColor(int x, int y)
+        public Color FindPixelColor(int x, int y)
         {
             var offset = this.CalculatePixelOffset(x, y);
             if (this.offsetIsValid(offset))
