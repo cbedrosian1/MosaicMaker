@@ -10,6 +10,9 @@ namespace GroupGMosaicMaker.Model
 {
     public class PaletteImageGenerator : ImageGenerator
     {
+        private uint scaledWidth;
+        private uint scaledHeight;
+
         public PixelBlock Pixels { get; set; }
         
         public Color AverageColor { get; set; }
@@ -19,31 +22,12 @@ namespace GroupGMosaicMaker.Model
             this.Pixels = new PixelBlock();
         }
 
-        /*
-        public override async Task<WriteableBitmap> GenerateImageAsync()
-        {
-            var modifiedImage = new WriteableBitmap((int) this.Decoder.PixelWidth, (int) this.Decoder.PixelHeight);
-            using (var writeStream = modifiedImage.PixelBuffer.AsStream())
-            {
-                var encoder = await BitmapEncoder.CreateForTranscodingAsync(writeStream, Decoder);
-                encoder.BitmapTransform.InterpolationMode = BitmapInterpolationMode.Linear;
-                encoder.BitmapTransform.ScaledWidth
-                await writeStream.WriteAsync(this.sourcePixels, 0, this.sourcePixels.Length);
-            }
-
-            return modifiedImage;
-
-            var encoder = await BitmapEncoder.CreateForTranscodingAsync(resizedStream, decoder);
-            encoder.BitmapTransform.InterpolationMode = BitmapInterpolationMode.Linear;
-            encoder.BitmapTransform.ScaledWidth = 
-            encoder.BitmapTransform.ScaledHeight = height;
-            await encoder.FlushAsync();
-        }
-        */
-
         public override async Task SetSourceAsync(IRandomAccessStream imageSource)
         {
             await base.SetSourceAsync(imageSource);
+
+            this.scaledWidth = Decoder.PixelWidth;
+            this.scaledHeight = Decoder.PixelHeight;
 
             this.assignPixels();
         }
@@ -53,7 +37,15 @@ namespace GroupGMosaicMaker.Model
             var convertedWidth = Convert.ToUInt32(scaledWidth);
             var convertedHeight = Convert.ToUInt32(scaledHeight);
 
+            this.scaledWidth = convertedWidth;
+            this.scaledHeight = convertedHeight;
+
             await this.assignSourcePixelsAsync(convertedWidth, convertedHeight);
+        }
+
+        protected override int CalculatePixelOffset(int x, int y)
+        {
+            return (x * (int) this.scaledWidth + y) * 4;
         }
 
         private void assignPixels()

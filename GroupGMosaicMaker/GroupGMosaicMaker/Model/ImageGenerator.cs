@@ -19,7 +19,7 @@ namespace GroupGMosaicMaker.Model
         /// <summary>
         ///     The source pixels of the image.
         /// </summary>
-        private byte[] sourcePixels;
+        protected byte[] sourcePixels;
 
         #endregion
 
@@ -119,7 +119,7 @@ namespace GroupGMosaicMaker.Model
             }
         }
 
-        protected int CalculatePixelOffset(int x, int y)
+        protected virtual int CalculatePixelOffset(int x, int y)
         {
             return (x * (int) this.Decoder.PixelWidth + y) * 4;
         }

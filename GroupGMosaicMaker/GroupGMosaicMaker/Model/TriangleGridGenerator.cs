@@ -12,14 +12,25 @@ namespace GroupGMosaicMaker.Model
     {
         public override void DrawGrid(int length)
         {
-            base.DrawGrid(length);
-            var height = 0;
-            for (var width = (int) this.Decoder.PixelWidth - length; width < this.Decoder.PixelWidth; width += length)
+            base.DrawGrid(length);  
+
+            for (var i = 0; i < Decoder.PixelHeight; i += length)
             {
-                height++;
-                this.SetPixelColor(width, height, Colors.White);
+                for (var j = 0; j < Decoder.PixelWidth; j += length)
+                {
+                    this.drawDiagonal(i, j, length);
+                }
             }
         }
 
+        private void drawDiagonal(int startX, int startY, int blockLength)
+        {
+            var x = startX;
+            for (var y = startY; y < startY + blockLength && y < Decoder.PixelWidth; y++)
+            {
+                SetPixelColor(x, y, Colors.White);
+                x++;
+            }
+        }
     }
 }

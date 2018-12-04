@@ -38,8 +38,13 @@ namespace GroupGMosaicMaker.ViewModel
 
         private WriteableBitmap displayedImage;
 
+        private WriteableBitmap triangleGridImage;
+        private readonly TriangleGridGenerator triangleGridImageOperator;
+
         private int gridSize;
-        private bool isGridToggled;
+        private bool isSquareGridSelected;
+
+        private const int DefaultGridSize = 10;
 
         #endregion
 
@@ -86,14 +91,37 @@ namespace GroupGMosaicMaker.ViewModel
             set
             {
                 this.gridImage = value;
-                OnPropertyChanged();
-                if (this.isGridToggled)
+                this.OnPropertyChanged();
+                if (this.IsGridToggled && this.isSquareGridSelected)
                 {
                     this.DisplayedImage = this.GridImage;
                 }
                 
             }
         }
+
+
+
+        /// <summary>
+        /// Gets or sets the triangle grid image.
+        /// </summary>
+        /// <value>
+        /// The triangle grid image.
+        /// </value>
+        public WriteableBitmap TriangleGridImage
+        {
+            get => triangleGridImage;
+            set
+            {
+                triangleGridImage = value;
+                this.OnPropertyChanged();
+                if (this.IsGridToggled && !this.isSquareGridSelected)
+                {
+                    this.DisplayedImage = this.TriangleGridImage;
+                }
+            }
+        }
+
 
         /// <summary>
         /// Gets or sets the display image.
@@ -126,6 +154,7 @@ namespace GroupGMosaicMaker.ViewModel
             set
             {
                 this.mosaicImage = value;
+                this.CanSaveImage = true;
                 OnPropertyChanged();
             }
         }
@@ -161,6 +190,7 @@ namespace GroupGMosaicMaker.ViewModel
                 if (this.imageSource != null)
                 {
                     this.createGridImageAsync(this.imageSource);
+                    this.createTriangleGridImageAsync(this.imageSource);
                 }
                 this.OnPropertyChanged();
             }
@@ -198,11 +228,30 @@ namespace GroupGMosaicMaker.ViewModel
         /// <value>
         ///   <c>true</c> if the grid is toggled; otherwise, <c>false</c>.
         /// </value>
-        public bool IsGridToggled
+        public bool IsGridToggled { get; set; }
+
+
+
+        /// <summary>
+        /// Gets or sets a value indicating whether square grid is selected.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this square is grid selected; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsSquareGridSelected
         {
-            get => this.isGridToggled;
-            set => this.isGridToggled = value;
+            get =>isSquareGridSelected;
+
+            set
+            {
+                isSquareGridSelected = value; 
+                this.OnPropertyChanged();
+                this.createGridImageAsync(this.imageSource);
+                this.createTriangleGridImageAsync(this.imageSource);
+                this.GeneratePictureMosaicCommand.OnCanExecuteChanged();
+            }
         }
+
 
 
         #endregion
@@ -216,10 +265,12 @@ namespace GroupGMosaicMaker.ViewModel
             this.originalImageGenerator = new ImageGenerator();
             this.gridImageOperator = new ImageGridGenerator();
             this.blockMosaicMaker = new BlockMosaicMaker();
+            this.triangleGridImageOperator = new TriangleGridGenerator();
             this.pictureMosaicMaker = new PictureMosaicMaker();
 
-            this.gridSize = 10;
+            this.gridSize = DefaultGridSize;
             this.canSaveImage = false;
+            this.isSquareGridSelected = true;
 
             this.loadCommands();
         }
@@ -255,6 +306,10 @@ namespace GroupGMosaicMaker.ViewModel
         private async void generatePictureMosaic(object obj)
         {
             await this.pictureMosaicMaker.SetSourceAsync(this.imageSource);
+            foreach (var image in Palette)
+            {
+                await image.ScaleImage(this.GridSize, this.GridSize);
+            }
 
             this.pictureMosaicMaker.BlockLength = this.GridSize;
             this.pictureMosaicMaker.Palette = this.palette;
@@ -274,7 +329,8 @@ namespace GroupGMosaicMaker.ViewModel
             
             await this.createOriginalImageAsync(imageSource);
             this.createGridImageAsync(imageSource);
-
+            this.createTriangleGridImageAsync(imageSource);
+            
             this.displayImageOnCreation();
             
         }
@@ -283,7 +339,15 @@ namespace GroupGMosaicMaker.ViewModel
         {
             if (this.IsGridToggled)
             {
-                this.DisplayedImage = this.gridImage;
+                if (this.isSquareGridSelected)
+                {
+                    this.DisplayedImage = this.gridImage;
+                }
+                else
+                {
+                    this.DisplayedImage = this.triangleGridImage;
+                }
+                
             }
             else
             {
@@ -295,7 +359,7 @@ namespace GroupGMosaicMaker.ViewModel
         {
             await this.originalImageGenerator.SetSourceAsync(imageSource);
             this.OriginalImage = await this.originalImageGenerator.GenerateImageAsync();
-            this.CanSaveImage = true;
+            
         }
 
         private async void createGridImageAsync(IRandomAccessStream imageSource)
@@ -315,6 +379,13 @@ namespace GroupGMosaicMaker.ViewModel
                 await paletteImage.ScaleImage(this.gridSize, this.gridSize);
                 this.palette.Add(paletteImage);
             }
+        }
+
+        private async void createTriangleGridImageAsync(IRandomAccessStream imageSource)
+        {
+            await this.triangleGridImageOperator.SetSourceAsync(imageSource);
+            this.triangleGridImageOperator.DrawGrid(this.GridSize);
+            this.TriangleGridImage = await this.triangleGridImageOperator.GenerateImageAsync();
         }
 
         /// <summary>

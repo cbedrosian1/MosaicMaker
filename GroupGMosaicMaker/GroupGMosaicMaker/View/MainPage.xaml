@@ -38,6 +38,9 @@
         <ToggleSwitch x:Name="toggleSwitch" Toggled="gridSwitchToggled"  OffContent="Hidden" OnContent="Visible" HorizontalAlignment="Left" Margin="90,345,0,0" VerticalAlignment="Top"/>
         <TextBlock x:Name="gridSizeText" HorizontalAlignment="Left" Margin="25,295,0,0" Text="Grid Size:" TextWrapping="Wrap" VerticalAlignment="Top"/>
         <TextBlock x:Name="showGridText" HorizontalAlignment="Left" Margin="5,355,0,0" Text="Display Grid: " TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <RadioButton Content="Square Grid"  GroupName="GridType" IsChecked= "{Binding IsSquareGridSelected, Mode=TwoWay}"  HorizontalAlignment="Left" Margin="5,390,0,0" VerticalAlignment="Top"/>
+        <RadioButton Content="Triangle Grid" GroupName="GridType" HorizontalAlignment="Left" Margin="5,425,0,0" VerticalAlignment="Top"/>
+
 
     </Grid>
 </Page>
