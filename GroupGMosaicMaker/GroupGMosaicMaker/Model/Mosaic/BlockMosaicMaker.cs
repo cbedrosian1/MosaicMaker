@@ -17,35 +17,16 @@ namespace GroupGMosaicMaker.Model.Mosaic
 
         public virtual void GenerateMosaic()
         {
-            var blocks = this.FindImageBlocks();
-
-            var counter = 0;
             for (var i = 0; i < Decoder.PixelHeight; i += this.BlockLength)
             {
                 for (var j = 0; j < Decoder.PixelWidth; j += this.BlockLength)
                 {
-                    var currentBlock = blocks[counter];
+                    var currentBlock = this.FindSingleBlock(i, j);
                     var color = this.CalculateAverageColor(currentBlock);
 
                     this.AssignColorToBlock(i, j, color);
-                    counter++;
                 }
             }
-        }
-
-        protected IList<IList<Color>> FindImageBlocks()
-        {
-            var blocks = new List<IList<Color>>();
-
-            for (var x = 0; x < Decoder.PixelHeight; x += this.BlockLength)
-            {
-                for (var y = 0; y < Decoder.PixelWidth; y += this.BlockLength)
-                {
-                    blocks.Add(this.FindSingleBlock(x, y));
-                }
-            }
-
-            return blocks;
         }
 
         protected virtual IList<Color> FindSingleBlock(int startX, int startY)
