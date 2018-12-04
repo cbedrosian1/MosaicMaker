@@ -33,19 +33,15 @@ namespace GroupGMosaicMaker.Model.Mosaic
 
         public override void GenerateMosaic()
         {
-            var blocks = FindImageBlocks();
-
-            var counter = 0;
             for (var i = 0; i < Decoder.PixelHeight; i += BlockLength)
             {
                 for (var j = 0; j < Decoder.PixelWidth; j += BlockLength)
                 {
-                    var currentBlock = blocks[counter];
+                    var currentBlock = this.FindSingleBlock(i, j);
                     var currentBlockColor = CalculateAverageColor(currentBlock);
                     var closestImage = this.findClosestPaletteImage(currentBlockColor);
 
                     this.assignPaletteImageToBlock(i, j, closestImage);
-                    counter++;
                 }
             }
         }
