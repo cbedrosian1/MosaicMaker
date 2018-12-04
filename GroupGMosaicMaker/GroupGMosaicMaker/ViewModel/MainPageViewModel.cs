@@ -230,8 +230,11 @@ namespace GroupGMosaicMaker.ViewModel
             {
                 isSquareGridSelected = value; 
                 this.OnPropertyChanged();
-                this.createGridImageAsync(this.imageSource);
-                this.createTriangleGridImageAsync(this.imageSource);
+                if (this.imageSource != null)
+                {
+                    this.createGridImageAsync(this.imageSource);
+                    this.createTriangleGridImageAsync(this.imageSource);
+                }
                 this.GeneratePictureMosaicCommand.OnCanExecuteChanged();
             }
         }
