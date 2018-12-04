@@ -21,20 +21,6 @@ namespace GroupGMosaicMaker.View
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        #region Constructors
-
-        public MainPage()
-        {
-            InitializeComponent();
-            ApplicationView.PreferredLaunchViewSize = new Size {Width = ApplicationWidth, Height = ApplicationHeight};
-            ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
-            ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(ApplicationWidth, ApplicationHeight));
-
-            this.fileLoader = new StreamFileLoader();
-            this.folderLoader = new StreamFolderLoader();
-        }
-
-        #endregion
 
         #region Data members
 
@@ -51,7 +37,25 @@ namespace GroupGMosaicMaker.View
         private StreamFileLoader fileLoader;
         private StreamFolderLoader folderLoader;
 
+        private string chosenFileType;
+
         #endregion
+        #region Constructors
+
+        public MainPage()
+        {
+            InitializeComponent();
+            ApplicationView.PreferredLaunchViewSize = new Size {Width = ApplicationWidth, Height = ApplicationHeight};
+            ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
+            ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(ApplicationWidth, ApplicationHeight));
+            this.chosenFileType = string.Empty;
+            this.fileLoader = new StreamFileLoader();
+            this.folderLoader = new StreamFolderLoader();
+        }
+
+        #endregion
+
+
 
         #region Methods
 
@@ -78,7 +82,7 @@ namespace GroupGMosaicMaker.View
             openPicker.FileTypeFilter.Add(".bmp");
 
             var file = await openPicker.PickSingleFileAsync();
-
+            this.chosenFileType = file.FileType;
             return file;
         }
 
@@ -87,15 +91,14 @@ namespace GroupGMosaicMaker.View
             var fileSavePicker = new FileSavePicker
             {
                 SuggestedStartLocation = PickerLocationId.PicturesLibrary,
-                SuggestedFileName = "image"
+                SuggestedFileName = "image",    
+                DefaultFileExtension = this.chosenFileType
             };
-
-            fileSavePicker.FileTypeChoices.Add("PNG files", new List<string> {".png"});
-            fileSavePicker.FileTypeChoices.Add("BMP files", new List<string> {".bmp"});
-            fileSavePicker.FileTypeChoices.Add("JPG files", new List<string> {".jpg"});
+            fileSavePicker.FileTypeChoices.Add("PNG files", new List<string> { ".png" });
+            fileSavePicker.FileTypeChoices.Add("JPG files", new List<string> { ".jpg" });
+            fileSavePicker.FileTypeChoices.Add("BMP files", new List<string> { ".bmp" });
 
             var file = await fileSavePicker.PickSaveFileAsync();
-
             return file;
         }
 
@@ -113,9 +116,6 @@ namespace GroupGMosaicMaker.View
 
             if (saveFile != null) await ((MainPageViewModel) DataContext).WriteDataAsync(saveFile);
         }
-
-
-        #endregion
 
         private void gridSwitchToggled(object sender, RoutedEventArgs e)
         {
@@ -160,5 +160,9 @@ namespace GroupGMosaicMaker.View
             var folder = await folderPicker.PickSingleFolderAsync();
             return folder;
         }
+         
+        #endregion
+
+       
     }
 }
