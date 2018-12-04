@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Appointments;
 using Windows.Graphics.Imaging;
 using Windows.Storage.Streams;
 using Windows.UI;
 using Windows.UI.Xaml.Media.Imaging;
 
-namespace GroupGMosaicMaker.Model
+namespace GroupGMosaicMaker.Model.Image
 {
     /// <summary>
     ///     Base class that allows for generating image data.
@@ -63,7 +62,7 @@ namespace GroupGMosaicMaker.Model
 
             await this.assignSourcePixelsAsync(this.Decoder.PixelWidth, this.Decoder.PixelHeight);
         }
-        
+
         protected async Task assignSourcePixelsAsync(uint width, uint height)
         {
             var pixelData = await this.generatePixelDataAsync(width, height);

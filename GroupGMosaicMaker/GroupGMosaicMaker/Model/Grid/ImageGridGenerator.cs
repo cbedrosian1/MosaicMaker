@@ -1,10 +1,7 @@
-﻿using System.Threading.Tasks;
-using Windows.Devices.AllJoyn;
-using Windows.Storage.Streams;
-using Windows.UI;
-using Windows.UI.Xaml.Media.Imaging;
+﻿using Windows.UI;
+using GroupGMosaicMaker.Model.Image;
 
-namespace GroupGMosaicMaker.Model
+namespace GroupGMosaicMaker.Model.Grid
 {
     /// <summary>
     ///     Responsible for drawing square grids of varying sizes onto the given bitmap image.

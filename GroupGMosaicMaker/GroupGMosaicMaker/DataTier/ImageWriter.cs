@@ -3,7 +3,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Graphics.Imaging;
 using Windows.Storage;
-using GroupGMosaicMaker.Model;
+using GroupGMosaicMaker.Model.Image;
 
 namespace GroupGMosaicMaker.DataTier
 {

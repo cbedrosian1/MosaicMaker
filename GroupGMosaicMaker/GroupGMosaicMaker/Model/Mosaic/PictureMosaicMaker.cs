@@ -1,22 +1,39 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using Windows.Devices.Perception.Provider;
 using Windows.UI;
+using GroupGMosaicMaker.Model.Image;
 
-namespace GroupGMosaicMaker.Model
+namespace GroupGMosaicMaker.Model.Mosaic
 {
     public class PictureMosaicMaker : BlockMosaicMaker
     {
+        #region Data members
+
         private IList<PixelBlock> sourceBlocks;
         private IList<PaletteImageGenerator> palette;
 
+        #endregion
+
+        #region Properties
+
+        public IList<PaletteImageGenerator> Palette
+        {
+            get => this.palette;
+            set
+            {
+                this.palette = value;
+                this.assignAverageColorsToPalette();
+            }
+        }
+
+        #endregion
+
+        #region Methods
+
         public override void GenerateMosaic()
         {
-            var blocks = this.FindImageBlocks();
+            var blocks = FindImageBlocks();
 
             var counter = 0;
             for (var i = 0; i < Decoder.PixelHeight; i += BlockLength)
@@ -24,7 +41,7 @@ namespace GroupGMosaicMaker.Model
                 for (var j = 0; j < Decoder.PixelWidth; j += BlockLength)
                 {
                     var currentBlock = blocks[counter];
-                    var currentBlockColor = this.CalculateAverageColor(currentBlock);
+                    var currentBlockColor = CalculateAverageColor(currentBlock);
                     var closestImage = this.findClosestPaletteImage(currentBlockColor);
 
                     this.assignPaletteImageToBlock(i, j, closestImage);
@@ -33,17 +50,7 @@ namespace GroupGMosaicMaker.Model
             }
         }
 
-        public IList<PaletteImageGenerator> Palette
-        {
-            get => this.palette;
-            set
-            {
-                this.palette = value;
-                this.assignAverageColorsToPallete();
-            }
-        }
-
-        private void assignAverageColorsToPallete()
+        private void assignAverageColorsToPalette()
         {
             foreach (var paletteImage in this.Palette)
             {
@@ -80,5 +87,7 @@ namespace GroupGMosaicMaker.Model
                 }
             }
         }
+
+        #endregion
     }
 }

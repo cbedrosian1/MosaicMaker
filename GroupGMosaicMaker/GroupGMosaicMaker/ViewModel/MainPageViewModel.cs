@@ -1,13 +1,13 @@
-﻿using System.Threading.Tasks;
-using Windows.Graphics.Imaging;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml.Media.Imaging;
 using GroupGMosaicMaker.DataTier;
-using GroupGMosaicMaker.Model;
+using GroupGMosaicMaker.Model.Grid;
+using GroupGMosaicMaker.Model.Image;
+using GroupGMosaicMaker.Model.Mosaic;
 using GroupGMosaicMaker.Utilities;
-using System;
-using System.Collections.Generic;
 
 namespace GroupGMosaicMaker.ViewModel
 {
@@ -18,6 +18,8 @@ namespace GroupGMosaicMaker.ViewModel
     public class MainPageViewModel : ViewModelGeneric
     {
         #region Data members
+
+        private const int DefaultGridSize = 10;
 
         private bool canSaveImage;
 
@@ -34,7 +36,6 @@ namespace GroupGMosaicMaker.ViewModel
         private WriteableBitmap mosaicImage;
         private readonly BlockMosaicMaker blockMosaicMaker;
         private readonly PictureMosaicMaker pictureMosaicMaker;
-        
 
         private WriteableBitmap displayedImage;
 
@@ -43,8 +44,6 @@ namespace GroupGMosaicMaker.ViewModel
 
         private int gridSize;
         private bool isSquareGridSelected;
-
-        private const int DefaultGridSize = 10;
 
         #endregion
 
@@ -75,15 +74,16 @@ namespace GroupGMosaicMaker.ViewModel
                 this.originalImage = value;
                 OnPropertyChanged();
                 this.GenerateBlockMosaicCommand.OnCanExecuteChanged();
-                this.GeneratePictureMosaicCommand.OnCanExecuteChanged(); //TODO will probably need to add this to the collection property
+                this.GeneratePictureMosaicCommand
+                    .OnCanExecuteChanged(); //TODO will probably need to add this to the collection property
             }
         }
 
         /// <summary>
-        /// Gets or sets the grid image.
+        ///     Gets or sets the grid image.
         /// </summary>
         /// <value>
-        /// The grid image.
+        ///     The grid image.
         /// </value>
         public WriteableBitmap GridImage
         {
@@ -91,30 +91,27 @@ namespace GroupGMosaicMaker.ViewModel
             set
             {
                 this.gridImage = value;
-                this.OnPropertyChanged();
+                OnPropertyChanged();
                 if (this.IsGridToggled && this.isSquareGridSelected)
                 {
                     this.DisplayedImage = this.GridImage;
                 }
-                
             }
         }
 
-
-
         /// <summary>
-        /// Gets or sets the triangle grid image.
+        ///     Gets or sets the triangle grid image.
         /// </summary>
         /// <value>
-        /// The triangle grid image.
+        ///     The triangle grid image.
         /// </value>
         public WriteableBitmap TriangleGridImage
         {
-            get => triangleGridImage;
+            get => this.triangleGridImage;
             set
             {
-                triangleGridImage = value;
-                this.OnPropertyChanged();
+                this.triangleGridImage = value;
+                OnPropertyChanged();
                 if (this.IsGridToggled && !this.isSquareGridSelected)
                 {
                     this.DisplayedImage = this.TriangleGridImage;
@@ -122,12 +119,11 @@ namespace GroupGMosaicMaker.ViewModel
             }
         }
 
-
         /// <summary>
-        /// Gets or sets the display image.
+        ///     Gets or sets the display image.
         /// </summary>
         /// <value>
-        /// The display image.
+        ///     The display image.
         /// </value>
         public WriteableBitmap DisplayedImage
         {
@@ -136,17 +132,15 @@ namespace GroupGMosaicMaker.ViewModel
             set
             {
                 this.displayedImage = value;
-                this.OnPropertyChanged();
+                OnPropertyChanged();
             }
-
         }
 
-
         /// <summary>
-        /// Gets or sets the mosaic image.
+        ///     Gets or sets the mosaic image.
         /// </summary>
         /// <value>
-        /// The mosaic image.
+        ///     The mosaic image.
         /// </value>
         public WriteableBitmap MosaicImage
         {
@@ -160,10 +154,10 @@ namespace GroupGMosaicMaker.ViewModel
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance can save image.
+        ///     Gets or sets a value indicating whether this instance can save image.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if this instance can save image; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance can save image; otherwise, <c>false</c>.
         /// </value>
         public bool CanSaveImage
         {
@@ -176,10 +170,10 @@ namespace GroupGMosaicMaker.ViewModel
         }
 
         /// <summary>
-        /// Gets or sets the size of the grid for the mosaic.
+        ///     Gets or sets the size of the grid for the mosaic.
         /// </summary>
         /// <value>
-        /// The size of the grid for the mosaic.
+        ///     The size of the grid for the mosaic.
         /// </value>
         public int GridSize
         {
@@ -192,79 +186,76 @@ namespace GroupGMosaicMaker.ViewModel
                     this.createGridImageAsync(this.imageSource);
                     this.createTriangleGridImageAsync(this.imageSource);
                 }
-                this.OnPropertyChanged();
+
+                OnPropertyChanged();
             }
         }
 
         /// <summary>
-        /// Gets or sets the generate block mosaic command.
+        ///     Gets or sets the generate block mosaic command.
         /// </summary>
         /// <value>
-        /// The generate block mosaic command.
+        ///     The generate block mosaic command.
         /// </value>
         public RelayCommand GenerateBlockMosaicCommand { get; set; }
 
         /// <summary>
-        /// Gets or sets the generate picture mosaic command.
+        ///     Gets or sets the generate picture mosaic command.
         /// </summary>
         /// <value>
-        /// The generate picture mosaic command.
+        ///     The generate picture mosaic command.
         /// </value>
         public RelayCommand GeneratePictureMosaicCommand { get; set; }
 
         /// <summary>
-        /// Gets or sets the image source.
+        ///     Gets or sets the image source.
         /// </summary>
         /// <value>
-        /// The image source.
+        ///     The image source.
         /// </value>
         public WriteableBitmap ImageSource { get; set; }
 
-
-
         /// <summary>
-        /// Gets or sets a value indicating whether the grid is toggled.
+        ///     Gets or sets a value indicating whether the grid is toggled.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if the grid is toggled; otherwise, <c>false</c>.
+        ///     <c>true</c> if the grid is toggled; otherwise, <c>false</c>.
         /// </value>
         public bool IsGridToggled { get; set; }
 
-
-
         /// <summary>
-        /// Gets or sets a value indicating whether square grid is selected.
+        ///     Gets or sets a value indicating whether square grid is selected.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if this square is grid selected; otherwise, <c>false</c>.
+        ///     <c>true</c> if this square is grid selected; otherwise, <c>false</c>.
         /// </value>
         public bool IsSquareGridSelected
         {
-            get =>isSquareGridSelected;
+            get => this.isSquareGridSelected;
 
             set
             {
-                isSquareGridSelected = value; 
-                this.OnPropertyChanged();
+                this.isSquareGridSelected = value;
+                OnPropertyChanged();
                 if (this.imageSource != null)
                 {
                     this.createGridImageAsync(this.imageSource);
                     this.createTriangleGridImageAsync(this.imageSource);
                 }
+
                 this.GeneratePictureMosaicCommand.OnCanExecuteChanged();
             }
         }
 
-
-
         #endregion
 
+        #region Constructors
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="MainPageViewModel"/> class.
+        ///     Initializes a new instance of the <see cref="MainPageViewModel" /> class.
         /// </summary>
         public MainPageViewModel()
         {
-
             this.originalImageGenerator = new ImageGenerator();
             this.gridImageOperator = new ImageGridGenerator();
             this.blockMosaicMaker = new BlockMosaicMaker();
@@ -278,12 +269,15 @@ namespace GroupGMosaicMaker.ViewModel
             this.loadCommands();
         }
 
+        #endregion
+
         #region Methods
 
         private void loadCommands()
         {
             this.GenerateBlockMosaicCommand = CreateCommand(this.generateBlockMosaic, this.canGenerateBlockMosaic);
-            this.GeneratePictureMosaicCommand = CreateCommand(this.generatePictureMosaic, this.canGeneratePictureMosaic);
+            this.GeneratePictureMosaicCommand =
+                CreateCommand(this.generatePictureMosaic, this.canGeneratePictureMosaic);
         }
 
         private bool canGenerateBlockMosaic(object obj)
@@ -309,7 +303,7 @@ namespace GroupGMosaicMaker.ViewModel
         private async void generatePictureMosaic(object obj)
         {
             await this.pictureMosaicMaker.SetSourceAsync(this.imageSource);
-            foreach (var image in Palette)
+            foreach (var image in this.Palette)
             {
                 await image.ScaleImage(this.GridSize, this.GridSize);
             }
@@ -329,13 +323,12 @@ namespace GroupGMosaicMaker.ViewModel
         public async Task CreateImages(IRandomAccessStream imageSource)
         {
             this.imageSource = imageSource;
-            
+
             await this.createOriginalImageAsync(imageSource);
             this.createGridImageAsync(imageSource);
             this.createTriangleGridImageAsync(imageSource);
-            
+
             this.displayImageOnCreation();
-            
         }
 
         private void displayImageOnCreation()
@@ -350,7 +343,6 @@ namespace GroupGMosaicMaker.ViewModel
                 {
                     this.DisplayedImage = this.triangleGridImage;
                 }
-                
             }
             else
             {
@@ -362,7 +354,6 @@ namespace GroupGMosaicMaker.ViewModel
         {
             await this.originalImageGenerator.SetSourceAsync(imageSource);
             this.OriginalImage = await this.originalImageGenerator.GenerateImageAsync();
-            
         }
 
         private async void createGridImageAsync(IRandomAccessStream imageSource)
@@ -392,16 +383,14 @@ namespace GroupGMosaicMaker.ViewModel
         }
 
         /// <summary>
-        /// Writes the data asynchronous.
+        ///     Writes the data asynchronous.
         /// </summary>
         /// <param name="file">The file.</param>
         /// <returns></returns>
         public async Task WriteDataAsync(StorageFile file)
         {
-            
             await ImageWriter.WriteImageAsync(this.pictureMosaicMaker, file);
         }
-
 
         #endregion
     }

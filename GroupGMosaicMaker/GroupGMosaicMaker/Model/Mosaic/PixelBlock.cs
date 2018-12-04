@@ -1,20 +1,32 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Windows.UI;
-using Windows.UI.Xaml.Media.Imaging;
 
-namespace GroupGMosaicMaker.Model
+namespace GroupGMosaicMaker.Model.Mosaic
 {
     public class PixelBlock : IList<Color>
     {
+        #region Data members
+
         private readonly IList<Color> pixelColors;
 
-        public int Count => pixelColors.Count;
+        #endregion
 
-        public bool IsReadOnly => pixelColors.IsReadOnly;
+        #region Properties
 
-        public Color this[int index] { get => pixelColors[index]; set => pixelColors[index] = value; }
+        public int Count => this.pixelColors.Count;
+
+        public bool IsReadOnly => this.pixelColors.IsReadOnly;
+
+        public Color this[int index]
+        {
+            get => this.pixelColors[index];
+            set => this.pixelColors[index] = value;
+        }
+
+        #endregion
+
+        #region Constructors
 
         public PixelBlock()
         {
@@ -26,54 +38,60 @@ namespace GroupGMosaicMaker.Model
             this.pixelColors = pixelColors;
         }
 
+        #endregion
+
+        #region Methods
+
         public int IndexOf(Color item)
         {
-            return pixelColors.IndexOf(item);
+            return this.pixelColors.IndexOf(item);
         }
 
         public void Insert(int index, Color item)
         {
-            pixelColors.Insert(index, item);
+            this.pixelColors.Insert(index, item);
         }
 
         public void RemoveAt(int index)
         {
-            pixelColors.RemoveAt(index);
+            this.pixelColors.RemoveAt(index);
         }
 
         public void Add(Color item)
         {
-            pixelColors.Add(item);
+            this.pixelColors.Add(item);
         }
 
         public void Clear()
         {
-            pixelColors.Clear();
+            this.pixelColors.Clear();
         }
 
         public bool Contains(Color item)
         {
-            return pixelColors.Contains(item);
+            return this.pixelColors.Contains(item);
         }
 
         public void CopyTo(Color[] array, int arrayIndex)
         {
-            pixelColors.CopyTo(array, arrayIndex);
+            this.pixelColors.CopyTo(array, arrayIndex);
         }
 
         public bool Remove(Color item)
         {
-            return pixelColors.Remove(item);
+            return this.pixelColors.Remove(item);
         }
 
         public IEnumerator<Color> GetEnumerator()
         {
-            return pixelColors.GetEnumerator();
+            return this.pixelColors.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return pixelColors.GetEnumerator();
+            return this.pixelColors.GetEnumerator();
         }
+
+        #endregion
     }
 }

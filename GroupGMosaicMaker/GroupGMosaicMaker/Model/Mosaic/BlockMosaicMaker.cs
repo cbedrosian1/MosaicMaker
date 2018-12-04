@@ -1,22 +1,28 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Windows.UI;
+using GroupGMosaicMaker.Model.Image;
 
-namespace GroupGMosaicMaker.Model
+namespace GroupGMosaicMaker.Model.Mosaic
 {
     public class BlockMosaicMaker : ImageGenerator
     {
+        #region Properties
+
         public int BlockLength { get; set; }
+
+        #endregion
+
+        #region Methods
 
         public virtual void GenerateMosaic()
         {
             var blocks = this.FindImageBlocks();
 
             var counter = 0;
-            for (var i = 0; i < Decoder.PixelHeight; i += BlockLength)
+            for (var i = 0; i < Decoder.PixelHeight; i += this.BlockLength)
             {
-                for (var j = 0; j < Decoder.PixelWidth; j += BlockLength)
+                for (var j = 0; j < Decoder.PixelWidth; j += this.BlockLength)
                 {
                     var currentBlock = blocks[counter];
                     var color = this.CalculateAverageColor(currentBlock);
@@ -31,9 +37,9 @@ namespace GroupGMosaicMaker.Model
         {
             var blocks = new List<PixelBlock>();
 
-            for (var x = 0; x < Decoder.PixelHeight; x += BlockLength)
+            for (var x = 0; x < Decoder.PixelHeight; x += this.BlockLength)
             {
-                for (var y = 0; y < Decoder.PixelWidth; y += BlockLength)
+                for (var y = 0; y < Decoder.PixelWidth; y += this.BlockLength)
                 {
                     blocks.Add(this.FindSingleBlock(x, y));
                 }
@@ -46,9 +52,9 @@ namespace GroupGMosaicMaker.Model
         {
             var pixelColors = new List<Color>();
 
-            for (var y = startY; y < startY + BlockLength; y++)
+            for (var y = startY; y < startY + this.BlockLength; y++)
             {
-                for (var x = startX; x < startX + BlockLength; x++)
+                for (var x = startX; x < startX + this.BlockLength; x++)
                 {
                     if (CoordinatesAreValid(x, y))
                     {
@@ -62,9 +68,9 @@ namespace GroupGMosaicMaker.Model
 
         private void AssignColorToBlock(int startX, int startY, Color color)
         {
-            for (var y = startY; y < startY + BlockLength && y < Decoder.PixelWidth; y++)
+            for (var y = startY; y < startY + this.BlockLength && y < Decoder.PixelWidth; y++)
             {
-                for (var x = startX; x < startX + BlockLength && x < Decoder.PixelHeight; x++)
+                for (var x = startX; x < startX + this.BlockLength && x < Decoder.PixelHeight; x++)
                 {
                     SetPixelColor(x, y, color);
                 }
@@ -79,5 +85,7 @@ namespace GroupGMosaicMaker.Model
 
             return Color.FromArgb(0, averageR, averageG, averageB);
         }
+
+        #endregion
     }
 }

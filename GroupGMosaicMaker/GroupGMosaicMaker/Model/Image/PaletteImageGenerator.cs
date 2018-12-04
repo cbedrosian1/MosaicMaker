@@ -1,26 +1,38 @@
 ﻿using System;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Windows.Graphics.Imaging;
 using Windows.Storage.Streams;
 using Windows.UI;
-using Windows.UI.Xaml.Media.Imaging;
+using GroupGMosaicMaker.Model.Mosaic;
 
-namespace GroupGMosaicMaker.Model
+namespace GroupGMosaicMaker.Model.Image
 {
     public class PaletteImageGenerator : ImageGenerator
     {
+        #region Data members
+
         private uint scaledWidth;
         private uint scaledHeight;
 
+        #endregion
+
+        #region Properties
+
         public PixelBlock Pixels { get; set; }
-        
+
         public Color AverageColor { get; set; }
+
+        #endregion
+
+        #region Constructors
 
         public PaletteImageGenerator()
         {
             this.Pixels = new PixelBlock();
         }
+
+        #endregion
+
+        #region Methods
 
         public override async Task SetSourceAsync(IRandomAccessStream imageSource)
         {
@@ -40,7 +52,7 @@ namespace GroupGMosaicMaker.Model
             this.scaledWidth = convertedWidth;
             this.scaledHeight = convertedHeight;
 
-            await this.assignSourcePixelsAsync(convertedWidth, convertedHeight);
+            await assignSourcePixelsAsync(convertedWidth, convertedHeight);
         }
 
         protected override int CalculatePixelOffset(int x, int y)
@@ -50,14 +62,16 @@ namespace GroupGMosaicMaker.Model
 
         private void assignPixels()
         {
-            for (int i = 0; i < Decoder.PixelWidth; i++)
+            for (var i = 0; i < Decoder.PixelWidth; i++)
             {
-                for (int j = 0; j < Decoder.PixelHeight; j++)
+                for (var j = 0; j < Decoder.PixelHeight; j++)
                 {
                     var color = FindPixelColor(i, j);
                     this.Pixels.Add(color);
                 }
             }
         }
+
+        #endregion
     }
 }
