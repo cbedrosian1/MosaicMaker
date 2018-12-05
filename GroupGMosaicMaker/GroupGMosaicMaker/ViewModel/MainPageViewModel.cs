@@ -186,8 +186,8 @@ namespace GroupGMosaicMaker.ViewModel
                 this.gridSize = value;
                 if (this.imageSource != null)
                 {
-                    this.createGridImageAsync(this.imageSource);
-                    this.createTriangleGridImageAsync(this.imageSource);
+                    this.createGridImageAsync();
+                    this.createTriangleGridImageAsync();
                 }
 
                 this.OnPropertyChanged();
@@ -242,8 +242,8 @@ namespace GroupGMosaicMaker.ViewModel
                 this.OnPropertyChanged();
                 if (this.imageSource != null)
                 {
-                    this.createGridImageAsync(this.imageSource);
-                    this.createTriangleGridImageAsync(this.imageSource);
+                    this.createGridImageAsync();
+                    this.createTriangleGridImageAsync();
                 }
                 this.GeneratePictureMosaicCommand.OnCanExecuteChanged();
             }
@@ -343,15 +343,17 @@ namespace GroupGMosaicMaker.ViewModel
         /// <summary>
         ///     Displays the original image asynchronous.
         /// </summary>
-        /// <param name="imageSource">The source of the image data.</param>
+        /// <param name="source">The source of the image data.</param>
         /// <returns>The completed asynchronous operation.</returns>
-        public async Task CreateImages(IRandomAccessStream imageSource)
+        public async Task LoadImageSource(IRandomAccessStream source)
         {
-            this.imageSource = imageSource;
+            this.imageSource = source;
 
-            await this.createOriginalImageAsync(imageSource);
-            this.createGridImageAsync(imageSource);
-            this.createTriangleGridImageAsync(imageSource);
+            this.MosaicImage = null;
+
+            await this.createOriginalImageAsync();
+            this.createGridImageAsync();
+            this.createTriangleGridImageAsync();
 
             this.displayImageOnCreation();
         }
@@ -375,13 +377,13 @@ namespace GroupGMosaicMaker.ViewModel
             }
         }
 
-        private async Task createOriginalImageAsync(IRandomAccessStream imageSource)
+        private async Task createOriginalImageAsync()
         {
             await this.originalImageGenerator.SetSourceAsync(imageSource);
             this.OriginalImage = await this.originalImageGenerator.GenerateImageAsync();
         }
 
-        private async void createGridImageAsync(IRandomAccessStream imageSource)
+        private async void createGridImageAsync()
         {
             await this.gridImageOperator.SetSourceAsync(imageSource);
             this.gridImageOperator.DrawGrid(this.GridSize);
@@ -401,7 +403,7 @@ namespace GroupGMosaicMaker.ViewModel
             this.Palette = palette;
         }
 
-        private async void createTriangleGridImageAsync(IRandomAccessStream imageSource)
+        private async void createTriangleGridImageAsync()
         {
             await this.triangleGridImageOperator.SetSourceAsync(imageSource);
             this.triangleGridImageOperator.DrawGrid(this.GridSize);
