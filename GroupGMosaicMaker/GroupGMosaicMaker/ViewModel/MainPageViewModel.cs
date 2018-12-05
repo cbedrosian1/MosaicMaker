@@ -304,16 +304,22 @@ namespace GroupGMosaicMaker.ViewModel
         private async void generatePictureMosaic(object obj)
         {
             await this.pictureMosaicMaker.SetSourceAsync(this.imageSource);
-            foreach (var image in this.Palette)
-            {
-                await image.ScaleImage(this.GridSize, this.GridSize);
-            }
+            await this.scalePaletteImagesAsync();
 
             this.pictureMosaicMaker.BlockLength = this.GridSize;
             this.pictureMosaicMaker.Palette = this.palette;
             this.pictureMosaicMaker.GenerateMosaic();
 
             this.MosaicImage = await this.pictureMosaicMaker.GenerateImageAsync();
+        }
+
+        private async Task scalePaletteImagesAsync()
+        {
+            foreach (var image in this.Palette)
+            {
+                await image.ScaleImageSquare(this.GridSize);
+            }
+
         }
 
         /// <summary>
@@ -371,7 +377,6 @@ namespace GroupGMosaicMaker.ViewModel
             {
                 var paletteImage = new PaletteImageGenerator();
                 await paletteImage.SetSourceAsync(source);
-                await paletteImage.ScaleImage(this.gridSize, this.gridSize);
                 palette.Add(paletteImage);
             }
 

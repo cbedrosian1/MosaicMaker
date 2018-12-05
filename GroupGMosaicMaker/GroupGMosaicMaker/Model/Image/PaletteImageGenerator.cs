@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Storage.Streams;
-using Windows.UI;
 using GroupGMosaicMaker.Model.Mosaic;
 
 namespace GroupGMosaicMaker.Model.Image
@@ -16,55 +14,74 @@ namespace GroupGMosaicMaker.Model.Image
     {
         #region Data members
 
-        private uint scaledWidth;
-        private uint scaledHeight;
+        private uint scaledLength;
 
         #endregion
 
         #region Properties
 
-        // TODO AverageColor is dependent on the pixels, but can currently be set to any value regardless of the pixels.
-        public IList<Color> Pixels { get; set; }
-
-        public Color AverageColor { get; set; }
+        /// <summary>
+        ///     Gets the pixel block associated with the image source.
+        /// </summary>
+        /// <value>
+        ///     The pixel block.
+        /// </value>
+        public PixelBlock PixelBlock { get; }
 
         #endregion
 
         #region Constructors
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PaletteImageGenerator"/> class.
+        /// </summary>
         public PaletteImageGenerator()
         {
-            this.Pixels = new PixelBlock();
+            this.PixelBlock = new PixelBlock();
         }
 
         #endregion
 
         #region Methods
 
+        /// <summary>
+        /// Initializes the <see cref="ImageGenerator" /> for use with the desired image source asynchronously.
+        /// </summary>
+        /// <param name="imageSource">The image source.</param>
+        /// <returns>
+        /// The completed asynchronous operation.
+        /// </returns>
         public override async Task SetSourceAsync(IRandomAccessStream imageSource)
         {
             await base.SetSourceAsync(imageSource);
 
-            this.scaledWidth = Decoder.PixelWidth;
-            this.scaledHeight = Decoder.PixelHeight;
+            this.scaledLength = Decoder.PixelWidth;
 
             this.assignPixels();
         }
 
-        public async Task ScaleImage(int scaledWidth, int scaledHeight)
+        /// <summary>
+        ///     Scales the image down into a square of the given new length.
+        /// </summary>
+        /// <param name="newLength">The new length.</param>
+        /// <returns>The completed asynchronous operation.</returns>
+        public async Task ScaleImageSquare(int newLength)
         {
-            var convertedWidth = Convert.ToUInt32(scaledWidth);
-            var convertedHeight = Convert.ToUInt32(scaledHeight);
+            var convertedWidth = Convert.ToUInt32(newLength);
+            this.scaledLength = convertedWidth;
 
-            this.scaledWidth = convertedWidth;
-            this.scaledHeight = convertedHeight;
-
-            await AssignSourcePixelsAsync(convertedWidth, convertedHeight);
+            await AssignSourcePixelsAsync(convertedWidth, convertedWidth);
         }
 
+        /// <summary>
+        /// Calculates the pixel offset.
+        /// </summary>
+        /// <param name="x">The row.</param>
+        /// <param name="y">The the column.</param>
+        /// <returns>The pixel offset for accessing the source pixels.</returns>
         protected override int CalculatePixelOffset(int x, int y)
         {
-            return (x * (int) this.scaledWidth + y) * 4;
+            return (x * (int) this.scaledLength + y) * 4;
         }
 
         private void assignPixels()
@@ -74,7 +91,7 @@ namespace GroupGMosaicMaker.Model.Image
                 for (var j = 0; j < Decoder.PixelHeight; j++)
                 {
                     var color = FindPixelColor(i, j);
-                    this.Pixels.Add(color);
+                    this.PixelBlock.Add(color);
                 }
             }
         }

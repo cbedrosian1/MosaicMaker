@@ -1,35 +1,64 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Windows.UI;
 using GroupGMosaicMaker.Model.Image;
 
 namespace GroupGMosaicMaker.Model.Mosaic
 {
+    /// <summary>
+    ///     Responsible for generating solid block mosaics from the image source, of varying block sizes.
+    /// </summary>
+    /// <seealso cref="GroupGMosaicMaker.Model.Image.ImageGenerator" />
     public class BlockMosaicMaker : ImageGenerator
     {
         #region Properties
 
+        /// <summary>
+        ///     Gets or sets the length of the block.
+        /// </summary>
+        /// <value>
+        ///     The length of the block.
+        /// </value>
         public int BlockLength { get; set; }
 
         #endregion
 
         #region Methods
 
-        public virtual void GenerateMosaic()
+        /// <summary>
+        ///     Generates the mosaic onto the source image.
+        /// </summary>
+        public void GenerateMosaic()
         {
-            for (var i = 0; i < Decoder.PixelHeight; i += this.BlockLength)
+            for (var x = 0; x < Decoder.PixelHeight; x += this.BlockLength)
             {
-                for (var j = 0; j < Decoder.PixelWidth; j += this.BlockLength)
+                for (var y = 0; y < Decoder.PixelWidth; y += this.BlockLength)
                 {
-                    var currentBlock = this.FindSingleBlock(i, j);
-                    var color = this.CalculateAverageColor(currentBlock);
-
-                    this.AssignColorToBlock(i, j, color);
+                    this.GenerateMosaicBlock(x, y);
                 }
             }
         }
 
-        protected virtual IList<Color> FindSingleBlock(int startX, int startY)
+        /// <summary>
+        ///     Generates the (x, y)'th block of the mosaic. Override this method to change the functionality of how each block is
+        ///     generated.
+        /// </summary>
+        /// <param name="x">The row.</param>
+        /// <param name="y">The column.</param>
+        protected virtual void GenerateMosaicBlock(int x, int y)
+        {
+            var currentBlock = this.FindSingleBlock(x, y);
+            var color = currentBlock.CalculateAverageColor();
+
+            this.assignColorToBlock(x, y, color);
+        }
+
+        /// <summary>
+        ///     Finds a single block from the given x and y coordinate, according to the block length.
+        /// </summary>
+        /// <param name="startX">The starting row.</param>
+        /// <param name="startY">The starting column.</param>
+        /// <returns>The <see cref="PixelBlock" /> representing the selected area.</returns>
+        protected PixelBlock FindSingleBlock(int startX, int startY)
         {
             var pixelColors = new List<Color>();
 
@@ -47,7 +76,7 @@ namespace GroupGMosaicMaker.Model.Mosaic
             return new PixelBlock(pixelColors);
         }
 
-        private void AssignColorToBlock(int startX, int startY, Color color)
+        private void assignColorToBlock(int startX, int startY, Color color)
         {
             for (var y = startY; y < startY + this.BlockLength && y < Decoder.PixelWidth; y++)
             {
@@ -56,15 +85,6 @@ namespace GroupGMosaicMaker.Model.Mosaic
                     SetPixelColor(x, y, color);
                 }
             }
-        }
-
-        protected Color CalculateAverageColor(IList<Color> colors)
-        {
-            var averageR = (byte) colors.Average(color => color.R);
-            var averageG = (byte) colors.Average(color => color.G);
-            var averageB = (byte) colors.Average(color => color.B);
-
-            return Color.FromArgb(0, averageR, averageG, averageB);
         }
 
         #endregion

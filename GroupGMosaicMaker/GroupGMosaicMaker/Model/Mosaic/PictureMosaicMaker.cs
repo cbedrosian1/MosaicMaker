@@ -6,73 +6,107 @@ using GroupGMosaicMaker.Model.Image;
 
 namespace GroupGMosaicMaker.Model.Mosaic
 {
+    /// <summary>
+    ///     Responsible for generating picture mosaics of the source image with a given palette of images.
+    /// </summary>
+    /// <seealso cref="GroupGMosaicMaker.Model.Mosaic.BlockMosaicMaker" />
     public class PictureMosaicMaker : BlockMosaicMaker
     {
         #region Data members
 
-        private IList<IList<Color>> sourceBlocks;
-        private IList<PaletteImageGenerator> palette;
+        private ICollection<PaletteImageGenerator> palette;
+        private IDictionary<PaletteImageGenerator, Color> averageColorsByPaletteImage;
 
         #endregion
 
         #region Properties
 
-        public IList<PaletteImageGenerator> Palette
+        /// <summary>
+        ///     Gets or sets the image palette that the mosaic will be constructed out of.
+        /// </summary>
+        /// <value>
+        ///     The palette.
+        /// </value>
+        public ICollection<PaletteImageGenerator> Palette
         {
             get => this.palette;
             set
             {
                 this.palette = value;
-                this.assignAverageColorsToPalette();
+                this.averageColorsByPaletteImage = this.CalculateAverageColorsFor(this.palette);
             }
+        }
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="PictureMosaicMaker" /> class.
+        /// </summary>
+        public PictureMosaicMaker()
+        {
+            this.palette = new List<PaletteImageGenerator>();
+            this.averageColorsByPaletteImage = new Dictionary<PaletteImageGenerator, Color>();
         }
 
         #endregion
 
         #region Methods
 
-        public override void GenerateMosaic()
+        /// <summary>
+        ///     Generates the (x, y)'th block of the mosaic. Override this method to change the functionality of how each block is
+        ///     generated.
+        /// </summary>
+        /// <param name="x">The row.</param>
+        /// <param name="y">The column.</param>
+        protected override void GenerateMosaicBlock(int x, int y)
         {
-            for (var i = 0; i < Decoder.PixelHeight; i += BlockLength)
-            {
-                for (var j = 0; j < Decoder.PixelWidth; j += BlockLength)
-                {
-                    var currentBlock = this.FindSingleBlock(i, j);
-                    var currentBlockColor = CalculateAverageColor(currentBlock);
-                    var closestImage = this.findClosestPaletteImage(currentBlockColor);
+            var currentBlock = FindSingleBlock(x, y);
+            var currentBlockColor = currentBlock.CalculateAverageColor();
+            var closestImage = this.findClosestPaletteImage(currentBlockColor);
 
-                    this.assignPaletteImageToBlock(i, j, closestImage);
-                }
-            }
+            this.mapImageToBlock(x, y, closestImage);
         }
 
-        private void assignAverageColorsToPalette()
+        private IDictionary<PaletteImageGenerator, Color> CalculateAverageColorsFor(
+            ICollection<PaletteImageGenerator> paletteToMap)
         {
-            foreach (var paletteImage in this.Palette)
+            var paletteAverageColors = new Dictionary<PaletteImageGenerator, Color>();
+            foreach (var paletteImage in paletteToMap)
             {
-                paletteImage.AverageColor = CalculateAverageColor(paletteImage.Pixels);
-            }
-        }
-
-        private PaletteImageGenerator findClosestPaletteImage(Color color)
-        {
-            var colorDifferences = new Dictionary<PaletteImageGenerator, int>();
-            foreach (var paletteImage in this.Palette)
-            {
-                var currentColor = paletteImage.AverageColor;
-                var rDifference = color.R - currentColor.R;
-                var gDifference = color.G - currentColor.G;
-                var bDifference = color.B - currentColor.B;
-
-                var sumOfDifferences = Math.Abs(rDifference) + Math.Abs(gDifference) + Math.Abs(bDifference);
-                colorDifferences.Add(paletteImage, sumOfDifferences);
+                var averageColor = paletteImage.PixelBlock.CalculateAverageColor();
+                paletteAverageColors.Add(paletteImage, averageColor);
             }
 
-            var keyAndValue = colorDifferences.OrderBy(kvp => kvp.Value).First();
-            return keyAndValue.Key;
+            return paletteAverageColors;
         }
 
-        private void assignPaletteImageToBlock(int startX, int startY, PaletteImageGenerator paletteImage)
+        private PaletteImageGenerator findClosestPaletteImage(Color sourceColor)
+        {
+            var colorComparisonsByImage = new Dictionary<PaletteImageGenerator, int>();
+            foreach (var paletteColorPair in this.averageColorsByPaletteImage)
+            {
+                var currentColor = paletteColorPair.Value;
+                var comparison = this.calculateColorComparison(sourceColor, currentColor);
+
+                colorComparisonsByImage.Add(paletteColorPair.Key, comparison);
+            }
+
+            var mostSimilarPair = colorComparisonsByImage.OrderBy(kvp => kvp.Value).First();
+            return mostSimilarPair.Key;
+        }
+
+        private int calculateColorComparison(Color sourceColor, Color comparedColor)
+        {
+            var rComparison = Math.Abs(sourceColor.R - comparedColor.R);
+            var gComparison = Math.Abs(sourceColor.G - comparedColor.G);
+            var bComparison = Math.Abs(sourceColor.B - comparedColor.B);
+
+            return rComparison + gComparison + bComparison;
+        }
+
+        private void mapImageToBlock(int startX, int startY, ImageGenerator paletteImage)
         {
             for (var y = startY; y < startY + BlockLength && y < Decoder.PixelWidth; y++)
             {
