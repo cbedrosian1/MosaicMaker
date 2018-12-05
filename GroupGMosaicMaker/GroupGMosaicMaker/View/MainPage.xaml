@@ -25,21 +25,33 @@
             <AppBarButton Icon="OpenFile" Label="Load File" Click="loadFile_Click" />
             <AppBarButton Icon="Save" IsEnabled="{Binding CanSaveImage}" Label="Save File" Click="saveFile_Click" />
         </CommandBar>
-        <Image x:Name="sourceImage" Source="{Binding DisplayedImage}" Stretch="Fill" HorizontalAlignment="Left" Height="450"
-               Margin="200,80,0,0"
-               VerticalAlignment="Top" Width="450" />
-        <Image x:Name="mosaicImage" Source="{Binding MosaicImage}"  Stretch="Fill" HorizontalAlignment="Left" Height="450"
-               Margin="700,80,0,0"
-               VerticalAlignment="Top" Width="450" />
-        <TextBox x:Name="gridSize" extensions:TextBoxRegex.Regex="^([5-9]|[1-4][0-9]|50)$" extensions:TextBoxRegex.ValidationMode="Forced"  Text="{Binding Path=GridSize, Converter={StaticResource StringToIntConverter}, Mode=TwoWay}"  HorizontalAlignment="Left" Margin="90,291,0,0" VerticalAlignment="Top"/>
-        <Button Content="Generate Block Mosaic" Command="{Binding GenerateBlockMosaicCommand}" HorizontalAlignment="Left" Margin="200,550,0,0" VerticalAlignment="Top"/>
-        <Button Content="Generate Picture Mosaic" Command="{Binding GeneratePictureMosaicCommand}" HorizontalAlignment="Left" Margin="470,550,0,0" VerticalAlignment="Top"/>
-        <Button Content="Load Image Palette" Click="loadPaletteButton_Click" HorizontalAlignment="Left" Margin="700,550,0,0" VerticalAlignment="Top"/>
-        <ToggleSwitch x:Name="toggleSwitch" Toggled="gridSwitchToggled"  OffContent="Hidden" OnContent="Visible" HorizontalAlignment="Left" Margin="90,345,0,0" VerticalAlignment="Top"/>
-        <TextBlock x:Name="gridSizeText" HorizontalAlignment="Left" Margin="25,295,0,0" Text="Grid Size:" TextWrapping="Wrap" VerticalAlignment="Top"/>
-        <TextBlock x:Name="showGridText" HorizontalAlignment="Left" Margin="5,355,0,0" Text="Display Grid: " TextWrapping="Wrap" VerticalAlignment="Top"/>
-        <RadioButton Content="Square Grid"  GroupName="GridType" IsChecked= "{Binding IsSquareGridSelected, Mode=TwoWay}"  HorizontalAlignment="Left" Margin="5,390,0,0" VerticalAlignment="Top"/>
-        <RadioButton Content="Triangle Grid" GroupName="GridType" HorizontalAlignment="Left" Margin="5,425,0,0" VerticalAlignment="Top"/>
+
+        <ScrollViewer x:Name="sourceScrollView" IsEnabled="{Binding IsZoomSelected}" ZoomMode="Enabled" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Margin="40,80,0,0" Height="450" Width="450" VerticalScrollMode="Enabled" HorizontalScrollMode="Enabled" VerticalAlignment="Top" HorizontalAlignment="Left" >
+            <Image x:Name="sourceImage" Source="{Binding DisplayedImage}"  HorizontalAlignment="Left" Height="450"
+                   VerticalAlignment="Top" Width="450" Stretch="Fill"/>
+        </ScrollViewer>
+
+        <ScrollViewer x:Name="mosaicScrollView"  IsEnabled="{Binding IsZoomSelected}" ZoomMode="Enabled" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Margin="540,80,0,0" Height="450" Width="450" VerticalScrollMode="Enabled" HorizontalScrollMode="Enabled" VerticalAlignment="Top" HorizontalAlignment="Left" >
+            <Image x:Name="mosaicImage" Source="{Binding MosaicImage}"  Stretch="Fill" HorizontalAlignment="Left" Height="450" VerticalAlignment="Top" Width="450" />
+        </ScrollViewer>
+        <Border BorderBrush="Black" BorderThickness="4" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="40,80,0,0" Height="453" Width="453"/>
+        <Border BorderBrush="Black" BorderThickness="4" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="540,80,0,0" Height="453" Width="453"/>
+
+        <TextBox x:Name="gridSize" extensions:TextBoxRegex.Regex="^([5-9]|[1-4][0-9]|50)$" extensions:TextBoxRegex.ValidationMode="Forced"  Text="{Binding Path=GridSize, Converter={StaticResource StringToIntConverter}, Mode=TwoWay}"  HorizontalAlignment="Left" Margin="231,643,0,0" VerticalAlignment="Top" Width="43"/>
+        <Button Content="Generate Block Mosaic" Command="{Binding GenerateBlockMosaicCommand}" HorizontalAlignment="Left" Margin="40,540,0,0" VerticalAlignment="Top"/>
+        <Button Content="Generate Picture Mosaic" Command="{Binding GeneratePictureMosaicCommand}" HorizontalAlignment="Left" Margin="312,540,0,0" VerticalAlignment="Top"/>
+        <Button Content="Load Image Palette" Click="loadPaletteButton_Click" HorizontalAlignment="Left" Margin="704,704,0,0" VerticalAlignment="Top"/>
+        <ToggleSwitch x:Name="toggleSwitch" Toggled="gridSwitchToggled"  OffContent="Hidden" OnContent="Visible" HorizontalAlignment="Left" Margin="231,684,0,0" VerticalAlignment="Top"/>
+        <TextBlock x:Name="gridSizeText" HorizontalAlignment="Left" Margin="185,649,0,0" Text="Size:" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <TextBlock x:Name="showGridText" HorizontalAlignment="Left" Margin="167,694,0,0" Text="Display " TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <RadioButton Content="Square Grid"  GroupName="GridType" IsChecked= "{Binding IsSquareGridSelected, Mode=TwoWay}"  HorizontalAlignment="Left" Margin="36,643,0,0" VerticalAlignment="Top"/>
+        <RadioButton Content="Triangle Grid" GroupName="GridType" HorizontalAlignment="Left" Margin="36,688,0,0" VerticalAlignment="Top"/>
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="124,610,0,0" Text="Grid Options" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" Width="93"/>
+        <RadioButton x:Name="stretchButton" Content="Stretch" GroupName="ViewType" IsChecked="True" HorizontalAlignment="Left" Margin="403,643,0,0" VerticalAlignment="Top" Checked="stretchButtonIsSelected"/>
+        <RadioButton x:Name="zoomButton" Content="Zoom" GroupName="ViewType" IsChecked="{Binding IsZoomSelected, Mode=TwoWay}" HorizontalAlignment="Left" Margin="403,682,0,0" VerticalAlignment="Top"/>
+        <TextBlock  HorizontalAlignment="Left" Margin="217,53,0,0" Text="Source Image" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <TextBlock  HorizontalAlignment="Left" Margin="720,53,0,0" Text="Mosaic Image" TextWrapping="Wrap" VerticalAlignment="Top"/>
+
 
 
     </Grid>

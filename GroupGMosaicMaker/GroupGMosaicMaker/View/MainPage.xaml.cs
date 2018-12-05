@@ -8,6 +8,7 @@ using Windows.Storage.Streams;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using GroupGMosaicMaker.DataTier;
 using GroupGMosaicMaker.ViewModel;
@@ -27,12 +28,12 @@ namespace GroupGMosaicMaker.View
         /// <summary>
         ///     The application height
         /// </summary>
-        public const int ApplicationHeight = 700;
+        public const int ApplicationHeight = 750;
 
         /// <summary>
         ///     The application width
         /// </summary>
-        public const int ApplicationWidth = 1200;
+        public const int ApplicationWidth = 1030;
 
         private StreamFileLoader fileLoader;
         private StreamFolderLoader folderLoader;
@@ -133,28 +134,37 @@ namespace GroupGMosaicMaker.View
 
         private async void saveFile_Click(object sender, RoutedEventArgs e)
         {
-            var saveFile = await selectSaveImageFile();
+            var saveFile = await this.selectSaveImageFile();
 
             if (saveFile != null) await ((MainPageViewModel) DataContext).WriteDataAsync(saveFile);
         }
 
         private void gridSwitchToggled(object sender, RoutedEventArgs e)
         {
-            var gridToggle = sender as ToggleSwitch;
-            if (gridToggle != null)
+
+            //TODO this thing is a monster. refactor
+            if (sender is ToggleSwitch gridToggle)
             {
                 if (gridToggle.IsOn == true)
                 {
-                    ((MainPageViewModel) DataContext).DisplayedImage = ((MainPageViewModel) DataContext).GridImage;
-                    ((MainPageViewModel) DataContext).IsGridToggled = true;
+                    if (((MainPageViewModel) DataContext).IsSquareGridSelected)
+                    {
+                        ((MainPageViewModel)DataContext).DisplayedImage = ((MainPageViewModel)DataContext).GridImage;
+                    }
+                    else
+                    {
+                        ((MainPageViewModel)DataContext).DisplayedImage = ((MainPageViewModel)DataContext).TriangleGridImage;
+                    }
+                    
+                    ((MainPageViewModel)DataContext).IsGridToggled = true;
                 }
                 else
                 {
-                    ((MainPageViewModel) DataContext).DisplayedImage = ((MainPageViewModel) DataContext).OriginalImage;
-                    ((MainPageViewModel) DataContext).IsGridToggled = false;
+                    ((MainPageViewModel)DataContext).DisplayedImage = ((MainPageViewModel)DataContext).OriginalImage;
+                    ((MainPageViewModel)DataContext).IsGridToggled = false;
                 }
-            } 
-         }
+            }
+        }
 
         private async void loadPaletteButton_Click(object sender, RoutedEventArgs e)
         {
@@ -174,16 +184,24 @@ namespace GroupGMosaicMaker.View
 
         private async Task<StorageFolder> selectPaletteFolderAsync()
         {
-            var folderPicker = new FolderPicker();
-            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
+            var folderPicker = new FolderPicker
+            {
+                SuggestedStartLocation = PickerLocationId.PicturesLibrary
+            };
             folderPicker.FileTypeFilter.Add("*");
 
             var folder = await folderPicker.PickSingleFolderAsync();
             return folder;
         }
-         
-        #endregion
 
-       
+        private void stretchButtonIsSelected(object sender, RoutedEventArgs e)
+        {
+            this.sourceScrollView.ChangeView(0, this.sourceScrollView.VerticalOffset, 1.0f);
+            this.mosaicScrollView.ChangeView(0, this.mosaicScrollView.VerticalOffset, 1.0f);
+        }
+
+
+
+        #endregion
     }
 }
