@@ -39,9 +39,9 @@ namespace GroupGMosaicMaker.Model.Image
         /// <value>
         ///     The WriteableBitmap
         /// </value>
-        public WriteableBitmap ThumbnailImage { get; set; }
+        public WriteableBitmap ThumbnailImage { get; private set; }
 
-        //TODO maybe rename this. Model shouldn't know about view and thumbnail image implies it knows maybe?
+        
 
         #endregion
 
@@ -69,7 +69,7 @@ namespace GroupGMosaicMaker.Model.Image
         public override async Task SetSourceAsync(IRandomAccessStream imageSource)
         {
             await base.SetSourceAsync(imageSource);
-
+            this.ThumbnailImage = await this.GenerateImageAsync();
             this.scaledLength = Decoder.PixelWidth;
 
             this.assignPixels();

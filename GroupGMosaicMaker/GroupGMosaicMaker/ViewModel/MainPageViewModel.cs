@@ -410,8 +410,6 @@ namespace GroupGMosaicMaker.ViewModel
                 var paletteImage = new PaletteImageGenerator();
                 await paletteImage.SetSourceAsync(source);
                 paletteImages.Add(paletteImage);
-                paletteImage.ThumbnailImage = await paletteImage.GenerateImageAsync();
-
             }    
             this.Palette = paletteImages;       
         }
