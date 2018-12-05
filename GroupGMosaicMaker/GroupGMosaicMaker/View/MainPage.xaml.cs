@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
+using Windows.Storage.AccessCache;
 using Windows.Storage.Pickers;
-using Windows.Storage.Streams;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
 using GroupGMosaicMaker.DataTier;
 using GroupGMosaicMaker.ViewModel;
 
@@ -22,7 +20,6 @@ namespace GroupGMosaicMaker.View
     /// </summary>
     public sealed partial class MainPage : Page
     {
-
         #region Data members
 
         /// <summary>
@@ -35,43 +32,39 @@ namespace GroupGMosaicMaker.View
         /// </summary>
         public const int ApplicationWidth = 1030;
 
-        private StreamFileLoader fileLoader;
-        private StreamFolderLoader folderLoader;
+        private readonly StreamFileLoader fileLoader;
+        private readonly StreamFolderLoader folderLoader;
 
         private string chosenFileType;
         private List<string> validFileTypes;
 
         #endregion
+
         #region Constructors
 
         public MainPage()
         {
-            InitializeComponent();
+            this.InitializeComponent();
             ApplicationView.PreferredLaunchViewSize = new Size {Width = ApplicationWidth, Height = ApplicationHeight};
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
             ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(ApplicationWidth, ApplicationHeight));
             this.chosenFileType = string.Empty;
             this.fileLoader = new StreamFileLoader();
             this.folderLoader = new StreamFolderLoader();
-            this.validFileTypes = new List<string>()
-            {
+            this.validFileTypes = new List<string> {
                 ".jpg",
                 ".png",
                 ".bmp"
             };
-
         }
 
         #endregion
-
-
 
         #region Methods
 
         private async void loadFile_Click(object sender, RoutedEventArgs e)
         {
-            var openPicker = new FileOpenPicker
-            {
+            var openPicker = new FileOpenPicker {
                 ViewMode = PickerViewMode.Thumbnail,
                 SuggestedStartLocation = PickerLocationId.PicturesLibrary
             };
@@ -80,37 +73,35 @@ namespace GroupGMosaicMaker.View
             openPicker.FileTypeFilter.Add(".bmp");
 
             var file = await openPicker.PickSingleFileAsync();
-            
 
             if (file != null)
             {
                 this.chosenFileType = file.FileType;
                 var stream = await this.fileLoader.LoadFile(file);
-                await ((MainPageViewModel) this.DataContext).CreateImages(stream);
+                await ((MainPageViewModel) DataContext).LoadImageSource(stream);
             }
         }
 
         private async Task<StorageFile> selectSaveImageFile()
         {
-            var fileSavePicker = new FileSavePicker
-            {
+            var fileSavePicker = new FileSavePicker {
                 SuggestedStartLocation = PickerLocationId.PicturesLibrary,
-                SuggestedFileName = "image",    
-                
+                SuggestedFileName = "image"
             };
-            this.validFileTypes = generateFileTypeChoices();
+            this.validFileTypes = this.generateFileTypeChoices();
             foreach (var current in this.validFileTypes)
             {
-                fileSavePicker.FileTypeChoices.Add(current.Substring(1).ToUpperInvariant() + " files", new List<string>{current});
+                fileSavePicker.FileTypeChoices.Add(current.Substring(1).ToUpperInvariant() + " files",
+                    new List<string> {current});
             }
+
             var file = await fileSavePicker.PickSaveFileAsync();
             return file;
         }
 
         private List<string> generateFileTypeChoices()
         {
-            var fileTypesForSaving = new List<string>()
-            {
+            var fileTypesForSaving = new List<string> {
                 this.chosenFileType
             };
             foreach (var current in this.validFileTypes)
@@ -124,45 +115,21 @@ namespace GroupGMosaicMaker.View
             return fileTypesForSaving;
         }
 
-        private async Task<BitmapImage> MakeACopyOfTheFileToWorkOn(StorageFile imageFile)
-        {
-            IRandomAccessStream inputStream = await imageFile.OpenReadAsync();
-            var newImage = new BitmapImage();
-            newImage.SetSource(inputStream);
-            return newImage;
-        }
-
         private async void saveFile_Click(object sender, RoutedEventArgs e)
         {
             var saveFile = await this.selectSaveImageFile();
-
-            if (saveFile != null) await ((MainPageViewModel) DataContext).WriteDataAsync(saveFile);
+            if (saveFile != null)
+            {
+                await ((MainPageViewModel) DataContext).WriteDataAsync(saveFile);
+            }
         }
 
         private void gridSwitchToggled(object sender, RoutedEventArgs e)
         {
-
-            //TODO this thing is a monster. refactor
-            if (sender is ToggleSwitch gridToggle)
+            if (sender is ToggleSwitch gridToggleSwitch)
             {
-                if (gridToggle.IsOn == true)
-                {
-                    if (((MainPageViewModel) DataContext).IsSquareGridSelected)
-                    {
-                        ((MainPageViewModel)DataContext).DisplayedImage = ((MainPageViewModel)DataContext).GridImage;
-                    }
-                    else
-                    {
-                        ((MainPageViewModel)DataContext).DisplayedImage = ((MainPageViewModel)DataContext).TriangleGridImage;
-                    }
-                    
-                    ((MainPageViewModel)DataContext).IsGridToggled = true;
-                }
-                else
-                {
-                    ((MainPageViewModel)DataContext).DisplayedImage = ((MainPageViewModel)DataContext).OriginalImage;
-                    ((MainPageViewModel)DataContext).IsGridToggled = false;
-                }
+                ((MainPageViewModel) DataContext).IsGridToggled = gridToggleSwitch.IsOn;
+                ((MainPageViewModel) DataContext).UpdateDisplayedImage();
             }
         }
 
@@ -170,13 +137,11 @@ namespace GroupGMosaicMaker.View
         {
             var folder = await this.selectPaletteFolderAsync();
 
-
             if (folder != null)
             {
                 var files = await this.folderLoader.LoadFolder(folder);
 
-                Windows.Storage.AccessCache.StorageApplicationPermissions.
-                    FutureAccessList.AddOrReplace("PickedFolderToken", folder);
+                StorageApplicationPermissions.FutureAccessList.AddOrReplace("PickedFolderToken", folder);
 
                 await ((MainPageViewModel) DataContext).GeneratePalette(files);
             }
@@ -184,8 +149,7 @@ namespace GroupGMosaicMaker.View
 
         private async Task<StorageFolder> selectPaletteFolderAsync()
         {
-            var folderPicker = new FolderPicker
-            {
+            var folderPicker = new FolderPicker {
                 SuggestedStartLocation = PickerLocationId.PicturesLibrary
             };
             folderPicker.FileTypeFilter.Add("*");
@@ -199,8 +163,6 @@ namespace GroupGMosaicMaker.View
             this.sourceScrollView.ChangeView(0, this.sourceScrollView.VerticalOffset, 1.0f);
             this.mosaicScrollView.ChangeView(0, this.mosaicScrollView.VerticalOffset, 1.0f);
         }
-
-
 
         #endregion
     }

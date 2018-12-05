@@ -47,7 +47,6 @@ namespace GroupGMosaicMaker.ViewModel
         private bool isSquareGridSelected;
         private bool isZoomSelected;
 
-
         #endregion
 
         #region Properties
@@ -56,7 +55,7 @@ namespace GroupGMosaicMaker.ViewModel
         {
             get => this.palette;
             set
-            {   
+            {
                 this.palette = value;
                 OnPropertyChanged();
                 this.GeneratePictureMosaicCommand.OnCanExecuteChanged();
@@ -78,7 +77,7 @@ namespace GroupGMosaicMaker.ViewModel
                 OnPropertyChanged();
                 this.GenerateBlockMosaicCommand.OnCanExecuteChanged();
                 this.GeneratePictureMosaicCommand
-                    .OnCanExecuteChanged(); 
+                    .OnCanExecuteChanged();
             }
         }
 
@@ -135,7 +134,7 @@ namespace GroupGMosaicMaker.ViewModel
             set
             {
                 this.displayedImage = value;
-                this.OnPropertyChanged();
+                OnPropertyChanged();
             }
         }
 
@@ -151,8 +150,12 @@ namespace GroupGMosaicMaker.ViewModel
             set
             {
                 this.mosaicImage = value;
-                this.CanSaveImage = true;
-                this.OnPropertyChanged();
+                if (value != null)
+                {
+                    this.CanSaveImage = true;
+                }
+
+                OnPropertyChanged();
             }
         }
 
@@ -168,7 +171,7 @@ namespace GroupGMosaicMaker.ViewModel
             set
             {
                 this.canSaveImage = value;
-                this.OnPropertyChanged();
+                OnPropertyChanged();
             }
         }
 
@@ -190,7 +193,7 @@ namespace GroupGMosaicMaker.ViewModel
                     this.createTriangleGridImageAsync();
                 }
 
-                this.OnPropertyChanged();
+                OnPropertyChanged();
             }
         }
 
@@ -239,12 +242,13 @@ namespace GroupGMosaicMaker.ViewModel
             set
             {
                 this.isSquareGridSelected = value;
-                this.OnPropertyChanged();
+                OnPropertyChanged();
                 if (this.imageSource != null)
                 {
                     this.createGridImageAsync();
                     this.createTriangleGridImageAsync();
                 }
+
                 this.GeneratePictureMosaicCommand.OnCanExecuteChanged();
             }
         }
@@ -261,10 +265,9 @@ namespace GroupGMosaicMaker.ViewModel
             set
             {
                 this.isZoomSelected = value;
-                this.OnPropertyChanged();
+                OnPropertyChanged();
             }
         }
-
 
         #endregion
 
@@ -282,7 +285,7 @@ namespace GroupGMosaicMaker.ViewModel
             this.pictureMosaicMaker = new PictureMosaicMaker();
             this.palette = new ObservableCollection<PaletteImageGenerator>();
             this.gridSize = DefaultGridSize;
-            this.canSaveImage = false;
+            this.CanSaveImage = false;
             this.isSquareGridSelected = true;
 
             this.loadCommands();
@@ -306,8 +309,7 @@ namespace GroupGMosaicMaker.ViewModel
 
         private bool canGeneratePictureMosaic(object obj)
         {
-
-            return  this.isSquareGridSelected && this.palette.Count > 0 && this.originalImage != null;
+            return this.isSquareGridSelected && this.palette.Count > 0 && this.originalImage != null;
         }
 
         private async void generateBlockMosaic(object obj)
@@ -337,7 +339,6 @@ namespace GroupGMosaicMaker.ViewModel
             {
                 await image.ScaleImageSquare(this.GridSize);
             }
-
         }
 
         /// <summary>
@@ -355,10 +356,13 @@ namespace GroupGMosaicMaker.ViewModel
             this.createGridImageAsync();
             this.createTriangleGridImageAsync();
 
-            this.displayImageOnCreation();
+            this.UpdateDisplayedImage();
         }
 
-        private void displayImageOnCreation()
+        /// <summary>
+        ///     Updates the displayed image based on currently selected image parameters (grid on/off, grid type).
+        /// </summary>
+        public void UpdateDisplayedImage()
         {
             if (this.IsGridToggled)
             {
@@ -379,13 +383,13 @@ namespace GroupGMosaicMaker.ViewModel
 
         private async Task createOriginalImageAsync()
         {
-            await this.originalImageGenerator.SetSourceAsync(imageSource);
+            await this.originalImageGenerator.SetSourceAsync(this.imageSource);
             this.OriginalImage = await this.originalImageGenerator.GenerateImageAsync();
         }
 
         private async void createGridImageAsync()
         {
-            await this.gridImageOperator.SetSourceAsync(imageSource);
+            await this.gridImageOperator.SetSourceAsync(this.imageSource);
             this.gridImageOperator.DrawGrid(this.GridSize);
             this.GridImage = await this.gridImageOperator.GenerateImageAsync();
         }
@@ -405,7 +409,7 @@ namespace GroupGMosaicMaker.ViewModel
 
         private async void createTriangleGridImageAsync()
         {
-            await this.triangleGridImageOperator.SetSourceAsync(imageSource);
+            await this.triangleGridImageOperator.SetSourceAsync(this.imageSource);
             this.triangleGridImageOperator.DrawGrid(this.GridSize);
             this.TriangleGridImage = await this.triangleGridImageOperator.GenerateImageAsync();
         }
