@@ -1,6 +1,10 @@
 ﻿using System;
+using System.IO;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Windows.Graphics.Imaging;
 using Windows.Storage.Streams;
+using Windows.UI.Xaml.Media.Imaging;
 using GroupGMosaicMaker.Model.Mosaic;
 
 namespace GroupGMosaicMaker.Model.Image
@@ -27,6 +31,17 @@ namespace GroupGMosaicMaker.Model.Image
         ///     The pixel block.
         /// </value>
         public PixelBlock PixelBlock { get; }
+
+        /// <summary>
+        ///     Gets or sets the WritableBitmap associated with the image source
+        /// </summary>
+        ///
+        /// <value>
+        ///     The WriteableBitmap
+        /// </value>
+        public WriteableBitmap ThumbnailImage { get; set; }
+
+        //TODO maybe rename this. Model shouldn't know about view and thumbnail image implies it knows maybe?
 
         #endregion
 

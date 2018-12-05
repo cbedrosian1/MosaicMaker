@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 using GroupGMosaicMaker.DataTier;
 using GroupGMosaicMaker.Model.Grid;
@@ -50,6 +51,7 @@ namespace GroupGMosaicMaker.ViewModel
         #endregion
 
         #region Properties
+
 
         public ObservableCollection<PaletteImageGenerator> Palette
         {
@@ -394,17 +396,24 @@ namespace GroupGMosaicMaker.ViewModel
             this.GridImage = await this.gridImageOperator.GenerateImageAsync();
         }
 
+        /// <summary>
+        ///     Generates the palette.
+        /// </summary>
+        /// <param name="paletteSource">The palette source.</param>
+        /// <returns>The completed asynchronous operation</returns>
         public async Task GeneratePalette(IReadOnlyList<IRandomAccessStream> paletteSource)
         {
-            var palette = new ObservableCollection<PaletteImageGenerator>();
+            var paletteImages = new ObservableCollection<PaletteImageGenerator>();
+            
             foreach (var source in paletteSource)
             {
                 var paletteImage = new PaletteImageGenerator();
                 await paletteImage.SetSourceAsync(source);
-                palette.Add(paletteImage);
-            }
+                paletteImages.Add(paletteImage);
+                paletteImage.ThumbnailImage = await paletteImage.GenerateImageAsync();
 
-            this.Palette = palette;
+            }    
+            this.Palette = paletteImages;       
         }
 
         private async void createTriangleGridImageAsync()

@@ -55,7 +55,7 @@
         <Button Content="Generate Picture Mosaic" Command="{Binding GeneratePictureMosaicCommand}"
                 HorizontalAlignment="Left" Margin="312,540,0,0" VerticalAlignment="Top" />
         <Button Content="Load Image Palette" Click="loadPaletteButton_Click" HorizontalAlignment="Left"
-                Margin="704,704,0,0" VerticalAlignment="Top" />
+                Margin="693,739,0,0" VerticalAlignment="Top" />
         <ToggleSwitch x:Name="toggleSwitch" Toggled="gridSwitchToggled" OffContent="Hidden" OnContent="Visible"
                       HorizontalAlignment="Left" Margin="231,684,0,0" VerticalAlignment="Top" />
         <TextBlock x:Name="gridSizeText" HorizontalAlignment="Left" Margin="185,649,0,0" Text="Size:"
@@ -78,7 +78,16 @@
                    VerticalAlignment="Top" />
         <TextBlock HorizontalAlignment="Left" Margin="720,53,0,0" Text="Mosaic Image" TextWrapping="Wrap"
                    VerticalAlignment="Top" />
-
-
+        <GridView x:Name="gridView" HorizontalAlignment="Left" ItemsSource="{Binding Palette, Mode=TwoWay}" Margin="540,540,0,0" VerticalAlignment="Top" Width="450" Height="184">
+            <GridView.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderBrush="Black" BorderThickness="1">
+                        <Grid>
+                            <Image Source="{Binding ThumbnailImage}" Stretch="Fill" Width="50" Height="50"/>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+        </GridView>
     </Grid>
 </Page>

@@ -25,7 +25,7 @@ namespace GroupGMosaicMaker.View
         /// <summary>
         ///     The application height
         /// </summary>
-        public const int ApplicationHeight = 750;
+        public const int ApplicationHeight = 800;
 
         /// <summary>
         ///     The application width
