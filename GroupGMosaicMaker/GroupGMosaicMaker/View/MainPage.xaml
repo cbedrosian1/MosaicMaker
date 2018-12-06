@@ -78,7 +78,7 @@
                    VerticalAlignment="Top" />
         <TextBlock HorizontalAlignment="Left" Margin="720,53,0,0" Text="Mosaic Image" TextWrapping="Wrap"
                    VerticalAlignment="Top" />
-        <GridView x:Name="gridView" HorizontalAlignment="Left" ItemsSource="{Binding Palette, Mode=TwoWay}" SelectionMode="Multiple" SelectedItems="{Binding Palette, Mode=TwoWay}" IsItemClickEnabled="True" Margin="540,540,0,0" VerticalAlignment="Top" Width="450" Height="184">
+        <GridView x:Name="gridView" HorizontalAlignment="Left" ItemsSource="{Binding Palette, Mode=TwoWay}" SelectionMode="Multiple" IsItemClickEnabled="True" Margin="540,540,0,0" VerticalAlignment="Top" Width="450" Height="184">
             <GridView.ItemTemplate>
                 <DataTemplate>
                     <Border BorderBrush="Black" BorderThickness="1">
