@@ -12,8 +12,8 @@ namespace GroupGMosaicMaker.Model.Mosaic
     public class BlockMosaicMaker : ImageGenerator
     {
 
-        private const double NumberOfColorValues = 3.0;
-        private const double HalfBetweenBlackAndWhite = 127.5;
+        public const double NumberOfColorValues = 3.0;
+        public const double HalfBetweenBlackAndWhite = 127.5; //TODO ok that these are public to use in picturemosaic?
 
         #region Properties
 
@@ -92,7 +92,10 @@ namespace GroupGMosaicMaker.Model.Mosaic
             }
         }
 
-        public void ConvertBlocksToBlackAndWhite()
+        /// <summary>
+        ///     Converts the blocks to black and white.
+        /// </summary>
+        public virtual void ConvertBlocksToBlackAndWhite()
         {
             for (var x = 0; x < Decoder.PixelHeight; x += this.BlockLength)
             {
@@ -100,12 +103,7 @@ namespace GroupGMosaicMaker.Model.Mosaic
                 {
                     var currentBlock = this.FindSingleBlock(x, y);
                     var color = currentBlock.CalculateAverageColor();
-                    var rgbValues = new List<int> {
-                        currentBlock.CalculateAverageColor().R, currentBlock.CalculateAverageColor().B,
-                        currentBlock.CalculateAverageColor().G
-                    };
                     var average = (color.R + color.B + color.G) / NumberOfColorValues;
-
                     if (average > HalfBetweenBlackAndWhite)
                     {
                         this.assignColorToBlock(x, y, Colors.White);

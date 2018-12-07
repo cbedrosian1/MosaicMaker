@@ -527,6 +527,8 @@ namespace GroupGMosaicMaker.ViewModel
             this.IsUsingSelectedImages = false;
 
             this.MosaicImage = await this.pictureMosaicMaker.GenerateImageAsync();
+            this.pictureMosaicMaker.ConvertBlocksToBlackAndWhite();
+            this.BlackAndWhiteMosaic = await this.pictureMosaicMaker.GenerateImageAsync();
             this.UpdateMosaicImage();
         }
 
@@ -547,7 +549,7 @@ namespace GroupGMosaicMaker.ViewModel
         {
             this.imageSource = source;
 
-            this.MosaicImage = null;
+            this.DisplayedMosaicImage = null;
 
             await this.createOriginalImageAsync();
             this.createGridImageAsync();

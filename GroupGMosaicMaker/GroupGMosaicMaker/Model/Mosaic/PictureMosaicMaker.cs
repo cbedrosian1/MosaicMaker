@@ -118,6 +118,40 @@ namespace GroupGMosaicMaker.Model.Mosaic
             }
         }
 
+        /// <summary>
+        ///     Converts the blocks to black and white.
+        /// </summary>
+        public override void ConvertBlocksToBlackAndWhite()
+        {
+            for (var x = 0; x < Decoder.PixelHeight; x += BlockLength)
+            {
+                for (var y = 0; y < Decoder.PixelWidth; y += BlockLength)
+                {
+                    this.convertPixelToBlackAndWhite(x, y);
+                }
+            }
+        }
+
+        private void convertPixelToBlackAndWhite(int startX, int startY)
+        {
+            for (var y = startY; y < startY + BlockLength && y < Decoder.PixelWidth; y++)
+            {
+                for (var x = startX; x < startX + BlockLength && x < Decoder.PixelHeight; x++)
+                {
+                    var color = this.FindPixelColor(x, y);
+                    var average = (color.R + color.B + color.G) / NumberOfColorValues;
+                    if (average > HalfBetweenBlackAndWhite)
+                    {
+                        this.SetPixelColor(x, y, Colors.White);
+                    }
+                    else
+                    {
+                        this.SetPixelColor(x, y, Colors.Black);
+                    }
+                }
+            }
+        }
+
         #endregion
     }
 }
