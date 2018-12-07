@@ -30,7 +30,7 @@
                       VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Margin="40,80,0,0"
                       Height="450" Width="450" VerticalScrollMode="Enabled" HorizontalScrollMode="Enabled"
                       VerticalAlignment="Top" HorizontalAlignment="Left">
-            <Image x:Name="sourceImage" Source="{Binding DisplayedImage}" HorizontalAlignment="Left" Height="450"
+            <Image x:Name="sourceImage" Source="{Binding DisplayedSourceImage}" HorizontalAlignment="Left" Height="450"
                    VerticalAlignment="Top" Width="450" Stretch="Fill" />
         </ScrollViewer>
 
@@ -38,7 +38,7 @@
                       VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Margin="540,80,0,0"
                       Height="450" Width="450" VerticalScrollMode="Enabled" HorizontalScrollMode="Enabled"
                       VerticalAlignment="Top" HorizontalAlignment="Left">
-            <Image x:Name="mosaicImage" Source="{Binding MosaicImage}" Stretch="Fill" HorizontalAlignment="Left"
+            <Image x:Name="mosaicImage" Source="{Binding DisplayedMosaicImage}" Stretch="Fill" HorizontalAlignment="Left"
                    Height="450" VerticalAlignment="Top" Width="450" />
         </ScrollViewer>
         <Border BorderBrush="Black" BorderThickness="4" HorizontalAlignment="Left" VerticalAlignment="Top"
@@ -96,5 +96,6 @@
         <CheckBox x:Name="checkBox" Content="Use Selected For Mosaic" Click="useSelectedItemsButton_Click" IsEnabled="{Binding IsImageSelected}" IsChecked="{Binding IsUsingSelectedImages, Mode=TwoWay}" HorizontalAlignment="Left" Margin="750,538,0,0" VerticalAlignment="Top"/>
         <TextBlock  HorizontalAlignment="Left" Margin="550,541,0,0" Text="Palette Images: " TextWrapping="Wrap" VerticalAlignment="Top"/>
         <TextBlock  HorizontalAlignment="Left" Margin="660,541,0,0" Text="{Binding PaletteCount, Mode=TwoWay}" VerticalAlignment="Top" Height="19" Width="75"/>
+        <ToggleSwitch x:Name="BlackWhiteToggle" OffContent="Color" OnContent="Black/White" Toggled="BlackWhiteToggle_OnToggled" HorizontalAlignment="Left" Margin="403,719,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Page>

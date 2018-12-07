@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Windows.UI;
 using GroupGMosaicMaker.Model.Image;
 
@@ -10,6 +11,10 @@ namespace GroupGMosaicMaker.Model.Mosaic
     /// <seealso cref="GroupGMosaicMaker.Model.Image.ImageGenerator" />
     public class BlockMosaicMaker : ImageGenerator
     {
+
+        private const double NumberOfColorValues = 3.0;
+        private const double HalfBetweenBlackAndWhite = 127.5;
+
         #region Properties
 
         /// <summary>
@@ -83,6 +88,32 @@ namespace GroupGMosaicMaker.Model.Mosaic
                 for (var x = startX; x < startX + this.BlockLength && x < Decoder.PixelHeight; x++)
                 {
                     SetPixelColor(x, y, color);
+                }
+            }
+        }
+
+        public void ConvertBlocksToBlackAndWhite()
+        {
+            for (var x = 0; x < Decoder.PixelHeight; x += this.BlockLength)
+            {
+                for (var y = 0; y < Decoder.PixelWidth; y += this.BlockLength)
+                {
+                    var currentBlock = this.FindSingleBlock(x, y);
+                    var color = currentBlock.CalculateAverageColor();
+                    var rgbValues = new List<int> {
+                        currentBlock.CalculateAverageColor().R, currentBlock.CalculateAverageColor().B,
+                        currentBlock.CalculateAverageColor().G
+                    };
+                    var average = (color.R + color.B + color.G) / NumberOfColorValues;
+
+                    if (average > HalfBetweenBlackAndWhite)
+                    {
+                        this.assignColorToBlock(x, y, Colors.White);
+                    }
+                    else
+                    {
+                        this.assignColorToBlock(x, y, Colors.Black);
+                    }
                 }
             }
         }

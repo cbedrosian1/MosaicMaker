@@ -102,7 +102,6 @@
     <Compile Include="Model\Grid\ImageGridGenerator.cs" />
     <Compile Include="Model\Grid\TriangleGridGenerator.cs" />
     <Compile Include="Model\Image\ImageGenerator.cs" />
-    <Compile Include="Model\Image\ImagePalette.cs" />
     <Compile Include="Model\Image\PaletteImageGenerator.cs" />
     <Compile Include="Model\Mosaic\BlockMosaicMaker.cs" />
     <Compile Include="Model\Mosaic\PictureMosaicMaker.cs" />

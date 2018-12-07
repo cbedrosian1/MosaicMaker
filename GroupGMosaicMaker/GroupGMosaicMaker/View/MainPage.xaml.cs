@@ -128,15 +128,6 @@ namespace GroupGMosaicMaker.View
             }
         }
 
-        private void gridSwitchToggled(object sender, RoutedEventArgs e)
-        {
-            if (sender is ToggleSwitch gridToggleSwitch)
-            {
-                ((MainPageViewModel) DataContext).IsGridToggled = gridToggleSwitch.IsOn;
-                ((MainPageViewModel) DataContext).UpdateDisplayedImage();
-            }
-        }
-
         private async void loadPaletteButton_Click(object sender, RoutedEventArgs e)
         {
             var folder = await this.selectPaletteFolderAsync();
@@ -214,6 +205,24 @@ namespace GroupGMosaicMaker.View
         private void GridView_OnItemClick(object sender, ItemClickEventArgs e)
         {
             ((MainPageViewModel) DataContext).IsUsingSelectedImages = false;
+        }
+
+        private void BlackWhiteToggle_OnToggled(object sender, RoutedEventArgs e)
+        {
+            if (sender is ToggleSwitch blackWhiteToggle)
+            {
+                ((MainPageViewModel)DataContext).IsBlackWhiteToggled = blackWhiteToggle.IsOn;
+                ((MainPageViewModel)DataContext).UpdateMosaicImage();
+            }
+        }
+
+        private void gridSwitchToggled(object sender, RoutedEventArgs e)
+        {
+            if (sender is ToggleSwitch gridToggleSwitch)
+            {
+                ((MainPageViewModel)DataContext).IsGridToggled = gridToggleSwitch.IsOn;
+                ((MainPageViewModel)DataContext).UpdateDisplayedImage();
+            }
         }
     }
 }

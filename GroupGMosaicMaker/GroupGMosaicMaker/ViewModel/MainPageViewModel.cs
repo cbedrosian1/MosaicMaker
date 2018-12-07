@@ -43,7 +43,7 @@ namespace GroupGMosaicMaker.ViewModel
         private readonly BlockMosaicMaker blockMosaicMaker;
         private readonly PictureMosaicMaker pictureMosaicMaker;
 
-        private WriteableBitmap displayedImage;
+        private WriteableBitmap displayedSourceImage;
 
         private WriteableBitmap triangleGridImage;
         private readonly TriangleGridGenerator triangleGridImageOperator;
@@ -56,6 +56,9 @@ namespace GroupGMosaicMaker.ViewModel
         private bool isUsingSelectedImages;
         private bool isImageSelected;
         private int paletteCount;
+
+        private WriteableBitmap blackAndWhiteMosaic;
+        private WriteableBitmap displayedMosaicImage;
 
         #endregion
 
@@ -184,7 +187,7 @@ namespace GroupGMosaicMaker.ViewModel
                 OnPropertyChanged();
                 if (this.IsGridToggled && this.isSquareGridSelected)
                 {
-                    this.DisplayedImage = this.GridImage;
+                    this.DisplayedSourceImage = this.GridImage;
                 }
             }
         }
@@ -204,7 +207,7 @@ namespace GroupGMosaicMaker.ViewModel
                 OnPropertyChanged();
                 if (this.IsGridToggled && !this.isSquareGridSelected)
                 {
-                    this.DisplayedImage = this.TriangleGridImage;
+                    this.DisplayedSourceImage = this.TriangleGridImage;
                 }
             }
         }
@@ -215,13 +218,13 @@ namespace GroupGMosaicMaker.ViewModel
         /// <value>
         ///     The display image.
         /// </value>
-        public WriteableBitmap DisplayedImage
+        public WriteableBitmap DisplayedSourceImage
         {
-            get => this.displayedImage;
+            get => this.displayedSourceImage;
 
             set
             {
-                this.displayedImage = value;
+                this.displayedSourceImage = value;
                 OnPropertyChanged();
             }
         }
@@ -246,6 +249,29 @@ namespace GroupGMosaicMaker.ViewModel
                 OnPropertyChanged();
             }
         }
+
+        
+
+        public WriteableBitmap DisplayedMosaicImage
+        {
+            get => this.displayedMosaicImage;
+            set
+            {
+                this.displayedMosaicImage = value; 
+                OnPropertyChanged();
+            }
+        }
+
+        public WriteableBitmap BlackAndWhiteMosaic
+        {
+            get => this.blackAndWhiteMosaic;
+            set
+            {
+                this.blackAndWhiteMosaic = value; 
+                OnPropertyChanged();
+            }
+        }
+
 
         /// <summary>
         ///     Gets or sets a value indicating whether this instance can save image.
@@ -324,6 +350,9 @@ namespace GroupGMosaicMaker.ViewModel
         ///     <c>true</c> if the grid is toggled; otherwise, <c>false</c>.
         /// </value>
         public bool IsGridToggled { get; set; }
+
+        public bool IsBlackWhiteToggled { get; set; }
+
 
         /// <summary>
         ///     Gets or sets a value indicating whether square grid is selected.
@@ -412,6 +441,7 @@ namespace GroupGMosaicMaker.ViewModel
             this.gridSize = DefaultGridSize;
             this.CanSaveImage = false;
             this.isSquareGridSelected = true;
+            this.IsBlackWhiteToggled = false;
             this.isUsingSelectedImages = false;
 
             this.loadCommands();
@@ -478,8 +508,11 @@ namespace GroupGMosaicMaker.ViewModel
             await this.blockMosaicMaker.SetSourceAsync(this.imageSource);
             this.blockMosaicMaker.BlockLength = this.GridSize;
             this.blockMosaicMaker.GenerateMosaic();
-
+            
             this.MosaicImage = await this.blockMosaicMaker.GenerateImageAsync();
+            this.blockMosaicMaker.ConvertBlocksToBlackAndWhite();
+            this.BlackAndWhiteMosaic = await this.blockMosaicMaker.GenerateImageAsync();
+            this.UpdateMosaicImage();
         }
 
         private async void generatePictureMosaic(object obj)
@@ -490,9 +523,11 @@ namespace GroupGMosaicMaker.ViewModel
             this.pictureMosaicMaker.BlockLength = this.GridSize;
             this.pictureMosaicMaker.Palette = this.SelectedPalette;
             this.pictureMosaicMaker.GenerateMosaic();
+            
             this.IsUsingSelectedImages = false;
 
             this.MosaicImage = await this.pictureMosaicMaker.GenerateImageAsync();
+            this.UpdateMosaicImage();
         }
 
         private async Task scalePaletteImagesAsync()
@@ -547,16 +582,28 @@ namespace GroupGMosaicMaker.ViewModel
             {
                 if (this.isSquareGridSelected)
                 {
-                    this.DisplayedImage = this.gridImage;
+                    this.DisplayedSourceImage = this.gridImage;
                 }
                 else
                 {
-                    this.DisplayedImage = this.triangleGridImage;
+                    this.DisplayedSourceImage = this.triangleGridImage;
                 }
             }
             else
             {
-                this.DisplayedImage = this.originalImage;
+                this.DisplayedSourceImage = this.originalImage;
+            }
+        }
+
+        public void UpdateMosaicImage()
+        {
+            if (this.IsBlackWhiteToggled)
+            {
+                this.DisplayedMosaicImage = this.blackAndWhiteMosaic;
+            }
+            else
+            {
+                this.DisplayedMosaicImage = this.mosaicImage;
             }
         }
 
