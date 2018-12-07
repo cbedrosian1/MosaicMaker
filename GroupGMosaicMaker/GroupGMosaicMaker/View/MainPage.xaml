@@ -78,7 +78,7 @@
                    VerticalAlignment="Top" />
         <TextBlock HorizontalAlignment="Left" Margin="720,53,0,0" Text="Mosaic Image" TextWrapping="Wrap"
                    VerticalAlignment="Top" />
-        <GridView x:Name="gridView" BorderBrush="Black" BorderThickness="1"  HorizontalAlignment="Left" ItemsSource="{Binding Palette, Mode=TwoWay}" SelectedItem="{Binding SelectedImage, Mode=TwoWay}" SelectionMode="Multiple" IsItemClickEnabled="True" ItemClick="GridView_OnItemClick" Margin="550,572,0,0" VerticalAlignment="Top" Width="430" Height="200">
+        <GridView x:Name="gridView" BorderBrush="Black" BorderThickness="1"  HorizontalAlignment="Left" ItemsSource="{Binding Palette, Mode=TwoWay}" SelectedItem="{Binding SelectedImage, Mode=TwoWay}" SelectionMode="Multiple" IsItemClickEnabled="True" ItemClick="GridView_OnItemClick" Margin="550,575,0,0" VerticalAlignment="Top" Width="430" Height="200">
             <GridView.ItemTemplate>
                 <DataTemplate>
                     <Border BorderBrush="Black" BorderThickness="1">
@@ -89,10 +89,12 @@
                 </DataTemplate>
             </GridView.ItemTemplate>
         </GridView>
-        <Button  Content="Add" HorizontalAlignment="Left" Margin="1002,572,0,0" VerticalAlignment="Top" Click="addImageToPaletteButton_Click"/>
+        <Button  Content="Add" HorizontalAlignment="Left" Margin="1000,575,0,0" VerticalAlignment="Top" Click="addImageToPaletteButton_Click" RenderTransformOrigin="0.51,-1.672"/>
         <Button x:Name="deleteImageButton" Content="Delete" IsEnabled ="{Binding IsImageSelected}"
-                HorizontalAlignment="Left" Margin="1002,610,0,0" VerticalAlignment="Top" Click="deleteSelectedItemsButton_Click"/>
-        <Button  Content="Clear" Command="{Binding ClearPaletteImagesCommand}" HorizontalAlignment="Left" Margin="1002,650,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="checkBox" Content="Use Selected For Mosaic" Click="useSelectedItemsButton_Click" IsEnabled="{Binding IsImageSelected}" IsChecked="{Binding IsUsingSelectedImages, Mode=TwoWay}" HorizontalAlignment="Left" Margin="671,535,0,0" VerticalAlignment="Top"/>
+                HorizontalAlignment="Left" Margin="1000,615,0,0" VerticalAlignment="Top" Click="deleteSelectedItemsButton_Click"/>
+        <Button  Content="Clear" Command="{Binding ClearPaletteImagesCommand}" HorizontalAlignment="Left" Margin="1000,655,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="checkBox" Content="Use Selected For Mosaic" Click="useSelectedItemsButton_Click" IsEnabled="{Binding IsImageSelected}" IsChecked="{Binding IsUsingSelectedImages, Mode=TwoWay}" HorizontalAlignment="Left" Margin="750,538,0,0" VerticalAlignment="Top"/>
+        <TextBlock  HorizontalAlignment="Left" Margin="550,541,0,0" Text="Palette Images: " TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <TextBlock  HorizontalAlignment="Left" Margin="660,541,0,0" Text="{Binding PaletteCount, Mode=TwoWay}" VerticalAlignment="Top" Height="19" Width="75"/>
     </Grid>
 </Page>

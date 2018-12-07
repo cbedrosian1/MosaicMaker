@@ -53,13 +53,29 @@ namespace GroupGMosaicMaker.ViewModel
         private bool isZoomSelected;
 
         private PaletteImageGenerator selectedImage;
-        private bool isDeleteEnabled;
         private bool isUsingSelectedImages;
         private bool isImageSelected;
+        private int paletteCount;
 
         #endregion
 
         #region Properties
+
+        /// <summary>
+        ///     Gets the palette count.
+        /// </summary>
+        /// <value>
+        ///     The palette count.
+        /// </value>
+        public int PaletteCount
+        {
+            get => this.paletteCount;
+            set
+            {
+                this.paletteCount = value;
+                OnPropertyChanged();
+            }
+        }
 
 
         /// <summary>
@@ -129,6 +145,7 @@ namespace GroupGMosaicMaker.ViewModel
             {
                 this.palette = value;
                 this.OnPropertyChanged();
+                this.PaletteCount = this.palette.Count;
                 this.ClearPaletteImagesCommand.OnCanExecuteChanged();
             }
         }
@@ -395,7 +412,6 @@ namespace GroupGMosaicMaker.ViewModel
             this.gridSize = DefaultGridSize;
             this.CanSaveImage = false;
             this.isSquareGridSelected = true;
-            this.isDeleteEnabled = false;
             this.isUsingSelectedImages = false;
 
             this.loadCommands();
@@ -420,8 +436,10 @@ namespace GroupGMosaicMaker.ViewModel
 
         private void clearPaletteImages(object obj)
         {
+            var images = this.Palette;
+            images.Clear();
             this.IsUsingSelectedImages = false;
-            this.Palette.Clear();
+            this.Palette = images;
         }
 
         /// <summary>
@@ -430,14 +448,16 @@ namespace GroupGMosaicMaker.ViewModel
         /// <param name="images">The selected images.</param>
         public void DeleteSelectedImages(ICollection<PaletteImageGenerator> images)
         {
+            var selected = this.Palette;
             foreach (var current in images)
             {
-                if (this.Palette.Contains(current))
+                if (selected.Contains(current))
                 {
-                    this.Palette.Remove(current);
+                    selected.Remove(current);
                 }
             }
 
+            this.Palette = selected;
             this.IsUsingSelectedImages = false;
             this.SelectedImage = null;
         }
