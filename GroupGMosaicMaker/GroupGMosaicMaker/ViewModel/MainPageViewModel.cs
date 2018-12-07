@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Streams;
-using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 using GroupGMosaicMaker.DataTier;
 using GroupGMosaicMaker.Model.Grid;
@@ -48,10 +48,13 @@ namespace GroupGMosaicMaker.ViewModel
         private bool isSquareGridSelected;
         private bool isZoomSelected;
 
+        private PaletteImageGenerator selectedImage;
+
         #endregion
 
         #region Properties
 
+        public ObservableCollection<PaletteImageGenerator> SelectedPalette { get; set; }
 
         public ObservableCollection<PaletteImageGenerator> Palette
         {
@@ -61,6 +64,7 @@ namespace GroupGMosaicMaker.ViewModel
                 this.palette = value;
                 OnPropertyChanged();
                 this.GeneratePictureMosaicCommand.OnCanExecuteChanged();
+                this.ClearPaletteImagesCommand.OnCanExecuteChanged();
             }
         }
 
@@ -216,6 +220,29 @@ namespace GroupGMosaicMaker.ViewModel
         public RelayCommand GeneratePictureMosaicCommand { get; set; }
 
         /// <summary>
+        ///     Gets or sets the add palette image command.
+        /// </summary>
+        /// <value>
+        ///     The add palette image command.
+        /// </value>
+        public RelayCommand AddPaletteImageCommand { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the delete palette image command.
+        /// </summary>
+        /// <value>
+        ///     The delete palette image command.
+        /// </value>
+        public RelayCommand DeletePaletteImageCommand { get; set; }
+        /// <summary>
+        ///     Gets or sets the clear palette images command.
+        /// </summary>
+        /// <value>
+        ///     The clear palette images command.
+        /// </value>
+        public RelayCommand ClearPaletteImagesCommand { get; set; }
+
+        /// <summary>
         ///     Gets or sets the image source.
         /// </summary>
         /// <value>
@@ -271,6 +298,20 @@ namespace GroupGMosaicMaker.ViewModel
             }
         }
 
+        
+
+        public PaletteImageGenerator SelectedImage
+        {
+            get => this.selectedImage;
+            set
+            {
+                this.selectedImage = value;
+                this.OnPropertyChanged();
+                this.DeletePaletteImageCommand.OnCanExecuteChanged();
+            }
+        }
+
+
         #endregion
 
         #region Constructors
@@ -302,6 +343,28 @@ namespace GroupGMosaicMaker.ViewModel
             this.GenerateBlockMosaicCommand = CreateCommand(this.generateBlockMosaic, this.canGenerateBlockMosaic);
             this.GeneratePictureMosaicCommand =
                 CreateCommand(this.generatePictureMosaic, this.canGeneratePictureMosaic);
+            this.ClearPaletteImagesCommand = CreateCommand(this.clearPaletteImages, this.canClearPaletteImages);
+            this.DeletePaletteImageCommand = CreateCommand(this.deletePaletteImage, this.canDeletePaletteImage);
+        }
+
+        private bool canClearPaletteImages(object obj)
+        {
+            return this.palette.Count > 0;
+        }
+
+        private void clearPaletteImages(object obj)
+        {
+            this.Palette.Clear();
+        }
+
+        private bool canDeletePaletteImage(object obj)
+        {
+            return this.selectedImage != null;
+        }
+
+        private void deletePaletteImage(object obj)
+        {
+            this.Palette.Remove(this.selectedImage);
         }
 
         private bool canGenerateBlockMosaic(object obj)
@@ -329,7 +392,7 @@ namespace GroupGMosaicMaker.ViewModel
             await this.scalePaletteImagesAsync();
 
             this.pictureMosaicMaker.BlockLength = this.GridSize;
-            this.pictureMosaicMaker.Palette = this.palette;
+            this.pictureMosaicMaker.Palette = this.SelectedPalette;
             this.pictureMosaicMaker.GenerateMosaic();
 
             this.MosaicImage = await this.pictureMosaicMaker.GenerateImageAsync();
@@ -359,6 +422,21 @@ namespace GroupGMosaicMaker.ViewModel
             this.createTriangleGridImageAsync();
 
             this.UpdateDisplayedImage();
+        }
+
+        /// <summary>
+        ///     Adds the image to palette.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns>The completed asynchronous operation</returns>
+        public async Task AddImageToPalette(IRandomAccessStream source)
+        {
+            var images = this.Palette;
+            var paletteImage = new PaletteImageGenerator();
+            await paletteImage.SetSourceAsync(source);
+            images.Add(paletteImage);
+            this.Palette = images;
+            //TODO idk if can refactor because this is similar to GeneratePalette
         }
 
         /// <summary>
@@ -404,14 +482,15 @@ namespace GroupGMosaicMaker.ViewModel
         public async Task GeneratePalette(IReadOnlyList<IRandomAccessStream> paletteSource)
         {
             var paletteImages = new ObservableCollection<PaletteImageGenerator>();
-            
+
             foreach (var source in paletteSource)
             {
                 var paletteImage = new PaletteImageGenerator();
                 await paletteImage.SetSourceAsync(source);
                 paletteImages.Add(paletteImage);
-            }    
-            this.Palette = paletteImages;       
+            }
+
+            this.Palette = paletteImages;
         }
 
         private async void createTriangleGridImageAsync()

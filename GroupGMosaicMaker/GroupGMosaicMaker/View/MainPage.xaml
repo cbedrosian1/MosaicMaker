@@ -78,7 +78,7 @@
                    VerticalAlignment="Top" />
         <TextBlock HorizontalAlignment="Left" Margin="720,53,0,0" Text="Mosaic Image" TextWrapping="Wrap"
                    VerticalAlignment="Top" />
-        <GridView x:Name="gridView" HorizontalAlignment="Left" ItemsSource="{Binding Palette, Mode=TwoWay}" SelectionMode="Multiple" IsItemClickEnabled="True" Margin="540,540,0,0" VerticalAlignment="Top" Width="450" Height="184">
+        <GridView x:Name="gridView" HorizontalAlignment="Left" ItemsSource="{Binding Palette, Mode=TwoWay}" SelectedItem="{Binding SelectedImage, Mode=TwoWay}" SelectionMode="Multiple" IsItemClickEnabled="True" Margin="540,540,0,0" VerticalAlignment="Top" Width="450" Height="184">
             <GridView.ItemTemplate>
                 <DataTemplate>
                     <Border BorderBrush="Black" BorderThickness="1">
@@ -89,5 +89,8 @@
                 </DataTemplate>
             </GridView.ItemTemplate>
         </GridView>
+        <Button  Content="Add" HorizontalAlignment="Left" Margin="1000,540,0,0" VerticalAlignment="Top" Click="addImageToPaletteButton_Click"/>
+        <Button  Content="Delete" Command="{Binding DeletePaletteImageCommand}" HorizontalAlignment="Left" Margin="1000,580,0,0" VerticalAlignment="Top"/>
+        <Button  Content="Clear" Command="{Binding ClearPaletteImagesCommand}" HorizontalAlignment="Left" Margin="1000,620,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Page>

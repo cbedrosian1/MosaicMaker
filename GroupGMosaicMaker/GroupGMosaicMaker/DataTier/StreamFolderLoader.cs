@@ -12,7 +12,7 @@ namespace GroupGMosaicMaker.DataTier
     public class StreamFolderLoader
     {
         private static IReadOnlyCollection<string> ValidFileExtensions = new ReadOnlyCollection<string>(
-            new List<string> {".bmp", ".jpg", "png" }
+            new List<string> {".bmp", ".jpg", ".png" }
         );
 
         public async Task<IReadOnlyList<IRandomAccessStream>> LoadFolder(StorageFolder folder)
