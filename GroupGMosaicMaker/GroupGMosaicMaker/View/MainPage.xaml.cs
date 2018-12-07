@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
@@ -9,6 +10,7 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using GroupGMosaicMaker.DataTier;
+using GroupGMosaicMaker.Model.Image;
 using GroupGMosaicMaker.ViewModel;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -25,7 +27,7 @@ namespace GroupGMosaicMaker.View
         /// <summary>
         ///     The application height
         /// </summary>
-        public const int ApplicationHeight = 800;
+        public const int ApplicationHeight = 840;
 
         /// <summary>
         ///     The application width
@@ -38,6 +40,7 @@ namespace GroupGMosaicMaker.View
 
         private string chosenFileType;
         private List<string> validFileTypes;
+        
 
         #endregion
 
@@ -187,6 +190,30 @@ namespace GroupGMosaicMaker.View
                 var stream = await this.fileLoader.LoadFile(file);
                 await ((MainPageViewModel) DataContext).AddImageToPalette(stream);
             }
+        }
+
+        private void useSelectedItemsButton_Click(object sender, RoutedEventArgs e)
+        {
+            
+                ((MainPageViewModel)DataContext).UpdateSelectedPalette(this.gridView.SelectedItems);
+
+        }
+
+        private void deleteSelectedItemsButton_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedImages = new ObservableCollection<PaletteImageGenerator>();
+            foreach (var current in this.gridView.SelectedItems)
+            {
+                selectedImages.Add((PaletteImageGenerator)current);
+            }
+            ((MainPageViewModel)DataContext).DeleteSelectedImages(selectedImages);
+        }
+        
+
+
+        private void GridView_OnItemClick(object sender, ItemClickEventArgs e)
+        {
+            ((MainPageViewModel) DataContext).IsUsingSelectedImages = false;
         }
     }
 }

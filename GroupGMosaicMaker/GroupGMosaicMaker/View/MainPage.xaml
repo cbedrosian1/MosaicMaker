@@ -55,7 +55,7 @@
         <Button Content="Generate Picture Mosaic" Command="{Binding GeneratePictureMosaicCommand}"
                 HorizontalAlignment="Left" Margin="312,540,0,0" VerticalAlignment="Top" />
         <Button Content="Load Image Palette" Click="loadPaletteButton_Click" HorizontalAlignment="Left"
-                Margin="693,739,0,0" VerticalAlignment="Top" />
+                Margin="691,793,0,0" VerticalAlignment="Top" />
         <ToggleSwitch x:Name="toggleSwitch" Toggled="gridSwitchToggled" OffContent="Hidden" OnContent="Visible"
                       HorizontalAlignment="Left" Margin="231,684,0,0" VerticalAlignment="Top" />
         <TextBlock x:Name="gridSizeText" HorizontalAlignment="Left" Margin="185,649,0,0" Text="Size:"
@@ -78,19 +78,21 @@
                    VerticalAlignment="Top" />
         <TextBlock HorizontalAlignment="Left" Margin="720,53,0,0" Text="Mosaic Image" TextWrapping="Wrap"
                    VerticalAlignment="Top" />
-        <GridView x:Name="gridView" HorizontalAlignment="Left" ItemsSource="{Binding Palette, Mode=TwoWay}" SelectedItem="{Binding SelectedImage, Mode=TwoWay}" SelectionMode="Multiple" IsItemClickEnabled="True" Margin="540,540,0,0" VerticalAlignment="Top" Width="450" Height="184">
+        <GridView x:Name="gridView" BorderBrush="Black" BorderThickness="1"  HorizontalAlignment="Left" ItemsSource="{Binding Palette, Mode=TwoWay}" SelectedItem="{Binding SelectedImage, Mode=TwoWay}" SelectionMode="Multiple" IsItemClickEnabled="True" ItemClick="GridView_OnItemClick" Margin="550,572,0,0" VerticalAlignment="Top" Width="430" Height="200">
             <GridView.ItemTemplate>
                 <DataTemplate>
                     <Border BorderBrush="Black" BorderThickness="1">
                         <Grid>
-                            <Image Source="{Binding ThumbnailImage}" Stretch="Fill" Width="50" Height="50"/>
+                            <Image Source="{Binding ThumbnailImage}" Stretch="Fill" Width="55" Height="55"/>
                         </Grid>
                     </Border>
                 </DataTemplate>
             </GridView.ItemTemplate>
         </GridView>
-        <Button  Content="Add" HorizontalAlignment="Left" Margin="1000,540,0,0" VerticalAlignment="Top" Click="addImageToPaletteButton_Click"/>
-        <Button  Content="Delete" Command="{Binding DeletePaletteImageCommand}" HorizontalAlignment="Left" Margin="1000,580,0,0" VerticalAlignment="Top"/>
-        <Button  Content="Clear" Command="{Binding ClearPaletteImagesCommand}" HorizontalAlignment="Left" Margin="1000,620,0,0" VerticalAlignment="Top"/>
+        <Button  Content="Add" HorizontalAlignment="Left" Margin="1002,572,0,0" VerticalAlignment="Top" Click="addImageToPaletteButton_Click"/>
+        <Button x:Name="deleteImageButton" Content="Delete" IsEnabled ="{Binding IsImageSelected}"
+                HorizontalAlignment="Left" Margin="1002,610,0,0" VerticalAlignment="Top" Click="deleteSelectedItemsButton_Click"/>
+        <Button  Content="Clear" Command="{Binding ClearPaletteImagesCommand}" HorizontalAlignment="Left" Margin="1002,650,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="checkBox" Content="Use Selected For Mosaic" Click="useSelectedItemsButton_Click" IsEnabled="{Binding IsImageSelected}" IsChecked="{Binding IsUsingSelectedImages, Mode=TwoWay}" HorizontalAlignment="Left" Margin="671,535,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Page>
