@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Windows.UI;
 using GroupGMosaicMaker.Model.Image;
 
@@ -11,9 +10,18 @@ namespace GroupGMosaicMaker.Model.Mosaic
     /// <seealso cref="GroupGMosaicMaker.Model.Image.ImageGenerator" />
     public class BlockMosaicMaker : ImageGenerator
     {
+        #region Data members
 
+        /// <summary>
+        ///     The number of color values in each pixel
+        /// </summary>
         public const double NumberOfColorValues = 3.0;
+        /// <summary>
+        ///     The halfway value between white and black
+        /// </summary>
         public const double HalfBetweenBlackAndWhite = 127.5; //TODO ok that these are public to use in picturemosaic?
+
+        #endregion
 
         #region Properties
 

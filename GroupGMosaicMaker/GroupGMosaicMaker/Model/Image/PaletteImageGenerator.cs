@@ -1,8 +1,5 @@
 ﻿using System;
-using System.IO;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Windows.Graphics.Imaging;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml.Media.Imaging;
 using GroupGMosaicMaker.Model.Mosaic;
@@ -35,20 +32,17 @@ namespace GroupGMosaicMaker.Model.Image
         /// <summary>
         ///     Gets or sets the WritableBitmap associated with the image source
         /// </summary>
-        ///
         /// <value>
         ///     The WriteableBitmap
         /// </value>
         public WriteableBitmap ThumbnailImage { get; private set; }
-
-        
 
         #endregion
 
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PaletteImageGenerator"/> class.
+        ///     Initializes a new instance of the <see cref="PaletteImageGenerator" /> class.
         /// </summary>
         public PaletteImageGenerator()
         {
@@ -60,16 +54,16 @@ namespace GroupGMosaicMaker.Model.Image
         #region Methods
 
         /// <summary>
-        /// Initializes the <see cref="ImageGenerator" /> for use with the desired image source asynchronously.
+        ///     Initializes the <see cref="ImageGenerator" /> for use with the desired image source asynchronously.
         /// </summary>
         /// <param name="imageSource">The image source.</param>
         /// <returns>
-        /// The completed asynchronous operation.
+        ///     The completed asynchronous operation.
         /// </returns>
         public override async Task SetSourceAsync(IRandomAccessStream imageSource)
         {
             await base.SetSourceAsync(imageSource);
-            this.ThumbnailImage = await this.GenerateImageAsync();
+            this.ThumbnailImage = await GenerateImageAsync();
             this.scaledLength = Decoder.PixelWidth;
 
             this.assignPixels();
@@ -89,7 +83,7 @@ namespace GroupGMosaicMaker.Model.Image
         }
 
         /// <summary>
-        /// Calculates the pixel offset.
+        ///     Calculates the pixel offset.
         /// </summary>
         /// <param name="x">The row.</param>
         /// <param name="y">The the column.</param>

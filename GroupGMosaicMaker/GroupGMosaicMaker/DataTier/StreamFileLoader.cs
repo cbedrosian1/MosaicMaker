@@ -2,12 +2,13 @@
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Streams;
-using GroupGMosaicMaker.ViewModel;
 
 namespace GroupGMosaicMaker.DataTier
 {
     public class StreamFileLoader
     {
+        #region Methods
+
         public async Task<IRandomAccessStream> LoadFile(StorageFile file)
         {
             using (var fileStream = await file.OpenAsync(FileAccessMode.Read))
@@ -16,5 +17,7 @@ namespace GroupGMosaicMaker.DataTier
                 return clonedStream;
             }
         }
+
+        #endregion
     }
 }

@@ -1,13 +1,14 @@
-﻿using System.Text;
-using Windows.UI;
+﻿using Windows.UI;
 
 namespace GroupGMosaicMaker.Model.Grid
 {
-    class TriangleGridGenerator : ImageGridGenerator
+    internal class TriangleGridGenerator : ImageGridGenerator
     {
+        #region Methods
+
         public override void DrawGrid(int length)
         {
-            base.DrawGrid(length);  
+            base.DrawGrid(length);
 
             for (var i = 0; i < Decoder.PixelHeight; i += length)
             {
@@ -27,5 +28,7 @@ namespace GroupGMosaicMaker.Model.Grid
                 x++;
             }
         }
+
+        #endregion
     }
 }

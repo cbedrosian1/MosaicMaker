@@ -9,23 +9,27 @@ namespace GroupGMosaicMaker.Model.Grid
     /// <seealso cref="ImageGenerator" />
     public class ImageGridGenerator : ImageGenerator
     {
+        #region Methods
+
         public virtual void DrawGrid(int length)
         {
-            for (var i = 0; i < this.Decoder.PixelHeight; i += length)
+            for (var i = 0; i < Decoder.PixelHeight; i += length)
             {
-                for (var j = 0; j < this.Decoder.PixelWidth; j++)
+                for (var j = 0; j < Decoder.PixelWidth; j++)
                 {
-                    this.SetPixelColor(i, j, Colors.White);
+                    SetPixelColor(i, j, Colors.White);
                 }
             }
 
-            for (var i = 0; i < this.Decoder.PixelHeight; i++)
+            for (var i = 0; i < Decoder.PixelHeight; i++)
             {
-                for (var j = 0; j < this.Decoder.PixelWidth; j += length)
+                for (var j = 0; j < Decoder.PixelWidth; j += length)
                 {
-                    this.SetPixelColor(i, j, Colors.White);
+                    SetPixelColor(i, j, Colors.White);
                 }
             }
         }
+
+        #endregion
     }
 }

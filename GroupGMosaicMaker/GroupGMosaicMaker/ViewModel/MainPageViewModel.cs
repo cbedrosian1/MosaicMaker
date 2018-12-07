@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Streams;
@@ -23,8 +21,6 @@ namespace GroupGMosaicMaker.ViewModel
         #region Data members
 
         private const int DefaultGridSize = 10;
-
-        
 
         private bool canSaveImage;
 
@@ -80,7 +76,6 @@ namespace GroupGMosaicMaker.ViewModel
             }
         }
 
-
         /// <summary>
         ///     Gets or sets a value indicating whether there is an image selected.
         /// </summary>
@@ -117,7 +112,6 @@ namespace GroupGMosaicMaker.ViewModel
             }
         }
 
-
         /// <summary>
         ///     Gets or sets the selected palette.
         /// </summary>
@@ -130,7 +124,7 @@ namespace GroupGMosaicMaker.ViewModel
             set
             {
                 this.selectedPalette = value;
-                this.OnPropertyChanged();
+                OnPropertyChanged();
                 this.GeneratePictureMosaicCommand.OnCanExecuteChanged();
             }
         }
@@ -147,7 +141,7 @@ namespace GroupGMosaicMaker.ViewModel
             set
             {
                 this.palette = value;
-                this.OnPropertyChanged();
+                OnPropertyChanged();
                 this.PaletteCount = this.palette.Count;
                 this.ClearPaletteImagesCommand.OnCanExecuteChanged();
             }
@@ -250,14 +244,12 @@ namespace GroupGMosaicMaker.ViewModel
             }
         }
 
-        
-
         public WriteableBitmap DisplayedMosaicImage
         {
             get => this.displayedMosaicImage;
             set
             {
-                this.displayedMosaicImage = value; 
+                this.displayedMosaicImage = value;
                 OnPropertyChanged();
             }
         }
@@ -267,11 +259,10 @@ namespace GroupGMosaicMaker.ViewModel
             get => this.blackAndWhiteMosaic;
             set
             {
-                this.blackAndWhiteMosaic = value; 
+                this.blackAndWhiteMosaic = value;
                 OnPropertyChanged();
             }
         }
-
 
         /// <summary>
         ///     Gets or sets a value indicating whether this instance can save image.
@@ -351,7 +342,32 @@ namespace GroupGMosaicMaker.ViewModel
         /// </value>
         public bool IsGridToggled { get; set; }
 
+        /// <summary>
+        ///      Gets or sets a value indicating whether black and white is toggled.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if black white is toggled; otherwise, <c>false</c>.
+        /// </value>
         public bool IsBlackWhiteToggled { get; set; }
+
+        private bool isUseImagesEvenlyChecked;
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether use images evenly is checked.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if use images evenly is checked; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsUseImagesEvenlyChecked
+        {
+            get => this.isUseImagesEvenlyChecked;
+            set
+            {
+                this.isUseImagesEvenlyChecked = value;
+                OnPropertyChanged();
+
+            }
+        }
 
 
         /// <summary>
@@ -394,8 +410,6 @@ namespace GroupGMosaicMaker.ViewModel
             }
         }
 
-
-
         /// <summary>
         ///     Gets or sets the selected image.
         /// </summary>
@@ -408,7 +422,7 @@ namespace GroupGMosaicMaker.ViewModel
             set
             {
                 this.selectedImage = value;
-                this.OnPropertyChanged();
+                OnPropertyChanged();
                 this.isUsingSelectedImages = false;
                 if (this.selectedImage != null)
                 {
@@ -416,12 +430,10 @@ namespace GroupGMosaicMaker.ViewModel
                 }
                 else
                 {
-                    
                     this.IsImageSelected = false;
                 }
             }
         }
-
 
         #endregion
 
@@ -492,7 +504,6 @@ namespace GroupGMosaicMaker.ViewModel
             this.SelectedImage = null;
         }
 
-
         private bool canGenerateBlockMosaic(object obj)
         {
             return this.originalImage != null;
@@ -508,7 +519,7 @@ namespace GroupGMosaicMaker.ViewModel
             await this.blockMosaicMaker.SetSourceAsync(this.imageSource);
             this.blockMosaicMaker.BlockLength = this.GridSize;
             this.blockMosaicMaker.GenerateMosaic();
-            
+
             this.MosaicImage = await this.blockMosaicMaker.GenerateImageAsync();
             this.blockMosaicMaker.ConvertBlocksToBlackAndWhite();
             this.BlackAndWhiteMosaic = await this.blockMosaicMaker.GenerateImageAsync();
@@ -519,13 +530,17 @@ namespace GroupGMosaicMaker.ViewModel
         {
             await this.pictureMosaicMaker.SetSourceAsync(this.imageSource);
             await this.scalePaletteImagesAsync();
-
             this.pictureMosaicMaker.BlockLength = this.GridSize;
             this.pictureMosaicMaker.Palette = this.SelectedPalette;
-            this.pictureMosaicMaker.GenerateMosaic();
-            
+            if (this.isUseImagesEvenlyChecked)
+            {
+                this.pictureMosaicMaker.GenerateMosaicUsingImagesEvenly();
+            }
+            else
+            {
+                this.pictureMosaicMaker.GenerateMosaic();
+            }
             this.IsUsingSelectedImages = false;
-
             this.MosaicImage = await this.pictureMosaicMaker.GenerateImageAsync();
             this.pictureMosaicMaker.ConvertBlocksToBlackAndWhite();
             this.BlackAndWhiteMosaic = await this.pictureMosaicMaker.GenerateImageAsync();
@@ -597,6 +612,9 @@ namespace GroupGMosaicMaker.ViewModel
             }
         }
 
+        /// <summary>
+        ///     Updates the Displayed mosaic image based on if black and white is selected
+        /// </summary>
         public void UpdateMosaicImage()
         {
             if (this.IsBlackWhiteToggled)
@@ -661,7 +679,7 @@ namespace GroupGMosaicMaker.ViewModel
         }
 
         /// <summary>
-        ///      Updates the selected palette.
+        ///     Updates the selected palette.
         /// </summary>
         /// <param name="objects">The objects.</param>
         public void UpdateSelectedPalette(IList<object> objects)
@@ -671,13 +689,11 @@ namespace GroupGMosaicMaker.ViewModel
                 var selectedImages = new ObservableCollection<PaletteImageGenerator>();
                 foreach (var current in objects)
                 {
-                    selectedImages.Add((PaletteImageGenerator)current);
+                    selectedImages.Add((PaletteImageGenerator) current);
                 }
 
                 this.SelectedPalette = selectedImages;
             }
-          
-
         }
 
         #endregion

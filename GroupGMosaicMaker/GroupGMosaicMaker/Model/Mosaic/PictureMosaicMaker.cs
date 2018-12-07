@@ -55,6 +55,49 @@ namespace GroupGMosaicMaker.Model.Mosaic
         #region Methods
 
         /// <summary>
+        ///     Generates the mosaic using each palette image once before using others again
+        /// </summary>
+        public void GenerateMosaicUsingImagesEvenly()
+        {
+            var imagesWithAvgColor = this.copyPalette(this.averageColorsByPaletteImage);
+
+            for (var x = 0; x < Decoder.PixelHeight; x += BlockLength)
+            {
+                for (var y = 0; y < Decoder.PixelWidth; y += BlockLength)
+                {
+                    if (this.averageColorsByPaletteImage.Count == 0)
+                    {
+                        this.averageColorsByPaletteImage = this.copyPalette(imagesWithAvgColor);
+                    }
+
+                    this.generateBlockWhenUsingImagesEvenly(x, y);
+                }
+            }
+        }
+
+        private IDictionary<PaletteImageGenerator, Color> copyPalette(
+            IDictionary<PaletteImageGenerator, Color> imagesWithAvgColor)
+        {
+            var images = new Dictionary<PaletteImageGenerator, Color>();
+            foreach (var current in imagesWithAvgColor)
+            {
+                images.Add(current.Key, current.Value);
+            }
+
+            return images;
+        }
+
+        private void generateBlockWhenUsingImagesEvenly(int x, int y)
+        {
+            var currentBlock = FindSingleBlock(x, y);
+            var currentBlockColor = currentBlock.CalculateAverageColor();
+            var closestImage = this.findClosestPaletteImage(currentBlockColor);
+
+            this.mapImageToBlock(x, y, closestImage);
+            this.averageColorsByPaletteImage.Remove(closestImage);
+        }
+
+        /// <summary>
         ///     Generates the (x, y)'th block of the mosaic. Override this method to change the functionality of how each block is
         ///     generated.
         /// </summary>
@@ -93,7 +136,9 @@ namespace GroupGMosaicMaker.Model.Mosaic
                 colorComparisonsByImage.Add(paletteColorPair.Key, comparison);
             }
 
-            var mostSimilarPair = colorComparisonsByImage.OrderBy(kvp => kvp.Value).First();
+            var imagesOrderedByComparison = colorComparisonsByImage.OrderBy(kvp => kvp.Value);
+
+            var mostSimilarPair = imagesOrderedByComparison.First();
             return mostSimilarPair.Key;
         }
 
@@ -138,15 +183,15 @@ namespace GroupGMosaicMaker.Model.Mosaic
             {
                 for (var x = startX; x < startX + BlockLength && x < Decoder.PixelHeight; x++)
                 {
-                    var color = this.FindPixelColor(x, y);
+                    var color = FindPixelColor(x, y);
                     var average = (color.R + color.B + color.G) / NumberOfColorValues;
                     if (average > HalfBetweenBlackAndWhite)
                     {
-                        this.SetPixelColor(x, y, Colors.White);
+                        SetPixelColor(x, y, Colors.White);
                     }
                     else
                     {
-                        this.SetPixelColor(x, y, Colors.Black);
+                        SetPixelColor(x, y, Colors.Black);
                     }
                 }
             }

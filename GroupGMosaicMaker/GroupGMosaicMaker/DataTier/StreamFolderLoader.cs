@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using Windows.Networking.Sockets;
 using Windows.Storage;
 using Windows.Storage.Streams;
 
@@ -11,9 +9,15 @@ namespace GroupGMosaicMaker.DataTier
 {
     public class StreamFolderLoader
     {
-        private static IReadOnlyCollection<string> ValidFileExtensions = new ReadOnlyCollection<string>(
-            new List<string> {".bmp", ".jpg", ".png" }
+        #region Data members
+
+        private static readonly IReadOnlyCollection<string> ValidFileExtensions = new ReadOnlyCollection<string>(
+            new List<string> {".bmp", ".jpg", ".png"}
         );
+
+        #endregion
+
+        #region Methods
 
         public async Task<IReadOnlyList<IRandomAccessStream>> LoadFolder(StorageFolder folder)
         {
@@ -46,5 +50,7 @@ namespace GroupGMosaicMaker.DataTier
 
             return false;
         }
+
+        #endregion
     }
 }
