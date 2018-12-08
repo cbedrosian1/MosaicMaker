@@ -132,10 +132,10 @@ namespace GroupGMosaicMaker.Model.Mosaic
             var currentBlockColor = currentBlock.CalculateAverageColor();
             var closestImages = this.findClosestPaletteImages(currentBlockColor, 10);
 
-            var blockRightImage = this.findImageInBlock(x, y - BlockLength);
-            var blockLeftImage = this.findImageInBlock(x, y + BlockLength);
-            var blockAboveImage = this.findImageInBlock(x + BlockLength, y);
-            var blockBelowImage = this.findImageInBlock(x - BlockLength, y);
+            var blockRightImage = this.findImageInBlock(x, y + BlockLength);
+            var blockLeftImage = this.findImageInBlock(x, y - BlockLength);
+            var blockAboveImage = this.findImageInBlock(x - BlockLength, y);
+            var blockBelowImage = this.findImageInBlock(x + BlockLength, y);
 
             closestImages.Remove(blockRightImage);
             closestImages.Remove(blockLeftImage);
@@ -153,7 +153,7 @@ namespace GroupGMosaicMaker.Model.Mosaic
         {
             try
             {
-                var block = FindSingleBlock(x + BlockLength, y);
+                var block = FindSingleBlock(x, y);
                 var color = block.CalculateAverageColor();
                 var blockImage = this.findClosestPaletteImage(color);
 
