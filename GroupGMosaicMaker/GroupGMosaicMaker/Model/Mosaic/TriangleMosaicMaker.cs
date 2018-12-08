@@ -67,9 +67,9 @@ namespace GroupGMosaicMaker.Model.Mosaic
             var pixelColors = new List<Color>();
 
             var pixelsInRows = LowerTriangularStartingOffset;
-            for (var x = startX; x < startX + BlockLength; ++x)
+            for (var y = startY; y < startY + BlockLength; ++y)
             {
-                for (var y = startY; y < startY + pixelsInRows; ++y)
+                for (var x = startX; x < startX + pixelsInRows; ++x)
                 {
                     var color = FindPixelColor(x, y);
                     pixelColors.Add(color);
@@ -84,7 +84,7 @@ namespace GroupGMosaicMaker.Model.Mosaic
         private void assignColorToUpperTriangularBlock(int startX, int startY, Color color)
         {
             var pixelsInRows = UpperTriangularStartingOffset;
-            for (var y = startY; y < startY + BlockLength && y < Decoder.PixelWidth; ++y)
+            for (var y = startY; y < startY + BlockLength && y < Decoder.PixelHeight; ++y)
             {
                 for (var x = startX; x < startX + pixelsInRows; ++x)
                 {
@@ -98,9 +98,10 @@ namespace GroupGMosaicMaker.Model.Mosaic
         private void assignColorToLowerTriangularBlock(int startX, int startY, Color color)
         {
             var pixelsInRows = LowerTriangularStartingOffset;
-            for (var x = startX; x < startX + BlockLength; ++x)
+
+            for (var y = startY; y < startY + BlockLength; ++y)   
             {
-                for (var y = startY; y < startY + pixelsInRows && y < Decoder.PixelWidth; ++y)
+                for (var x = startX; x < startX + pixelsInRows && x < Decoder.PixelWidth; ++x)
                 {
                     SetPixelColor(x, y, color);
                 }
@@ -114,9 +115,9 @@ namespace GroupGMosaicMaker.Model.Mosaic
         /// </summary>
         public override void ConvertToBlackAndWhite()
         {
-            for (var x = 0; x < Decoder.PixelHeight; x += BlockLength)
+            for (var y = 0; y < Decoder.PixelHeight; y += BlockLength)
             {
-                for (var y = 0; y < Decoder.PixelWidth; y += BlockLength)
+                for (var x = 0; x < Decoder.PixelWidth; x += BlockLength)
                 {
                     this.convertLowerTriangularBlockToBlackAndWhite(x, y);
                     this.convertUpperTriangularBlockToBlackAndWhite(x, y);
@@ -127,9 +128,9 @@ namespace GroupGMosaicMaker.Model.Mosaic
         private void convertLowerTriangularBlockToBlackAndWhite(int startX, int startY)
         {
             var pixelsInRows = LowerTriangularStartingOffset;
-            for (var x = startX; x < startX + BlockLength; ++x)
+            for (var y = startY; y < startY + BlockLength; ++y)
             {
-                for (var y = startY; y < startY + pixelsInRows; ++y)
+                for (var x = startX; x < startX + pixelsInRows; ++x)
                 {
                     ConvertPixelToBlackAndWhite(x, y);
                 }

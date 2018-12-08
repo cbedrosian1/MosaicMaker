@@ -90,16 +90,16 @@ namespace GroupGMosaicMaker.Model.Image
         /// <returns>The pixel offset for accessing the source pixels.</returns>
         protected override int CalculatePixelOffset(int x, int y)
         {
-            return (x * (int) this.scaledLength + y) * 4;
+            return (y * (int) this.scaledLength + x) * 4;
         }
 
         private void assignPixels()
         {
-            for (var i = 0; i < Decoder.PixelWidth; i++)
+            for (var y = 0; y < Decoder.PixelHeight; y++)
             {
-                for (var j = 0; j < Decoder.PixelHeight; j++)
+                for (var x = 0; x < Decoder.PixelWidth; x++)
                 {
-                    var color = FindPixelColor(i, j);
+                    var color = FindPixelColor(x, y);
                     this.PixelBlock.Add(color);
                 }
             }

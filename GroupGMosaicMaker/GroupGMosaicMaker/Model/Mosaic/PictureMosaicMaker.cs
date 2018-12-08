@@ -64,9 +64,9 @@ namespace GroupGMosaicMaker.Model.Mosaic
         {
             var imagesWithAvgColor = this.copyPalette(this.averageColorsByPaletteImage);
 
-            for (var x = 0; x < Decoder.PixelHeight; x += BlockLength)
+            for (var y = 0; y < Decoder.PixelHeight; y += BlockLength)
             {
-                for (var y = 0; y < Decoder.PixelWidth; y += BlockLength)
+                for (var x = 0; x < Decoder.PixelWidth; x += BlockLength)
                 {
                     if (this.averageColorsByPaletteImage.Count == 0)
                     {
@@ -80,9 +80,9 @@ namespace GroupGMosaicMaker.Model.Mosaic
 
         public void GenerateMosaicPreventingRepetition()
         {
-            for (var x = 0; x < Decoder.PixelHeight; x += BlockLength)
+            for (var y = 0; y < Decoder.PixelHeight; y += BlockLength)
             {
-                for (var y = 0; y < Decoder.PixelWidth; y += BlockLength)
+                for (var x = 0; x < Decoder.PixelWidth; x += BlockLength)
                 {
                     this.generateMosaicBlockPreventingRepetition(x, y);
                 }
@@ -130,12 +130,12 @@ namespace GroupGMosaicMaker.Model.Mosaic
         {
             var currentBlock = FindSingleBlock(x, y);
             var currentBlockColor = currentBlock.CalculateAverageColor();
-            var closestImages = this.findClosestPaletteImages(currentBlockColor, 10);
+            var closestImages = this.findClosestPaletteImages(currentBlockColor, 20); //TODO MAGIC NUMBER
 
-            var blockRightImage = this.findImageInBlock(x, y + BlockLength);
-            var blockLeftImage = this.findImageInBlock(x, y - BlockLength);
-            var blockAboveImage = this.findImageInBlock(x - BlockLength, y);
-            var blockBelowImage = this.findImageInBlock(x + BlockLength, y);
+            var blockBelowImage = this.findImageInBlock(x, y + BlockLength);
+            var blockAboveImage = this.findImageInBlock(x, y - BlockLength);
+            var blockLeftImage = this.findImageInBlock(x - BlockLength, y);
+            var blockRightImage = this.findImageInBlock(x + BlockLength, y);
 
             closestImages.Remove(blockRightImage);
             closestImages.Remove(blockLeftImage);
@@ -222,9 +222,9 @@ namespace GroupGMosaicMaker.Model.Mosaic
 
         private void mapImageToBlock(int startX, int startY, ImageGenerator paletteImage)
         {
-            for (var y = startY; y < startY + BlockLength && y < Decoder.PixelWidth; ++y)
+            for (var y = startY; y < startY + BlockLength && y < Decoder.PixelHeight; ++y)
             {
-                for (var x = startX; x < startX + BlockLength && x < Decoder.PixelHeight; ++x)
+                for (var x = startX; x < startX + BlockLength && x < Decoder.PixelWidth; ++x)
                 {
                     var currentPaletteColor = paletteImage.FindPixelColor(x - startX, y - startY);
                     SetPixelColor(x, y, currentPaletteColor);
@@ -237,9 +237,9 @@ namespace GroupGMosaicMaker.Model.Mosaic
         /// </summary>
         public override void ConvertToBlackAndWhite()
         {
-            for (var x = 0; x < Decoder.PixelHeight; x += BlockLength)
+            for (var y = 0; y < Decoder.PixelHeight; y += BlockLength)
             {
-                for (var y = 0; y < Decoder.PixelWidth; y += BlockLength)
+                for (var x = 0; x < Decoder.PixelWidth; x += BlockLength)
                 {
                     this.convertPixelToBlackAndWhite(x, y);
                 }
@@ -248,13 +248,13 @@ namespace GroupGMosaicMaker.Model.Mosaic
 
         private void convertPixelToBlackAndWhite(int startX, int startY)
         {
-            for (var y = startY; y < startY + BlockLength && y < Decoder.PixelWidth; y++)
+            for (var y = startY; y < startY + BlockLength && y < Decoder.PixelHeight; y++)
             {
-                for (var x = startX; x < startX + BlockLength && x < Decoder.PixelHeight; x++)
+                for (var x = startX; x < startX + BlockLength && x < Decoder.PixelWidth; x++)
                 {
                     var color = FindPixelColor(x, y);
                     var average = color.CalculateAverageRgbChannelValue();
-                    if (average > 127.5)
+                    if (average > 127.5) //TODO needs to be a constant
                     {
                         SetPixelColor(x, y, Colors.White);
                     }

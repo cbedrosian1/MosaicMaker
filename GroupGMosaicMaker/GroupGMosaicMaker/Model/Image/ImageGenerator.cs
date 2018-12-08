@@ -120,7 +120,7 @@ namespace GroupGMosaicMaker.Model.Image
 
         protected virtual int CalculatePixelOffset(int x, int y)
         {
-            return (x * (int) this.Decoder.PixelWidth + y) * 4;
+            return (y * (int) this.Decoder.PixelWidth + x) * 4;
         }
 
         private bool offsetIsValid(int offset)

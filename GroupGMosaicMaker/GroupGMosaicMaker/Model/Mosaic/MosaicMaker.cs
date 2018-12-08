@@ -35,9 +35,9 @@ namespace GroupGMosaicMaker.Model.Mosaic
         /// </summary>
         public void GenerateMosaic()
         {
-            for (var x = 0; x < Decoder.PixelHeight; x += this.BlockLength)
+            for (var y = 0; y < Decoder.PixelHeight; y += this.BlockLength)
             {
-                for (var y = 0; y < Decoder.PixelWidth; y += this.BlockLength)
+                for (var x = 0; x < Decoder.PixelWidth; x += this.BlockLength)
                 {
                     this.GenerateMosaicBlock(x, y);
                 }
