@@ -356,6 +356,8 @@ namespace GroupGMosaicMaker.ViewModel
             }
         }
 
+        public bool IsNoPatternsChecked { get; set; }
+
         /// <summary>
         ///     Gets or sets a value indicating whether square grid is selected.
         /// </summary>
@@ -527,6 +529,10 @@ namespace GroupGMosaicMaker.ViewModel
             if (this.isUseImagesEvenlyChecked)
             {
                 this.pictureMosaicMaker.GenerateMosaicUsingImagesEvenly();
+            }
+            else if (this.IsNoPatternsChecked)
+            {
+                this.pictureMosaicMaker.GenerateMosaicPreventingRepetition();
             }
             else
             {

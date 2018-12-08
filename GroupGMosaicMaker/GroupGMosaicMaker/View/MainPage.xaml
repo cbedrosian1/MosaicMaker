@@ -99,7 +99,7 @@
         <TextBlock  HorizontalAlignment="Left" Margin="660,541,0,0" Text="{Binding PaletteCount, Mode=TwoWay}" VerticalAlignment="Top" Height="19" Width="75"/>
         <ToggleSwitch OffContent="Color" OnContent="Black/White" Toggled="BlackWhiteToggle_OnToggled" HorizontalAlignment="Left" Margin="390,725,0,0" VerticalAlignment="Top"/>
         <CheckBox  Content="Use Images Evenly" HorizontalAlignment="Left" IsChecked="{Binding IsUseImagesEvenlyChecked, Mode=TwoWay}" Margin="40,795,0,0" VerticalAlignment="Top"/>
-        <CheckBox  Content="Prevent Patterns" HorizontalAlignment="Left" Margin="230,795,0,0" VerticalAlignment="Top"/>
+        <CheckBox  Content="Prevent Patterns" HorizontalAlignment="Left" IsChecked ="{Binding IsNoPatternsChecked, Mode=TwoWay}" Margin="230,795,0,0" VerticalAlignment="Top"/>
         <TextBlock  HorizontalAlignment="Left" Margin="120,750,0,0" Text="Mosaic Options"
             TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" Width="110" />
     </Grid>

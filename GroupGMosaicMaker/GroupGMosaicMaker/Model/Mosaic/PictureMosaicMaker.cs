@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Windows.ApplicationModel.AppService;
 using Windows.UI;
 using GroupGMosaicMaker.Extensions;
 using GroupGMosaicMaker.Model.Image;
@@ -45,7 +47,7 @@ namespace GroupGMosaicMaker.Model.Mosaic
         /// <summary>
         ///     Initializes a new instance of the <see cref="PictureMosaicMaker" /> class.
         /// </summary>
-        public PictureMosaicMaker() : base()
+        public PictureMosaicMaker()
         {
             this.palette = new List<PaletteImageGenerator>();
             this.averageColorsByPaletteImage = new Dictionary<PaletteImageGenerator, Color>();
@@ -72,6 +74,17 @@ namespace GroupGMosaicMaker.Model.Mosaic
                     }
 
                     this.generateBlockWhenUsingImagesEvenly(x, y);
+                }
+            }
+        }
+
+        public void GenerateMosaicPreventingRepetition()
+        {
+            for (var x = 0; x < Decoder.PixelHeight; x += BlockLength)
+            {
+                for (var y = 0; y < Decoder.PixelWidth; y += BlockLength)
+                {
+                    this.generateMosaicBlockPreventingRepetition(x, y);
                 }
             }
         }
@@ -113,6 +126,45 @@ namespace GroupGMosaicMaker.Model.Mosaic
             this.mapImageToBlock(x, y, closestImage);
         }
 
+        private void generateMosaicBlockPreventingRepetition(int x, int y)
+        {
+            var currentBlock = FindSingleBlock(x, y);
+            var currentBlockColor = currentBlock.CalculateAverageColor();
+            var closestImages = this.findClosestPaletteImages(currentBlockColor, 10);
+
+            var blockRightImage = this.findImageInBlock(x, y - BlockLength);
+            var blockLeftImage = this.findImageInBlock(x, y + BlockLength);
+            var blockAboveImage = this.findImageInBlock(x + BlockLength, y);
+            var blockBelowImage = this.findImageInBlock(x - BlockLength, y);
+
+            closestImages.Remove(blockRightImage);
+            closestImages.Remove(blockLeftImage);
+            closestImages.Remove(blockAboveImage);
+            closestImages.Remove(blockBelowImage);
+
+            var random = new Random();
+            var randomIndex = random.Next(closestImages.Count);
+            var chosenImage = closestImages[randomIndex];
+
+            this.mapImageToBlock(x, y, chosenImage);
+        }
+
+        private PaletteImageGenerator findImageInBlock(int x, int y)
+        {
+            try
+            {
+                var block = FindSingleBlock(x + BlockLength, y);
+                var color = block.CalculateAverageColor();
+                var blockImage = this.findClosestPaletteImage(color);
+
+                return blockImage;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         private IDictionary<PaletteImageGenerator, Color> CalculateAverageColorsFor(
             ICollection<PaletteImageGenerator> paletteToMap)
         {
@@ -126,7 +178,7 @@ namespace GroupGMosaicMaker.Model.Mosaic
             return paletteAverageColors;
         }
 
-        private PaletteImageGenerator findClosestPaletteImage(Color sourceColor)
+        private IDictionary<PaletteImageGenerator, int> findColorComparisons(Color sourceColor)
         {
             var colorComparisonsByImage = new Dictionary<PaletteImageGenerator, int>();
             foreach (var paletteColorPair in this.averageColorsByPaletteImage)
@@ -137,10 +189,26 @@ namespace GroupGMosaicMaker.Model.Mosaic
                 colorComparisonsByImage.Add(paletteColorPair.Key, comparison);
             }
 
+            return colorComparisonsByImage;
+        }
+
+        private PaletteImageGenerator findClosestPaletteImage(Color sourceColor)
+        {
+            var colorComparisonsByImage = this.findColorComparisons(sourceColor);
             var imagesOrderedByComparison = colorComparisonsByImage.OrderBy(kvp => kvp.Value);
 
             var mostSimilarPair = imagesOrderedByComparison.First();
             return mostSimilarPair.Key;
+        }
+
+        private IList<PaletteImageGenerator> findClosestPaletteImages(Color sourceColor, int imagesToFind)
+        {
+            var colorComparisonsByImage = this.findColorComparisons(sourceColor);
+            var imagesOrderedByComparison = colorComparisonsByImage.OrderBy(kvp => kvp.Value).Select(kvp => kvp.Key);
+
+            var foundImages = new List<PaletteImageGenerator>(imagesOrderedByComparison.Take(imagesToFind));
+
+            return foundImages;
         }
 
         private int calculateColorComparison(Color sourceColor, Color comparedColor)
