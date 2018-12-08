@@ -11,21 +11,34 @@ namespace GroupGMosaicMaker.Model.Grid
     {
         #region Methods
 
+        /// <summary>
+        ///     Draws the grid onto the source image.
+        /// </summary>
+        /// <param name="length">The length.</param>
         public virtual void DrawGrid(int length)
         {
-            for (var i = 0; i < Decoder.PixelHeight; i += length)
+            this.drawVerticalLines(length);
+            this.drawHorizontalLines(length);
+        }
+
+        private void drawVerticalLines(int length)
+        {
+            for (var x = 0; x < Decoder.PixelHeight; x += length)
             {
-                for (var j = 0; j < Decoder.PixelWidth; j++)
+                for (var y = 0; y < Decoder.PixelWidth; ++y)
                 {
-                    SetPixelColor(i, j, Colors.White);
+                    SetPixelColor(x, y, Colors.White);
                 }
             }
+        }
 
-            for (var i = 0; i < Decoder.PixelHeight; i++)
+        private void drawHorizontalLines(int length)
+        {
+            for (var x = 0; x < Decoder.PixelHeight; ++x)
             {
-                for (var j = 0; j < Decoder.PixelWidth; j += length)
+                for (var y = 0; y < Decoder.PixelWidth; y += length)
                 {
-                    SetPixelColor(i, j, Colors.White);
+                    SetPixelColor(x, y, Colors.White);
                 }
             }
         }

@@ -98,7 +98,7 @@
     </Compile>
     <Compile Include="Converter\StringToIntConverter.cs" />
     <Compile Include="DataTier\StreamFileLoader.cs" />
-    <Compile Include="DataTier\ImageWriter.cs" />
+    <Compile Include="DataTier\ImageFileWriter.cs" />
     <Compile Include="DataTier\StreamFolderLoader.cs" />
     <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Model\Grid\ImageGridGenerator.cs" />

@@ -221,7 +221,8 @@ namespace GroupGMosaicMaker.View
             if (sender is ToggleSwitch gridToggleSwitch)
             {
                 ((MainPageViewModel)DataContext).IsGridToggled = gridToggleSwitch.IsOn;
-                ((MainPageViewModel)DataContext).UpdateDisplayedImage();
+                ((MainPageViewModel)DataContext).UpdateDisplayedImageAsync();
+                ((MainPageViewModel) DataContext).UpdateMosaicImage();
             }
         }
     }

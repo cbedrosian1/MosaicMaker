@@ -10,7 +10,7 @@ namespace GroupGMosaicMaker.DataTier
     /// <summary>
     ///     Writes loaded image data to files.
     /// </summary>
-    public class ImageWriter
+    public class ImageFileWriter
     {
         #region Methods
 

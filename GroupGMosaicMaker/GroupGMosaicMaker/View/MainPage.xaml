@@ -37,7 +37,7 @@
                       VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Margin="540,80,0,0"
                       Height="450" Width="450" VerticalScrollMode="Enabled" HorizontalScrollMode="Enabled"
                       VerticalAlignment="Top" HorizontalAlignment="Left">
-            <Image x:Name="mosaicImage" Source="{Binding DisplayedMosaicImage}" Stretch="Fill" HorizontalAlignment="Left"
+            <Image x:Name="mosaicImage" Source="{Binding MosaicImage}" Stretch="Fill" HorizontalAlignment="Left"
                    Height="450" VerticalAlignment="Top" Width="450" />
         </ScrollViewer>
         <Border BorderBrush="Black" BorderThickness="4" HorizontalAlignment="Left" VerticalAlignment="Top"
