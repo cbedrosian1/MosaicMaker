@@ -54,17 +54,28 @@ namespace GroupGMosaicMaker.ViewModel
         private PaletteImageGenerator selectedImage;
 
         private int paletteCount;
+        private bool isPaletteEmpty;
 
         private WriteableBitmap blackAndWhiteMosaic;
 
         private bool isUseImagesEvenlyChecked;
 
         private MosaicMaker currentChosenMosaicMaker;
-        private bool _isBlackWhiteToggled;
 
         #endregion
 
         #region Properties
+
+        public bool IsPaletteEmpty
+        {
+            get => this.isPaletteEmpty;
+            set
+            {
+                this.isPaletteEmpty = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         /// <summary>
         ///     Gets the palette count.
@@ -247,6 +258,12 @@ namespace GroupGMosaicMaker.ViewModel
             }
         }
 
+        /// <summary>
+        ///     Gets or sets the black and white mosaic.
+        /// </summary>
+        /// <value>
+        ///     The black and white mosaic.
+        /// </value>
         public WriteableBitmap BlackAndWhiteMosaic
         {
             get => this.blackAndWhiteMosaic;
@@ -293,7 +310,6 @@ namespace GroupGMosaicMaker.ViewModel
                 }
 
                 this.updateMosaicBlockSizes();
-                this.UpdateMosaicImage();
                 this.UpdateDisplayedImageAsync();
 
                 OnPropertyChanged();
@@ -384,7 +400,6 @@ namespace GroupGMosaicMaker.ViewModel
                         this.currentChosenMosaicMaker = this.blockMosaicMaker;
                     }
 
-                    this.UpdateMosaicImage();
                     this.GeneratePictureMosaicCommand.OnCanExecuteChanged();
                 }
 
