@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Windows.UI;
+using GroupGMosaicMaker.Extensions;
 using GroupGMosaicMaker.Model.Image;
 
 namespace GroupGMosaicMaker.Model.Mosaic
@@ -163,10 +164,11 @@ namespace GroupGMosaicMaker.Model.Mosaic
             }
         }
 
+        
         /// <summary>
         ///     Converts the blocks to black and white.
         /// </summary>
-        public override void ConvertBlocksToBlackAndWhite()
+        public override void ConvertToBlackAndWhite()
         {
             for (var x = 0; x < Decoder.PixelHeight; x += BlockLength)
             {
@@ -184,8 +186,8 @@ namespace GroupGMosaicMaker.Model.Mosaic
                 for (var x = startX; x < startX + BlockLength && x < Decoder.PixelHeight; x++)
                 {
                     var color = FindPixelColor(x, y);
-                    var average = (color.R + color.B + color.G) / NumberOfColorValues;
-                    if (average > HalfBetweenBlackAndWhite)
+                    var average = color.CalculateAverageRgbChannelValue();
+                    if (average > 127.5)
                     {
                         SetPixelColor(x, y, Colors.White);
                     }
@@ -196,7 +198,7 @@ namespace GroupGMosaicMaker.Model.Mosaic
                 }
             }
         }
-
+        
         #endregion
     }
 }

@@ -100,13 +100,16 @@
     <Compile Include="DataTier\StreamFileLoader.cs" />
     <Compile Include="DataTier\ImageWriter.cs" />
     <Compile Include="DataTier\StreamFolderLoader.cs" />
+    <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Model\Grid\ImageGridGenerator.cs" />
     <Compile Include="Model\Grid\TriangleGridGenerator.cs" />
     <Compile Include="Model\Image\ImageGenerator.cs" />
     <Compile Include="Model\Image\PaletteImageGenerator.cs" />
     <Compile Include="Model\Mosaic\BlockMosaicMaker.cs" />
+    <Compile Include="Model\Mosaic\MosaicMaker.cs" />
     <Compile Include="Model\Mosaic\PictureMosaicMaker.cs" />
     <Compile Include="Model\Mosaic\PixelBlock.cs" />
+    <Compile Include="Model\Mosaic\TriangleMosaicMaker.cs" />
     <Compile Include="View\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
