@@ -310,8 +310,7 @@ namespace GroupGMosaicMaker.ViewModel
                 }
 
                 this.updateMosaicBlockSizes();
-                this.UpdateDisplayedImageAsync();
-
+                this.UpdateMosaicImage();
                 OnPropertyChanged();
             }
         }
