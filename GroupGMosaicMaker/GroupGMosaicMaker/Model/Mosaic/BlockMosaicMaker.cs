@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using Windows.UI;
-using GroupGMosaicMaker.Extensions;
-using GroupGMosaicMaker.Model.Image;
 
 namespace GroupGMosaicMaker.Model.Mosaic
 {
@@ -12,7 +10,6 @@ namespace GroupGMosaicMaker.Model.Mosaic
     public class BlockMosaicMaker : MosaicMaker
     {
         #region Methods
-
 
         /// <summary>
         ///     Generates the (x, y)'th block of the mosaic. Override this method to change the functionality of how each block is
@@ -38,9 +35,9 @@ namespace GroupGMosaicMaker.Model.Mosaic
         {
             var pixelColors = new List<Color>();
 
-            for (var y = startY; y < startY + BlockLength; y++)
+            for (var y = startY; y < startY + BlockLength; ++y)
             {
-                for (var x = startX; x < startX + BlockLength; x++)
+                for (var x = startX; x < startX + BlockLength; ++x)
                 {
                     if (CoordinatesAreValid(x, y))
                     {
@@ -54,9 +51,9 @@ namespace GroupGMosaicMaker.Model.Mosaic
 
         private void assignColorToBlock(int startX, int startY, Color color)
         {
-            for (var y = startY; y < startY + this.BlockLength && y < Decoder.PixelWidth; y++)
+            for (var y = startY; y < startY + BlockLength && y < Decoder.PixelWidth; ++y)
             {
-                for (var x = startX; x < startX + this.BlockLength && x < Decoder.PixelHeight; x++)
+                for (var x = startX; x < startX + BlockLength && x < Decoder.PixelHeight; ++x)
                 {
                     SetPixelColor(x, y, color);
                 }
@@ -68,9 +65,9 @@ namespace GroupGMosaicMaker.Model.Mosaic
         /// </summary>
         public override void ConvertToBlackAndWhite()
         {
-            for (var x = 0; x < Decoder.PixelHeight; x += this.BlockLength)
+            for (var x = 0; x < Decoder.PixelHeight; x += BlockLength)
             {
-                for (var y = 0; y < Decoder.PixelWidth; y += this.BlockLength)
+                for (var y = 0; y < Decoder.PixelWidth; y += BlockLength)
                 {
                     this.convertBlockToBlackAndWhite(x, y);
                 }
@@ -79,11 +76,11 @@ namespace GroupGMosaicMaker.Model.Mosaic
 
         private void convertBlockToBlackAndWhite(int startX, int startY)
         {
-            for (var y = startY; y < startY + this.BlockLength && y < Decoder.PixelWidth; y++)
+            for (var y = startY; y < startY + BlockLength && y < Decoder.PixelWidth; ++y)
             {
-                for (var x = startX; x < startX + this.BlockLength && x < Decoder.PixelHeight; x++)
+                for (var x = startX; x < startX + BlockLength && x < Decoder.PixelHeight; ++x)
                 {
-                    this.ConvertPixelToBlackAndWhite(x, y);
+                    ConvertPixelToBlackAndWhite(x, y);
                 }
             }
         }

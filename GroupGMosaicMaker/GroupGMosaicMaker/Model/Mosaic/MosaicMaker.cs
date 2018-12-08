@@ -24,6 +24,15 @@ namespace GroupGMosaicMaker.Model.Mosaic
 
         #endregion
 
+        #region Constructors
+
+        protected MosaicMaker()
+        {
+            this.BlockLength = 1;
+        }
+
+        #endregion
+
         #region Methods
 
         /// <summary>

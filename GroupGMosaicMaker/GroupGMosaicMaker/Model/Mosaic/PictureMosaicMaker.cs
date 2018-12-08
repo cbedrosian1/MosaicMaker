@@ -45,7 +45,7 @@ namespace GroupGMosaicMaker.Model.Mosaic
         /// <summary>
         ///     Initializes a new instance of the <see cref="PictureMosaicMaker" /> class.
         /// </summary>
-        public PictureMosaicMaker()
+        public PictureMosaicMaker() : base()
         {
             this.palette = new List<PaletteImageGenerator>();
             this.averageColorsByPaletteImage = new Dictionary<PaletteImageGenerator, Color>();
@@ -154,9 +154,9 @@ namespace GroupGMosaicMaker.Model.Mosaic
 
         private void mapImageToBlock(int startX, int startY, ImageGenerator paletteImage)
         {
-            for (var y = startY; y < startY + BlockLength && y < Decoder.PixelWidth; y++)
+            for (var y = startY; y < startY + BlockLength && y < Decoder.PixelWidth; ++y)
             {
-                for (var x = startX; x < startX + BlockLength && x < Decoder.PixelHeight; x++)
+                for (var x = startX; x < startX + BlockLength && x < Decoder.PixelHeight; ++x)
                 {
                     var currentPaletteColor = paletteImage.FindPixelColor(x - startX, y - startY);
                     SetPixelColor(x, y, currentPaletteColor);
@@ -164,7 +164,6 @@ namespace GroupGMosaicMaker.Model.Mosaic
             }
         }
 
-        
         /// <summary>
         ///     Converts the blocks to black and white.
         /// </summary>
@@ -198,7 +197,7 @@ namespace GroupGMosaicMaker.Model.Mosaic
                 }
             }
         }
-        
+
         #endregion
     }
 }

@@ -10,7 +10,7 @@ namespace GroupGMosaicMaker.DataTier
     /// <summary>
     ///     Writes loaded image data to files.
     /// </summary>
-    public static class ImageWriter
+    public class ImageWriter
     {
         #region Methods
 
@@ -20,7 +20,7 @@ namespace GroupGMosaicMaker.DataTier
         /// <param name="imageGenerator">The image operator (where the image comes from).</param>
         /// <param name="imageFile">The image file (where the image will be saved).</param>
         /// <returns>The completed asynchronous operation.</returns>
-        public static async Task WriteImageAsync(ImageGenerator imageGenerator, StorageFile imageFile)
+        public async Task WriteImageAsync(ImageGenerator imageGenerator, StorageFile imageFile)
         {
             var stream = await imageFile.OpenAsync(FileAccessMode.ReadWrite);
             var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, stream);
