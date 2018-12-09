@@ -338,14 +338,14 @@ namespace GroupGMosaicMaker.ViewModel
                     this.UpdateDisplayedImageAsync();
                     this.updateMosaicBlockSizes();
 
-                this.gridSize = value;
+                    this.gridSize = value;
 
-                this.updateMosaicBlockSizes();
-                    if (this.imageSource != null)
-                    {
-                        this.UpdateDisplayedImageAsync();
-                    }
+                    this.updateMosaicBlockSizes();
+                    this.UpdateDisplayedImageAsync();
+                 
+
                     OnPropertyChanged();
+                }
             }
         }
 
@@ -704,8 +704,12 @@ namespace GroupGMosaicMaker.ViewModel
         /// </summary>
         public async void UpdateDisplayedImageAsync()
         {
-            await this.gridImageGenerator.SetSourceAsync(this.imageSource);
-            await this.triangleGridImageGenerator.SetSourceAsync(this.imageSource);
+            if (this.imageSource != null)
+            {
+                await this.gridImageGenerator.SetSourceAsync(this.imageSource);
+                await this.triangleGridImageGenerator.SetSourceAsync(this.imageSource);
+            }
+            
             if (this.IsGridToggled)
             {
                 if (this.isSquareGridSelected)
