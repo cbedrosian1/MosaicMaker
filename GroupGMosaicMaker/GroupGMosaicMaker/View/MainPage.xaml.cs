@@ -33,7 +33,6 @@ namespace GroupGMosaicMaker.View
         ///     The application width
         /// </summary>
         public const int ApplicationWidth = 1150;
-        
 
         private readonly StreamFileLoader fileLoader;
         private readonly StreamFolderLoader folderLoader;
@@ -41,13 +40,12 @@ namespace GroupGMosaicMaker.View
         private string chosenFileType;
         private List<string> validFileTypes;
 
-
         #endregion
 
         #region Constructors
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="MainPage"/> class.
+        ///     Initializes a new instance of the <see cref="MainPage" /> class.
         /// </summary>
         public MainPage()
         {
@@ -162,13 +160,9 @@ namespace GroupGMosaicMaker.View
             this.mosaicScrollView.ChangeView(0, this.mosaicScrollView.VerticalOffset, 1.0f);
         }
 
-        #endregion
-
- 
-        private async void  addImageToPaletteButton_Click(object sender, RoutedEventArgs e)
+        private async void addImageToPaletteButton_Click(object sender, RoutedEventArgs e)
         {
-            var openPicker = new FileOpenPicker
-            {
+            var openPicker = new FileOpenPicker {
                 ViewMode = PickerViewMode.Thumbnail,
                 SuggestedStartLocation = PickerLocationId.PicturesLibrary
             };
@@ -187,9 +181,7 @@ namespace GroupGMosaicMaker.View
 
         private void useSelectedItemsButton_Click(object sender, RoutedEventArgs e)
         {
-            
-                ((MainPageViewModel)DataContext).UpdateSelectedPalette(this.gridView.SelectedItems);
-
+            ((MainPageViewModel) DataContext).UpdateSelectedPalette(this.gridView.SelectedItems);
         }
 
         private void deleteSelectedItemsButton_Click(object sender, RoutedEventArgs e)
@@ -197,12 +189,11 @@ namespace GroupGMosaicMaker.View
             var selectedImages = new ObservableCollection<PaletteImageGenerator>();
             foreach (var current in this.gridView.SelectedItems)
             {
-                selectedImages.Add((PaletteImageGenerator)current);
+                selectedImages.Add((PaletteImageGenerator) current);
             }
-            ((MainPageViewModel)DataContext).DeleteSelectedImages(selectedImages);
-        }
-        
 
+            ((MainPageViewModel) DataContext).DeleteSelectedImages(selectedImages);
+        }
 
         private void GridView_OnItemClick(object sender, ItemClickEventArgs e)
         {
@@ -213,8 +204,8 @@ namespace GroupGMosaicMaker.View
         {
             if (sender is ToggleSwitch blackWhiteToggle)
             {
-                ((MainPageViewModel)DataContext).IsBlackWhiteToggled = blackWhiteToggle.IsOn;
-                ((MainPageViewModel)DataContext).UpdateMosaicImage();
+                ((MainPageViewModel) DataContext).IsBlackWhiteToggled = blackWhiteToggle.IsOn;
+                ((MainPageViewModel) DataContext).UpdateMosaicImage();
             }
         }
 
@@ -222,9 +213,16 @@ namespace GroupGMosaicMaker.View
         {
             if (sender is ToggleSwitch gridToggleSwitch)
             {
-                ((MainPageViewModel)DataContext).IsGridToggled = gridToggleSwitch.IsOn;
-                ((MainPageViewModel)DataContext).UpdateDisplayedImageAsync();
+                ((MainPageViewModel) DataContext).IsGridToggled = gridToggleSwitch.IsOn;
+                ((MainPageViewModel) DataContext).UpdateDisplayedImageAsync();
             }
+        }
+
+        #endregion
+
+        private void checkBox_OnClick(object sender, RoutedEventArgs e)
+        {
+            ((MainPageViewModel) DataContext).SettingsHasChanged = true;
         }
     }
 }
