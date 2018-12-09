@@ -64,15 +64,33 @@ namespace GroupGMosaicMaker.ViewModel
 
         private MosaicMaker currentChosenMosaicMaker;
 
+        private bool imageLoaded;
+
         #endregion
 
         #region Properties
 
         /// <summary>
+        /// Gets or sets a value indicating whether [image loaded].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [image loaded]; otherwise, <c>false</c>.
+        /// </value>
+        public bool ImageLoaded
+        {
+            get => this.imageLoaded;
+            set
+            {
+                this.imageLoaded = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
         ///     Gets or sets a value indicating whether [settings has changed].
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [settings has changed]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [settings has changed]; otherwise, <c>false</c>.
         /// </value>
         public bool SettingsHasChanged
         {
@@ -315,19 +333,19 @@ namespace GroupGMosaicMaker.ViewModel
             {
                 if (this.GridSize != value)
                 {
+                    this.gridSize = value;
                     this.SettingsHasChanged = true;
-                }
+                    this.UpdateDisplayedImageAsync();
+                    this.updateMosaicBlockSizes();
 
                 this.gridSize = value;
 
                 this.updateMosaicBlockSizes();
-                if (this.imageSource!=null)
-                {
-                    this.UpdateDisplayedImageAsync();
-                }
-                
-                
-                OnPropertyChanged();
+                    if (this.imageSource != null)
+                    {
+                        this.UpdateDisplayedImageAsync();
+                    }
+                    OnPropertyChanged();
             }
         }
 
@@ -558,16 +576,9 @@ namespace GroupGMosaicMaker.ViewModel
         {
             Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Wait, 13);
 
-            await this.scalePaletteImagesAsync();
             this.pictureMosaicMaker.Palette = this.SelectedPalette;
-            if (this.isUseImagesEvenlyChecked)
-            {
-                this.pictureMosaicMaker.GenerateMosaicUsingImagesEvenly();
-            }
-            else
-            {
-                this.pictureMosaicMaker.GenerateMosaic();
-            }
+                        await this.scalePaletteImagesAsync();
+            this.generatePictureMosaic();
 
             if (this.IsNoPatternsChecked)
             {
@@ -585,6 +596,18 @@ namespace GroupGMosaicMaker.ViewModel
             this.SettingsHasChanged = false;
 
             Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
+        }
+
+        private void generatePictureMosaic()
+        {
+            if (this.isUseImagesEvenlyChecked)
+            {
+                this.pictureMosaicMaker.GenerateMosaicUsingImagesEvenly();
+            }
+            else
+            {
+                this.pictureMosaicMaker.GenerateMosaic();
+            }
         }
 
         private async Task generateAndDisplayMosaicImage(MosaicMaker mosaicMaker)
@@ -629,6 +652,7 @@ namespace GroupGMosaicMaker.ViewModel
         {
             this.imageSource = source;
             this.settingsHasChanged = true;
+            this.ImageLoaded = true;
 
             await this.updateGeneratorSources(source);
 
