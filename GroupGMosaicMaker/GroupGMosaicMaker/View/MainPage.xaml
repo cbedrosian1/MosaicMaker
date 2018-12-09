@@ -55,7 +55,7 @@
                 HorizontalAlignment="Left" Margin="312,540,0,0" VerticalAlignment="Top" />
         <Button Content="Load Image Palette" Click="loadPaletteButton_Click" HorizontalAlignment="Left"
                 Margin="691,793,0,0" VerticalAlignment="Top" />
-        <ToggleSwitch x:Name="toggleSwitch" Toggled="gridSwitchToggled" OffContent="Hidden" OnContent="Visible"
+        <ToggleSwitch x:Name="toggleSwitch" IsEnabled="{Binding ImageLoaded}" Toggled="gridSwitchToggled" OffContent="Hidden" OnContent="Visible"
                       HorizontalAlignment="Left" Margin="231,680,0,0" VerticalAlignment="Top" />
         <TextBlock x:Name="gridSizeText" HorizontalAlignment="Left" Margin="185,645,0,0" Text="Size:"
                    TextWrapping="Wrap" VerticalAlignment="Top" />
