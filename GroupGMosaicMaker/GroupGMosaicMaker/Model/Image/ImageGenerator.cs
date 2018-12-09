@@ -63,12 +63,24 @@ namespace GroupGMosaicMaker.Model.Image
             await this.AssignSourcePixelsAsync(this.Decoder.PixelWidth, this.Decoder.PixelHeight);
         }
 
+        /// <summary>
+        ///     Assigns the source pixels asynchronous.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <returns>The completed asynchronous operation.</returns>
         protected async Task AssignSourcePixelsAsync(uint width, uint height)
         {
             var pixelData = await this.GeneratePixelDataAsync(width, height);
             this.SourcePixels = pixelData.DetachPixelData();
         }
 
+        /// <summary>
+        ///     Generates the pixel data asynchronous.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <returns></returns>
         protected async Task<PixelDataProvider> GeneratePixelDataAsync(uint width, uint height)
         {
             var transform = this.generateBitmapTransform(width, height);
@@ -93,6 +105,12 @@ namespace GroupGMosaicMaker.Model.Image
             return transform;
         }
 
+        /// <summary>
+        ///     Finds the color of the pixel.
+        /// </summary>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <returns>The color of the pixel.</returns>
         public Color FindPixelColor(int x, int y)
         {
             var offset = this.CalculatePixelOffset(x, y);
@@ -107,6 +125,12 @@ namespace GroupGMosaicMaker.Model.Image
             return new Color();
         }
 
+        /// <summary>
+        ///     Sets the color of the pixel.
+        /// </summary>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <param name="color">The color.</param>
         protected void SetPixelColor(int x, int y, Color color)
         {
             var offset = this.CalculatePixelOffset(x, y);
@@ -118,9 +142,15 @@ namespace GroupGMosaicMaker.Model.Image
             }
         }
 
+        /// <summary>
+        ///     Calculates the pixel offset.
+        /// </summary>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <returns>The pixel offset</returns>
         protected virtual int CalculatePixelOffset(int x, int y)
         {
-            return (y * (int) this.Decoder.PixelWidth + x) * 4;
+            return (x * (int) this.Decoder.PixelWidth + y) * 4;
         }
 
         private bool offsetIsValid(int offset)
@@ -128,6 +158,10 @@ namespace GroupGMosaicMaker.Model.Image
             return offset + 2 < this.SourcePixels.Length;
         }
 
+        /// <summary>Checks if Coordinates are valid.</summary>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <returns>True if coordinates are valid and false if not</returns>
         protected bool CoordinatesAreValid(int x, int y)
         {
             var offset = this.CalculatePixelOffset(x, y);

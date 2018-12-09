@@ -32,7 +32,7 @@ namespace GroupGMosaicMaker.View
         /// <summary>
         ///     The application width
         /// </summary>
-        public const int ApplicationWidth = 1080;
+        public const int ApplicationWidth = 1150;
         
 
         private readonly StreamFileLoader fileLoader;
@@ -40,12 +40,15 @@ namespace GroupGMosaicMaker.View
 
         private string chosenFileType;
         private List<string> validFileTypes;
-        
+
 
         #endregion
 
         #region Constructors
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="MainPage"/> class.
+        /// </summary>
         public MainPage()
         {
             this.InitializeComponent();
@@ -161,8 +164,7 @@ namespace GroupGMosaicMaker.View
 
         #endregion
 
-
-        //TODO lots of duplicate code here but not really b/c its just a file picker so IDK
+ 
         private async void  addImageToPaletteButton_Click(object sender, RoutedEventArgs e)
         {
             var openPicker = new FileOpenPicker

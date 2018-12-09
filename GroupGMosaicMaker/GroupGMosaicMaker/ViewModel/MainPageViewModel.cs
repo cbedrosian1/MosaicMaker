@@ -56,11 +56,11 @@ namespace GroupGMosaicMaker.ViewModel
         private PaletteImageGenerator selectedImage;
 
         private int paletteCount;
-        private bool isPaletteEmpty;
 
         private WriteableBitmap blackAndWhiteMosaic;
 
         private bool isUseImagesEvenlyChecked;
+        private bool isNoPatternsChecked;
 
         private MosaicMaker currentChosenMosaicMaker;
 
@@ -343,7 +343,36 @@ namespace GroupGMosaicMaker.ViewModel
         /// </value>
         public bool IsBlackWhiteToggled { get; set; }
 
-        public bool IsNoPatternsChecked { get; set; }
+        /// <summary>
+        ///     Gets or sets a value indicating whether use images evenly is checked.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if use images evenly is checked; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsUseImagesEvenlyChecked
+        {
+            get => this.isUseImagesEvenlyChecked;
+            set
+            {
+                this.isUseImagesEvenlyChecked = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether no patterns is checked.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if no pattern is checked; otherwise, <c>false</c>.</value>
+        public bool IsNoPatternsChecked
+        {
+            get => this.isNoPatternsChecked;
+            set
+            {
+                this.isNoPatternsChecked = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         ///     Gets or sets a value indicating whether square grid is selected.

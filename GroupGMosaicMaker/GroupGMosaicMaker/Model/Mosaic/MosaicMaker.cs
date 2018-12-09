@@ -4,10 +4,14 @@ using GroupGMosaicMaker.Model.Image;
 
 namespace GroupGMosaicMaker.Model.Mosaic
 {
+    /// <summary>Contains basic functionality for creating a mosaic</summary>
     public abstract class MosaicMaker : ImageGenerator
     {
         #region Data members
 
+        /// <summary>
+        ///     The half of maximum color channel
+        /// </summary>
         protected const double HalfOfMaxColorChannel = 127.5;
 
         #endregion
@@ -35,9 +39,9 @@ namespace GroupGMosaicMaker.Model.Mosaic
         /// </summary>
         public void GenerateMosaic()
         {
-            for (var y = 0; y < Decoder.PixelHeight; y += this.BlockLength)
+            for (var x = 0; x < Decoder.PixelHeight; x += this.BlockLength)
             {
-                for (var x = 0; x < Decoder.PixelWidth; x += this.BlockLength)
+                for (var y = 0; y < Decoder.PixelWidth; y += this.BlockLength)
                 {
                     this.GenerateMosaicBlock(x, y);
                 }

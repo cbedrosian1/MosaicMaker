@@ -5,6 +5,9 @@ using Windows.UI;
 
 namespace GroupGMosaicMaker.Model.Mosaic
 {
+    /// <summary>
+    ///     Represents a block of pixels in an image
+    /// </summary>
     public class PixelBlock : ICollection<Color>
     {
         #region Data members

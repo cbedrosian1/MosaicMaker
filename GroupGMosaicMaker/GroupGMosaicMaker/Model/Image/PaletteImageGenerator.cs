@@ -33,7 +33,7 @@ namespace GroupGMosaicMaker.Model.Image
         ///     Gets or sets the WritableBitmap associated with the image source
         /// </summary>
         /// <value>
-        ///     The WriteableBitmap
+        ///     The WritableBitmap image
         /// </value>
         public WriteableBitmap ThumbnailImage { get; private set; }
 
@@ -90,16 +90,16 @@ namespace GroupGMosaicMaker.Model.Image
         /// <returns>The pixel offset for accessing the source pixels.</returns>
         protected override int CalculatePixelOffset(int x, int y)
         {
-            return (y * (int) this.scaledLength + x) * 4;
+            return (x * (int) this.scaledLength + y) * 4;
         }
 
         private void assignPixels()
         {
-            for (var y = 0; y < Decoder.PixelHeight; y++)
+            for (var i = 0; i < Decoder.PixelWidth; i++)
             {
-                for (var x = 0; x < Decoder.PixelWidth; x++)
+                for (var j = 0; j < Decoder.PixelHeight; j++)
                 {
-                    var color = FindPixelColor(x, y);
+                    var color = FindPixelColor(i, j);
                     this.PixelBlock.Add(color);
                 }
             }
