@@ -17,6 +17,7 @@ namespace GroupGMosaicMaker.Model.Mosaic
     {
         #region Data members
 
+        private int DefaultClosestImageCount = 10;
         private ICollection<PaletteImageGenerator> palette;
         private IDictionary<PaletteImageGenerator, Color> averageColorsByPaletteImage;
 
@@ -133,7 +134,7 @@ namespace GroupGMosaicMaker.Model.Mosaic
         {
             var currentBlock = FindSingleBlock(x, y);
             var currentBlockColor = currentBlock.CalculateAverageColor();
-            var closestImages = this.findClosestPaletteImages(currentBlockColor, 10);
+            var closestImages = this.findClosestPaletteImages(currentBlockColor, this.DefaultClosestImageCount);
 
             var blockRightImage = this.findImageInBlock(x, y + BlockLength);
             var blockLeftImage = this.findImageInBlock(x, y - BlockLength);
@@ -257,7 +258,7 @@ namespace GroupGMosaicMaker.Model.Mosaic
                 {
                     var color = FindPixelColor(x, y);
                     var average = color.CalculateAverageRgbChannelValue();
-                    if (average > 127.5)
+                    if (average > HalfOfMaxColorChannel)
                     {
                         SetPixelColor(x, y, Colors.White);
                     }
