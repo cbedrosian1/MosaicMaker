@@ -88,9 +88,12 @@ namespace GroupGMosaicMaker.ViewModel
             }
         }
 
-        /// <summary>Gets or sets a value indicating zoom is selected.</summary>
+        /// <summary>
+        ///  Gets or sets a value indicating zoom is selected.
+        /// </summary>
         /// <value>
-        ///   <c>true</c> if zoom is selected; otherwise, <c>false</c>.</value>
+        ///   <c>true</c> if zoom is selected; otherwise, <c>false</c>.
+        /// </value>
         public bool IsZoomSelected
         {
             get => this.isZoomSelected;
@@ -318,6 +321,12 @@ namespace GroupGMosaicMaker.ViewModel
                 this.gridSize = value;
 
                 this.updateMosaicBlockSizes();
+                if (this.imageSource!=null)
+                {
+                    this.UpdateDisplayedImageAsync();
+                }
+                
+                
                 OnPropertyChanged();
             }
         }
@@ -425,6 +434,7 @@ namespace GroupGMosaicMaker.ViewModel
                 this.GenerateBlockMosaicCommand.OnCanExecuteChanged();
                 this.GeneratePictureMosaicCommand.OnCanExecuteChanged();
                 OnPropertyChanged();
+                this.UpdateDisplayedImageAsync();
             }
         }
 
@@ -580,7 +590,8 @@ namespace GroupGMosaicMaker.ViewModel
         private async Task generateAndDisplayMosaicImage(MosaicMaker mosaicMaker)
         {
             Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Wait, 13);
-
+            await mosaicMaker.SetSourceAsync(this.imageSource);
+            mosaicMaker.BlockLength = this.GridSize;
             mosaicMaker.GenerateMosaic();
 
             if (this.IsBlackWhiteToggled)
@@ -669,6 +680,8 @@ namespace GroupGMosaicMaker.ViewModel
         /// </summary>
         public async void UpdateDisplayedImageAsync()
         {
+            await this.gridImageGenerator.SetSourceAsync(this.imageSource);
+            await this.triangleGridImageGenerator.SetSourceAsync(this.imageSource);
             if (this.IsGridToggled)
             {
                 if (this.isSquareGridSelected)
