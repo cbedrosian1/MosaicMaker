@@ -3,6 +3,8 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using Windows.UI.Core;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media.Imaging;
 using GroupGMosaicMaker.DataTier;
 using GroupGMosaicMaker.Model.Grid;
@@ -78,6 +80,16 @@ namespace GroupGMosaicMaker.ViewModel
                 this.GenerateBlockMosaicCommand.OnCanExecuteChanged();
                 this.GeneratePictureMosaicCommand.OnCanExecuteChanged();
 
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsZoomSelected
+        {
+            get => this.isZoomSelected;
+            set
+            {
+                this.isZoomSelected = value;
                 OnPropertyChanged();
             }
         }
@@ -363,7 +375,8 @@ namespace GroupGMosaicMaker.ViewModel
         ///     Gets or sets a value indicating whether no patterns is checked.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if no pattern is checked; otherwise, <c>false</c>.</value>
+        ///     <c>true</c> if no pattern is checked; otherwise, <c>false</c>.
+        /// </value>
         public bool IsNoPatternsChecked
         {
             get => this.isNoPatternsChecked;
@@ -459,7 +472,8 @@ namespace GroupGMosaicMaker.ViewModel
 
         private void loadCommands()
         {
-            this.GenerateBlockMosaicCommand = CreateCommand(this.generateAndDisplayBlockMosaic, this.canGenerateBlockMosaic);
+            this.GenerateBlockMosaicCommand =
+                CreateCommand(this.generateAndDisplayBlockMosaic, this.canGenerateBlockMosaic);
             this.GeneratePictureMosaicCommand =
                 CreateCommand(this.generateAndDisplayPictureMosaic, this.canGeneratePictureMosaic);
             this.ClearPaletteImagesCommand = CreateCommand(this.clearPaletteImages, this.canClearPaletteImages);
@@ -507,7 +521,8 @@ namespace GroupGMosaicMaker.ViewModel
 
         private bool canGeneratePictureMosaic(object obj)
         {
-            return this.settingsHasChanged && this.isSquareGridSelected && this.palette.Count > 0 && this.originalImage != null && this.currentChosenMosaicMaker != this.pictureMosaicMaker;
+            return this.settingsHasChanged && this.isSquareGridSelected && this.palette.Count > 0 &&
+                   this.originalImage != null && this.currentChosenMosaicMaker != this.pictureMosaicMaker;
         }
 
         private async void generateAndDisplayBlockMosaic(object obj)
@@ -524,8 +539,11 @@ namespace GroupGMosaicMaker.ViewModel
 
         private async void generateAndDisplayPictureMosaic(object obj)
         {
+            Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Wait, 13);
+
             await this.pictureMosaicMaker.SetSourceAsync(this.imageSource);
             await this.scalePaletteImagesAsync();
+
             this.pictureMosaicMaker.Palette = this.SelectedPalette;
             if (this.isUseImagesEvenlyChecked)
             {
@@ -552,10 +570,14 @@ namespace GroupGMosaicMaker.ViewModel
             this.MosaicImage = await this.pictureMosaicMaker.GenerateImageAsync();
 
             this.SettingsHasChanged = false;
+
+            Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
         }
 
         private async Task generateAndDisplayMosaicImage(MosaicMaker mosaicMaker)
         {
+            Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Wait, 13);
+
             await mosaicMaker.SetSourceAsync(this.imageSource);
             mosaicMaker.BlockLength = this.GridSize;
             mosaicMaker.GenerateMosaic();
@@ -570,8 +592,9 @@ namespace GroupGMosaicMaker.ViewModel
             this.MosaicImage = await mosaicMaker.GenerateImageAsync();
 
             this.SettingsHasChanged = false;
-        }
 
+            Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
+        }
 
         private async Task generateAndDisplayGridImage(ImageGridGenerator gridGenerator)
         {
@@ -655,7 +678,6 @@ namespace GroupGMosaicMaker.ViewModel
                 }
                 else
                 {
-
                     await this.generateAndDisplayGridImage(this.triangleGridImageGenerator);
                 }
             }
@@ -690,6 +712,8 @@ namespace GroupGMosaicMaker.ViewModel
         /// <returns>The completed asynchronous operation</returns>
         public async Task GeneratePalette(IReadOnlyList<IRandomAccessStream> paletteSource)
         {
+            Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Wait, 13);
+
             var paletteImages = new ObservableCollection<PaletteImageGenerator>();
 
             foreach (var source in paletteSource)
@@ -704,6 +728,8 @@ namespace GroupGMosaicMaker.ViewModel
             this.SelectedPalette = paletteImages;
 
             this.SettingsHasChanged = true;
+
+            Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
         }
 
         /// <summary>
@@ -728,7 +754,7 @@ namespace GroupGMosaicMaker.ViewModel
                 var selectedImages = new ObservableCollection<PaletteImageGenerator>();
                 foreach (var current in objects)
                 {
-                    selectedImages.Add((PaletteImageGenerator)current);
+                    selectedImages.Add((PaletteImageGenerator) current);
                 }
 
                 this.SelectedPalette = selectedImages;
