@@ -529,7 +529,7 @@ namespace GroupGMosaicMaker.ViewModel
         private bool canGeneratePictureMosaic(object obj)
         {
             return this.settingsHasChanged && this.isSquareGridSelected && this.palette.Count > 0 &&
-                   this.originalImage != null && this.currentChosenMosaicMaker != this.pictureMosaicMaker;
+                   this.originalImage != null;
         }
 
         private async void generateAndDisplayBlockMosaic(object obj)
@@ -548,9 +548,7 @@ namespace GroupGMosaicMaker.ViewModel
         {
             Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Wait, 13);
 
-            await this.pictureMosaicMaker.SetSourceAsync(this.imageSource);
             await this.scalePaletteImagesAsync();
-
             this.pictureMosaicMaker.Palette = this.SelectedPalette;
             if (this.isUseImagesEvenlyChecked)
             {
@@ -573,9 +571,7 @@ namespace GroupGMosaicMaker.ViewModel
 
             this.IsUsingSelectedImages = false;
             this.currentChosenMosaicMaker = this.pictureMosaicMaker;
-
             this.MosaicImage = await this.pictureMosaicMaker.GenerateImageAsync();
-
             this.SettingsHasChanged = false;
 
             Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
@@ -585,8 +581,6 @@ namespace GroupGMosaicMaker.ViewModel
         {
             Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Wait, 13);
 
-            await mosaicMaker.SetSourceAsync(this.imageSource);
-            mosaicMaker.BlockLength = this.GridSize;
             mosaicMaker.GenerateMosaic();
 
             if (this.IsBlackWhiteToggled)
@@ -595,9 +589,7 @@ namespace GroupGMosaicMaker.ViewModel
             }
 
             this.currentChosenMosaicMaker = mosaicMaker;
-
             this.MosaicImage = await mosaicMaker.GenerateImageAsync();
-
             this.SettingsHasChanged = false;
 
             Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
