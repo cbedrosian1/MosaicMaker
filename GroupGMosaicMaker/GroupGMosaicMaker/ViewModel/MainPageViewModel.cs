@@ -54,28 +54,17 @@ namespace GroupGMosaicMaker.ViewModel
         private PaletteImageGenerator selectedImage;
 
         private int paletteCount;
-        private bool isPaletteEmpty;
 
         private WriteableBitmap blackAndWhiteMosaic;
 
         private bool isUseImagesEvenlyChecked;
+        private bool isNoPatternsChecked;
 
         private MosaicMaker currentChosenMosaicMaker;
 
         #endregion
 
         #region Properties
-
-        public bool IsPaletteEmpty
-        {
-            get => this.isPaletteEmpty;
-            set
-            {
-                this.isPaletteEmpty = value;
-                OnPropertyChanged();
-            }
-        }
-
 
         /// <summary>
         ///     Gets the palette count.
@@ -310,7 +299,6 @@ namespace GroupGMosaicMaker.ViewModel
                 }
 
                 this.updateMosaicBlockSizes();
-                this.UpdateMosaicImage();
                 OnPropertyChanged();
             }
         }
@@ -371,7 +359,20 @@ namespace GroupGMosaicMaker.ViewModel
             }
         }
 
-        public bool IsNoPatternsChecked { get; set; }
+        /// <summary>
+        ///     Gets or sets a value indicating whether no patterns is checked.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if no pattern is checked; otherwise, <c>false</c>.</value>
+        public bool IsNoPatternsChecked
+        {
+            get => this.isNoPatternsChecked;
+            set
+            {
+                this.isNoPatternsChecked = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         ///     Gets or sets a value indicating whether square grid is selected.
@@ -602,7 +603,6 @@ namespace GroupGMosaicMaker.ViewModel
         /// <returns>The completed asynchronous operation.</returns>
         public async Task LoadImageSource(IRandomAccessStream source)
         {
-            // TODO Can this method just be turned into a property?
             this.imageSource = source;
 
             await this.updateGeneratorSources(source);
@@ -646,7 +646,6 @@ namespace GroupGMosaicMaker.ViewModel
             this.Palette = images;
             this.SelectedPalette = images;
             this.IsUsingSelectedImages = false;
-            //TODO idk if can refactor because this is similar to GeneratePalette
         }
 
         /// <summary>

@@ -7,6 +7,9 @@ using Windows.Storage.Streams;
 
 namespace GroupGMosaicMaker.DataTier
 {
+    /// <summary>
+    ///     Loads a folder
+    /// </summary>
     public class StreamFolderLoader
     {
         #region Data members
@@ -19,6 +22,11 @@ namespace GroupGMosaicMaker.DataTier
 
         #region Methods
 
+        /// <summary>
+        ///      Loads the folder.
+        /// </summary>
+        /// <param name="folder">The folder.</param>
+        /// <returns></returns>
         public async Task<IReadOnlyList<IRandomAccessStream>> LoadFolder(StorageFolder folder)
         {
             var files = await folder.GetFilesAsync();

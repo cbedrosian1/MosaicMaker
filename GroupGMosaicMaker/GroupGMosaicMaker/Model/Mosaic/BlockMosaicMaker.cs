@@ -51,9 +51,9 @@ namespace GroupGMosaicMaker.Model.Mosaic
 
         private void assignColorToBlock(int startX, int startY, Color color)
         {
-            for (var y = startY; y < startY + BlockLength && y < Decoder.PixelHeight; ++y)
+            for (var y = startY; y < startY + BlockLength && y < Decoder.PixelWidth; ++y)
             {
-                for (var x = startX; x < startX + BlockLength && x < Decoder.PixelWidth; ++x)
+                for (var x = startX; x < startX + BlockLength && x < Decoder.PixelHeight; ++x)
                 {
                     SetPixelColor(x, y, color);
                 }
@@ -65,9 +65,9 @@ namespace GroupGMosaicMaker.Model.Mosaic
         /// </summary>
         public override void ConvertToBlackAndWhite()
         {
-            for (var y = 0; y < Decoder.PixelHeight; y += BlockLength)
+            for (var x = 0; x < Decoder.PixelHeight; x += BlockLength)
             {
-                for (var x = 0; x < Decoder.PixelWidth; x += BlockLength)
+                for (var y = 0; y < Decoder.PixelWidth; y += BlockLength)
                 {
                     this.convertBlockToBlackAndWhite(x, y);
                 }
@@ -76,9 +76,9 @@ namespace GroupGMosaicMaker.Model.Mosaic
 
         private void convertBlockToBlackAndWhite(int startX, int startY)
         {
-            for (var y = startY; y < startY + BlockLength && y < Decoder.PixelHeight; ++y)
+            for (var y = startY; y < startY + BlockLength && y < Decoder.PixelWidth; ++y)
             {
-                for (var x = startX; x < startX + BlockLength && x < Decoder.PixelWidth; ++x)
+                for (var x = startX; x < startX + BlockLength && x < Decoder.PixelHeight; ++x)
                 {
                     ConvertPixelToBlackAndWhite(x, y);
                 }
