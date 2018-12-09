@@ -11,7 +11,6 @@ namespace GroupGMosaicMaker.Model.Mosaic
     public class TriangleMosaicMaker : MosaicMaker
     {
         #region Methods
-
         private const int LowerTriangularStartingOffset = 0;
         private const int UpperTriangularStartingOffset = 1;
 
