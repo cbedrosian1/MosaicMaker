@@ -57,8 +57,6 @@ namespace GroupGMosaicMaker.ViewModel
 
         private int paletteCount;
 
-        private WriteableBitmap blackAndWhiteMosaic;
-
         private bool isUseImagesEvenlyChecked;
         private bool isNoPatternsChecked;
 
@@ -68,6 +66,12 @@ namespace GroupGMosaicMaker.ViewModel
 
         #region Properties
 
+        /// <summary>
+        ///     Gets or sets a value indicating whether [settings has changed].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [settings has changed]; otherwise, <c>false</c>.
+        /// </value>
         public bool SettingsHasChanged
         {
             get => this.settingsHasChanged;

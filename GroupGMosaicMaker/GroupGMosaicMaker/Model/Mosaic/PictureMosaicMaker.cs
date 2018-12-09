@@ -15,7 +15,7 @@ namespace GroupGMosaicMaker.Model.Mosaic
     {
         #region Data members
 
-        private const int DefaultSizeOfClosestImages = 10;
+        private const int DefaultCountOfClosestImages = 10;
         private ICollection<PaletteImageGenerator> palette;
         private IDictionary<PaletteImageGenerator, Color> averageColorsByPaletteImage;
 
@@ -78,7 +78,7 @@ namespace GroupGMosaicMaker.Model.Mosaic
         }
 
         /// <summary>
-        ///     Generates the mosaic while preventing patterns and repetition.
+        ///     Generates the mosaic preventing repetition.
         /// </summary>
         public void GenerateMosaicPreventingRepetition()
         {
@@ -132,13 +132,13 @@ namespace GroupGMosaicMaker.Model.Mosaic
         {
             var currentBlock = FindSingleBlock(x, y);
             var currentBlockColor = currentBlock.CalculateAverageColor();
-            var closestImages = this.findClosestPaletteImages(currentBlockColor, DefaultSizeOfClosestImages);
+            var closestImages = this.findClosestPaletteImages(currentBlockColor, DefaultCountOfClosestImages);
 
-            var blockBelowImage = this.findImageInBlock(x, y + BlockLength);
-            var blockAboveImage = this.findImageInBlock(x, y - BlockLength);
-            var blockLeftImage = this.findImageInBlock(x - BlockLength, y);
-            var blockRightImage = this.findImageInBlock(x + BlockLength, y);
-           
+            var blockRightImage = this.findImageInBlock(x, y + BlockLength);
+            var blockLeftImage = this.findImageInBlock(x, y - BlockLength);
+            var blockAboveImage = this.findImageInBlock(x - BlockLength, y);
+            var blockBelowImage = this.findImageInBlock(x + BlockLength, y);
+
             closestImages.Remove(blockRightImage);
             closestImages.Remove(blockLeftImage);
             closestImages.Remove(blockAboveImage);
@@ -224,9 +224,9 @@ namespace GroupGMosaicMaker.Model.Mosaic
 
         private void mapImageToBlock(int startX, int startY, ImageGenerator paletteImage)
         {
-            for (var y = startY; y < startY + BlockLength && y < Decoder.PixelHeight; ++y)
+            for (var y = startY; y < startY + BlockLength && y < Decoder.PixelWidth; ++y)
             {
-                for (var x = startX; x < startX + BlockLength && x < Decoder.PixelWidth; ++x)
+                for (var x = startX; x < startX + BlockLength && x < Decoder.PixelHeight; ++x)
                 {
                     var currentPaletteColor = paletteImage.FindPixelColor(x - startX, y - startY);
                     SetPixelColor(x, y, currentPaletteColor);
@@ -256,7 +256,7 @@ namespace GroupGMosaicMaker.Model.Mosaic
                 {
                     var color = FindPixelColor(x, y);
                     var average = color.CalculateAverageRgbChannelValue();
-                    if (average > 127.5)
+                    if (average > HalfOfMaxColorChannel)
                     {
                         SetPixelColor(x, y, Colors.White);
                     }
