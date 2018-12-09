@@ -26,10 +26,6 @@ namespace GroupGMosaicMaker.Model.Mosaic
 
         #endregion
 
-        #region Constructors
-
-        #endregion
-
         #region Methods
 
         /// <summary>

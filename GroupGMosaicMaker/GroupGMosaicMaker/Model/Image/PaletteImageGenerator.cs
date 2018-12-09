@@ -90,7 +90,7 @@ namespace GroupGMosaicMaker.Model.Image
         /// <returns>The pixel offset for accessing the source pixels.</returns>
         protected override int CalculatePixelOffset(int x, int y)
         {
-            return (x * (int)this.scaledLength + y) * 4;
+            return (x * (int) this.scaledLength + y) * 4;
         }
 
         private void assignPixels()

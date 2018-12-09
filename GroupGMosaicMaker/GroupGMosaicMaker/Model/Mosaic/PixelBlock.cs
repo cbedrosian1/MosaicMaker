@@ -139,9 +139,9 @@ namespace GroupGMosaicMaker.Model.Mosaic
         /// <returns></returns>
         public Color CalculateAverageColor()
         {
-            var averageR = (byte)this.pixelColors.Average(color => color.R);
-            var averageG = (byte)this.pixelColors.Average(color => color.G);
-            var averageB = (byte)this.pixelColors.Average(color => color.B);
+            var averageR = (byte) this.pixelColors.Average(color => color.R);
+            var averageG = (byte) this.pixelColors.Average(color => color.G);
+            var averageB = (byte) this.pixelColors.Average(color => color.B);
 
             return Color.FromArgb(0, averageR, averageG, averageB);
         }

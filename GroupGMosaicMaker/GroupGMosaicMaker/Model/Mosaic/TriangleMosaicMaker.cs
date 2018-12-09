@@ -10,10 +10,14 @@ namespace GroupGMosaicMaker.Model.Mosaic
     /// <seealso cref="GroupGMosaicMaker.Model.Mosaic.MosaicMaker" />
     public class TriangleMosaicMaker : MosaicMaker
     {
-        #region Methods
+        #region Data members
 
         private const int LowerTriangularStartingOffset = 0;
         private const int UpperTriangularStartingOffset = 1;
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         ///     Generates the (x, y)'th block of the mosaic. Override this method to change the functionality of how each block is

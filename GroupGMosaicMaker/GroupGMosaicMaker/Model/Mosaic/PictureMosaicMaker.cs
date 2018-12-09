@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Windows.ApplicationModel.AppService;
 using Windows.UI;
 using GroupGMosaicMaker.Extensions;
 using GroupGMosaicMaker.Model.Image;
@@ -17,7 +15,7 @@ namespace GroupGMosaicMaker.Model.Mosaic
     {
         #region Data members
 
-        private int DefaultClosestImageCount = 10;
+        private readonly int DefaultClosestImageCount = 10;
         private ICollection<PaletteImageGenerator> palette;
         private IDictionary<PaletteImageGenerator, Color> averageColorsByPaletteImage;
 
@@ -209,9 +207,7 @@ namespace GroupGMosaicMaker.Model.Mosaic
         {
             var colorComparisonsByImage = this.findColorComparisons(sourceColor);
             var imagesOrderedByComparison = colorComparisonsByImage.OrderBy(kvp => kvp.Value).Select(kvp => kvp.Key);
-
             var foundImages = new List<PaletteImageGenerator>(imagesOrderedByComparison.Take(imagesToFind));
-
             return foundImages;
         }
 
