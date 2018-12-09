@@ -613,8 +613,7 @@ namespace GroupGMosaicMaker.ViewModel
 
             if (this.isNoPatternsChecked)
             {
-                this.pictureMosaicMaker.ReplaceDuplicateImages();
-                
+                this.pictureMosaicMaker.GenerateMosaicPreventingRepetition();
             }
         }
 
