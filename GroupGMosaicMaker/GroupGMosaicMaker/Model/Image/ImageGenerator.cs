@@ -42,7 +42,7 @@ namespace GroupGMosaicMaker.Model.Image
         /// <returns>The image</returns>
         public virtual async Task<WriteableBitmap> GenerateImageAsync()
         {
-            var modifiedImage = new WriteableBitmap((int)this.Decoder.PixelWidth, (int)this.Decoder.PixelHeight);
+            var modifiedImage = new WriteableBitmap((int) this.Decoder.PixelWidth, (int) this.Decoder.PixelHeight);
             using (var writeStream = modifiedImage.PixelBuffer.AsStream())
             {
                 await writeStream.WriteAsync(this.SourcePixels, 0, this.SourcePixels.Length);
@@ -95,8 +95,7 @@ namespace GroupGMosaicMaker.Model.Image
 
         private BitmapTransform generateBitmapTransform(uint width, uint height)
         {
-            var transform = new BitmapTransform
-            {
+            var transform = new BitmapTransform {
                 ScaledWidth = width,
                 ScaledHeight = height
             };
@@ -143,7 +142,7 @@ namespace GroupGMosaicMaker.Model.Image
         /// <returns></returns>
         protected virtual int CalculatePixelOffset(int x, int y)
         {
-            return (x * (int)this.Decoder.PixelWidth + y) * 4;
+            return (x * (int) this.Decoder.PixelWidth + y) * 4;
         }
 
         private bool offsetIsValid(int offset)

@@ -23,7 +23,7 @@ namespace GroupGMosaicMaker.DataTier
         #region Methods
 
         /// <summary>
-        ///      Loads the folder.
+        ///     Loads the folder.
         /// </summary>
         /// <param name="folder">The folder.</param>
         /// <returns></returns>
