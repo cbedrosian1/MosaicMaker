@@ -5,9 +5,7 @@ using Windows.UI;
 
 namespace GroupGMosaicMaker.Model.Mosaic
 {
-    /// <summary>
-    ///     Represents a block of pixels in an image
-    /// </summary>
+    /// <summary>Represents a block of pixels in an image</summary>
     public class PixelBlock : ICollection<Color>
     {
         #region Data members
@@ -141,9 +139,9 @@ namespace GroupGMosaicMaker.Model.Mosaic
         /// <returns></returns>
         public Color CalculateAverageColor()
         {
-            var averageR = (byte) this.pixelColors.Average(color => color.R);
-            var averageG = (byte) this.pixelColors.Average(color => color.G);
-            var averageB = (byte) this.pixelColors.Average(color => color.B);
+            var averageR = (byte)this.pixelColors.Average(color => color.R);
+            var averageG = (byte)this.pixelColors.Average(color => color.G);
+            var averageB = (byte)this.pixelColors.Average(color => color.B);
 
             return Color.FromArgb(0, averageR, averageG, averageB);
         }

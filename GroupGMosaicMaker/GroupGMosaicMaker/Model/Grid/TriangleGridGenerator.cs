@@ -18,22 +18,22 @@ namespace GroupGMosaicMaker.Model.Grid
         {
             base.DrawGrid(length);
 
-            for (var y = 0; y < Decoder.PixelHeight; y += length)
+            for (var i = 0; i < Decoder.PixelHeight; i += length)
             {
-                for (var x = 0; x < Decoder.PixelWidth; x += length)
+                for (var j = 0; j < Decoder.PixelWidth; j += length)
                 {
-                    this.drawDiagonal(x, y, length);
+                    this.drawDiagonal(i, j, length);
                 }
             }
         }
 
         private void drawDiagonal(int startX, int startY, int blockLength)
         {
-            var y = startY;
-            for (var x = startX; x < startX + blockLength && x < Decoder.PixelWidth; ++x)
+            var x = startX;
+            for (var y = startY; y < startY + blockLength && y < Decoder.PixelWidth; ++y)
             {
                 SetPixelColor(x, y, Colors.White);
-                ++y;
+                ++x;
             }
         }
 

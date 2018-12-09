@@ -88,6 +88,9 @@ namespace GroupGMosaicMaker.ViewModel
             }
         }
 
+        /// <summary>Gets or sets a value indicating zoom is selected.</summary>
+        /// <value>
+        ///   <c>true</c> if zoom is selected; otherwise, <c>false</c>.</value>
         public bool IsZoomSelected
         {
             get => this.isZoomSelected;

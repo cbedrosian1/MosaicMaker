@@ -9,9 +9,7 @@ namespace GroupGMosaicMaker.Model.Mosaic
     {
         #region Data members
 
-        /// <summary>
-        ///     The half of maximum color channel
-        /// </summary>
+        /// <summary>The halfway point between black and white</summary>
         protected const double HalfOfMaxColorChannel = 127.5;
 
         #endregion

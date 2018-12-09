@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Windows.ApplicationModel.AppService;
 using Windows.UI;
 using GroupGMosaicMaker.Extensions;
 using GroupGMosaicMaker.Model.Image;
@@ -15,7 +17,6 @@ namespace GroupGMosaicMaker.Model.Mosaic
     {
         #region Data members
 
-        private const int DefaultCountOfClosestImages = 10;
         private ICollection<PaletteImageGenerator> palette;
         private IDictionary<PaletteImageGenerator, Color> averageColorsByPaletteImage;
 
@@ -78,7 +79,7 @@ namespace GroupGMosaicMaker.Model.Mosaic
         }
 
         /// <summary>
-        ///     Generates the mosaic preventing repetition.
+        ///     Generates the mosaic while preventing repetition.
         /// </summary>
         public void GenerateMosaicPreventingRepetition()
         {
@@ -132,7 +133,7 @@ namespace GroupGMosaicMaker.Model.Mosaic
         {
             var currentBlock = FindSingleBlock(x, y);
             var currentBlockColor = currentBlock.CalculateAverageColor();
-            var closestImages = this.findClosestPaletteImages(currentBlockColor, DefaultCountOfClosestImages);
+            var closestImages = this.findClosestPaletteImages(currentBlockColor, 10);
 
             var blockRightImage = this.findImageInBlock(x, y + BlockLength);
             var blockLeftImage = this.findImageInBlock(x, y - BlockLength);
@@ -256,7 +257,7 @@ namespace GroupGMosaicMaker.Model.Mosaic
                 {
                     var color = FindPixelColor(x, y);
                     var average = color.CalculateAverageRgbChannelValue();
-                    if (average > HalfOfMaxColorChannel)
+                    if (average > 127.5)
                     {
                         SetPixelColor(x, y, Colors.White);
                     }

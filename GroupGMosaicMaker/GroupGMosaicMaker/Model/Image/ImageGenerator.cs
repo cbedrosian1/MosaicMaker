@@ -42,7 +42,7 @@ namespace GroupGMosaicMaker.Model.Image
         /// <returns>The image</returns>
         public virtual async Task<WriteableBitmap> GenerateImageAsync()
         {
-            var modifiedImage = new WriteableBitmap((int) this.Decoder.PixelWidth, (int) this.Decoder.PixelHeight);
+            var modifiedImage = new WriteableBitmap((int)this.Decoder.PixelWidth, (int)this.Decoder.PixelHeight);
             using (var writeStream = modifiedImage.PixelBuffer.AsStream())
             {
                 await writeStream.WriteAsync(this.SourcePixels, 0, this.SourcePixels.Length);
@@ -68,16 +68,14 @@ namespace GroupGMosaicMaker.Model.Image
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
-        /// <returns>The completed asynchronous operation.</returns>
+        /// <returns>The completed asynchronous operation</returns>
         protected async Task AssignSourcePixelsAsync(uint width, uint height)
         {
             var pixelData = await this.GeneratePixelDataAsync(width, height);
             this.SourcePixels = pixelData.DetachPixelData();
         }
 
-        /// <summary>
-        ///     Generates the pixel data asynchronous.
-        /// </summary>
+        /// <summary>Generates the pixel data asynchronous.</summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <returns></returns>
@@ -97,7 +95,8 @@ namespace GroupGMosaicMaker.Model.Image
 
         private BitmapTransform generateBitmapTransform(uint width, uint height)
         {
-            var transform = new BitmapTransform {
+            var transform = new BitmapTransform
+            {
                 ScaledWidth = width,
                 ScaledHeight = height
             };
@@ -105,12 +104,10 @@ namespace GroupGMosaicMaker.Model.Image
             return transform;
         }
 
-        /// <summary>
-        ///     Finds the color of the pixel.
-        /// </summary>
+        /// <summary>Finds the color of the pixel.</summary>
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
-        /// <returns>The color of the pixel.</returns>
+        /// <returns>The color of the pixel</returns>
         public Color FindPixelColor(int x, int y)
         {
             var offset = this.CalculatePixelOffset(x, y);
@@ -125,9 +122,7 @@ namespace GroupGMosaicMaker.Model.Image
             return new Color();
         }
 
-        /// <summary>
-        ///     Sets the color of the pixel.
-        /// </summary>
+        /// <summary>Sets the color of the pixel.</summary>
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
         /// <param name="color">The color.</param>
@@ -142,15 +137,13 @@ namespace GroupGMosaicMaker.Model.Image
             }
         }
 
-        /// <summary>
-        ///     Calculates the pixel offset.
-        /// </summary>
+        /// <summary>Calculates the pixel offset.</summary>
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
-        /// <returns>The pixel offset</returns>
+        /// <returns></returns>
         protected virtual int CalculatePixelOffset(int x, int y)
         {
-            return (x * (int) this.Decoder.PixelWidth + y) * 4;
+            return (x * (int)this.Decoder.PixelWidth + y) * 4;
         }
 
         private bool offsetIsValid(int offset)
@@ -158,10 +151,10 @@ namespace GroupGMosaicMaker.Model.Image
             return offset + 2 < this.SourcePixels.Length;
         }
 
-        /// <summary>Checks if Coordinates are valid.</summary>
+        /// <summary>Checks if coordinates are valid.</summary>
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
-        /// <returns>True if coordinates are valid and false if not</returns>
+        /// <returns>True if coordinates are valid otherwise false</returns>
         protected bool CoordinatesAreValid(int x, int y)
         {
             var offset = this.CalculatePixelOffset(x, y);

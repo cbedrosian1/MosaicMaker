@@ -11,6 +11,7 @@ namespace GroupGMosaicMaker.Model.Mosaic
     public class TriangleMosaicMaker : MosaicMaker
     {
         #region Methods
+
         private const int LowerTriangularStartingOffset = 0;
         private const int UpperTriangularStartingOffset = 1;
 
@@ -97,8 +98,7 @@ namespace GroupGMosaicMaker.Model.Mosaic
         private void assignColorToLowerTriangularBlock(int startX, int startY, Color color)
         {
             var pixelsInRows = LowerTriangularStartingOffset;
-
-            for (var x = startX; x < startX + BlockLength; ++x)   
+            for (var x = startX; x < startX + BlockLength; ++x)
             {
                 for (var y = startY; y < startY + pixelsInRows && y < Decoder.PixelWidth; ++y)
                 {
@@ -114,9 +114,9 @@ namespace GroupGMosaicMaker.Model.Mosaic
         /// </summary>
         public override void ConvertToBlackAndWhite()
         {
-            for (var y = 0; y < Decoder.PixelHeight; y += BlockLength)
+            for (var x = 0; x < Decoder.PixelHeight; x += BlockLength)
             {
-                for (var x = 0; x < Decoder.PixelWidth; x += BlockLength)
+                for (var y = 0; y < Decoder.PixelWidth; y += BlockLength)
                 {
                     this.convertLowerTriangularBlockToBlackAndWhite(x, y);
                     this.convertUpperTriangularBlockToBlackAndWhite(x, y);

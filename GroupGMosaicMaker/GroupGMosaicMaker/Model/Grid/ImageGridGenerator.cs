@@ -23,9 +23,9 @@ namespace GroupGMosaicMaker.Model.Grid
 
         private void drawVerticalLines(int length)
         {
-            for (var y = 0; y < Decoder.PixelHeight; y += length)
+            for (var x = 0; x < Decoder.PixelHeight; x += length)
             {
-                for (var x = 0; x < Decoder.PixelWidth; ++x)
+                for (var y = 0; y < Decoder.PixelWidth; ++y)
                 {
                     SetPixelColor(x, y, Colors.White);
                 }
@@ -34,9 +34,9 @@ namespace GroupGMosaicMaker.Model.Grid
 
         private void drawHorizontalLines(int length)
         {
-            for (var y = 0; y < Decoder.PixelHeight; ++y)
+            for (var x = 0; x < Decoder.PixelHeight; ++x)
             {
-                for (var x = 0; x < Decoder.PixelWidth; x += length)
+                for (var y = 0; y < Decoder.PixelWidth; y += length)
                 {
                     SetPixelColor(x, y, Colors.White);
                 }
