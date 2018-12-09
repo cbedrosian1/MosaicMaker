@@ -133,7 +133,9 @@ namespace GroupGMosaicMaker.ViewModel
             get => this.paletteCount;
             set
             {
+                this.SettingsHasChanged = true;
                 this.paletteCount = value;
+
                 OnPropertyChanged();
             }
         }
@@ -205,6 +207,9 @@ namespace GroupGMosaicMaker.ViewModel
                 this.palette = value;
                 OnPropertyChanged();
                 this.PaletteCount = this.palette.Count;
+                
+                this.GenerateBlockMosaicCommand.OnCanExecuteChanged();
+                this.GeneratePictureMosaicCommand.OnCanExecuteChanged();
                 this.ClearPaletteImagesCommand.OnCanExecuteChanged();
             }
         }
@@ -545,19 +550,20 @@ namespace GroupGMosaicMaker.ViewModel
             this.SettingsHasChanged = true;
 
             this.Palette = selected;
+            this.SettingsHasChanged = true;
             this.IsUsingSelectedImages = false;
             this.SelectedImage = null;
         }
 
         private bool canGenerateBlockMosaic(object obj)
         {
-            return this.imageSource != null && this.settingsHasChanged;
+            return this.imageSource != null && (this.settingsHasChanged || this.currentChosenMosaicMaker == null || this.currentChosenMosaicMaker != this.blockMosaicMaker);
         }
 
         private bool canGeneratePictureMosaic(object obj)
         {
-            return this.settingsHasChanged && this.isSquareGridSelected && this.palette.Count > 0 &&
-                   this.originalImage != null;
+            return this.isSquareGridSelected && this.palette.Count > 0 &&
+                   this.originalImage != null && (this.settingsHasChanged || this.currentChosenMosaicMaker != this.pictureMosaicMaker);
         }
 
         private async void generateAndDisplayBlockMosaic(object obj)
@@ -578,12 +584,8 @@ namespace GroupGMosaicMaker.ViewModel
 
             this.pictureMosaicMaker.Palette = this.SelectedPalette;
                         await this.scalePaletteImagesAsync();
-            this.generatePictureMosaic();
 
-            if (this.IsNoPatternsChecked)
-            {
-                this.pictureMosaicMaker.GenerateMosaicPreventingRepetition();
-            }
+            this.generatePictureMosaic();
 
             if (this.IsBlackWhiteToggled)
             {
@@ -607,6 +609,12 @@ namespace GroupGMosaicMaker.ViewModel
             else
             {
                 this.pictureMosaicMaker.GenerateMosaic();
+            }
+
+            if (this.isNoPatternsChecked)
+            {
+                this.pictureMosaicMaker.ReplaceDuplicateImages();
+                
             }
         }
 
@@ -651,7 +659,7 @@ namespace GroupGMosaicMaker.ViewModel
         public async Task LoadImageSource(IRandomAccessStream source)
         {
             this.imageSource = source;
-            this.settingsHasChanged = true;
+            this.SettingsHasChanged = true;
             this.ImageLoaded = true;
 
             await this.updateGeneratorSources(source);
@@ -735,7 +743,7 @@ namespace GroupGMosaicMaker.ViewModel
             if (this.currentChosenMosaicMaker != null)
             {
                 await this.generateAndDisplayMosaicImage(this.currentChosenMosaicMaker);
-                this.settingsHasChanged = true;
+                this.SettingsHasChanged = true;
             }
         }
 
@@ -791,6 +799,7 @@ namespace GroupGMosaicMaker.ViewModel
         {
             if (this.IsUsingSelectedImages)
             {
+                this.SettingsHasChanged = true;
                 var selectedImages = new ObservableCollection<PaletteImageGenerator>();
                 foreach (var current in objects)
                 {
