@@ -218,11 +218,11 @@ namespace GroupGMosaicMaker.View
             }
         }
 
-        #endregion
-
         private void checkBox_OnClick(object sender, RoutedEventArgs e)
         {
             ((MainPageViewModel) DataContext).SettingsHasChanged = true;
         }
+
+        #endregion
     }
 }

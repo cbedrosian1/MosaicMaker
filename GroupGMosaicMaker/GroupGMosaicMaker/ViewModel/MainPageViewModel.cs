@@ -71,10 +71,10 @@ namespace GroupGMosaicMaker.ViewModel
         #region Properties
 
         /// <summary>
-        /// Gets or sets a value indicating whether [image loaded].
+        ///     Gets or sets a value indicating whether [image loaded].
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [image loaded]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [image loaded]; otherwise, <c>false</c>.
         /// </value>
         public bool ImageLoaded
         {
@@ -107,10 +107,10 @@ namespace GroupGMosaicMaker.ViewModel
         }
 
         /// <summary>
-        ///  Gets or sets a value indicating zoom is selected.
+        ///     Gets or sets a value indicating zoom is selected.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if zoom is selected; otherwise, <c>false</c>.
+        ///     <c>true</c> if zoom is selected; otherwise, <c>false</c>.
         /// </value>
         public bool IsZoomSelected
         {
@@ -207,7 +207,7 @@ namespace GroupGMosaicMaker.ViewModel
                 this.palette = value;
                 OnPropertyChanged();
                 this.PaletteCount = this.palette.Count;
-                
+
                 this.GenerateBlockMosaicCommand.OnCanExecuteChanged();
                 this.GeneratePictureMosaicCommand.OnCanExecuteChanged();
                 this.ClearPaletteImagesCommand.OnCanExecuteChanged();
@@ -347,7 +347,6 @@ namespace GroupGMosaicMaker.ViewModel
 
                     this.updateMosaicBlockSizes();
                     this.UpdateDisplayedImageAsync();
-                 
 
                     OnPropertyChanged();
                 }
@@ -557,13 +556,15 @@ namespace GroupGMosaicMaker.ViewModel
 
         private bool canGenerateBlockMosaic(object obj)
         {
-            return this.imageSource != null && (this.settingsHasChanged || this.currentChosenMosaicMaker == null || this.currentChosenMosaicMaker != this.blockMosaicMaker);
+            return this.imageSource != null && (this.settingsHasChanged || this.currentChosenMosaicMaker == null ||
+                                                this.currentChosenMosaicMaker != this.blockMosaicMaker);
         }
 
         private bool canGeneratePictureMosaic(object obj)
         {
             return this.isSquareGridSelected && this.palette.Count > 0 &&
-                   this.originalImage != null && (this.settingsHasChanged || this.currentChosenMosaicMaker != this.pictureMosaicMaker);
+                   this.originalImage != null &&
+                   (this.settingsHasChanged || this.currentChosenMosaicMaker != this.pictureMosaicMaker);
         }
 
         private async void generateAndDisplayBlockMosaic(object obj)
@@ -583,7 +584,7 @@ namespace GroupGMosaicMaker.ViewModel
             Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Wait, 13);
 
             this.pictureMosaicMaker.Palette = this.SelectedPalette;
-                        await this.scalePaletteImagesAsync();
+            await this.scalePaletteImagesAsync();
 
             this.generatePictureMosaic();
 
@@ -716,7 +717,7 @@ namespace GroupGMosaicMaker.ViewModel
                 await this.gridImageGenerator.SetSourceAsync(this.imageSource);
                 await this.triangleGridImageGenerator.SetSourceAsync(this.imageSource);
             }
-            
+
             if (this.IsGridToggled)
             {
                 if (this.isSquareGridSelected)

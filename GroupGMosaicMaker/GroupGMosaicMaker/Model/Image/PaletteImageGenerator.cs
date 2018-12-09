@@ -33,7 +33,7 @@ namespace GroupGMosaicMaker.Model.Image
         ///     Gets or sets the WritableBitmap associated with the image source
         /// </summary>
         /// <value>
-        ///     The WriteableBitmap
+        ///     The WritableBitmap
         /// </value>
         public WriteableBitmap ThumbnailImage { get; private set; }
 
